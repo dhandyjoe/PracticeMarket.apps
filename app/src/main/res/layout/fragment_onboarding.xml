@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/shop_btn_skip"
+        style="@style/Widget.PracticeMart.Button.Text"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/pm_space_3"
+        android:layout_marginTop="@dimen/pm_space_3"
+        android:text="@string/onboarding_skip"
+        android:textColor="@color/pm_ink_secondary" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/shop_pager_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/onboarding_dots"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_4"
+        android:gravity="center"
+        android:importantForAccessibility="no"
+        android:orientation="horizontal" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/pm_space_9"
+        android:paddingHorizontal="@dimen/pm_space_6"
+        android:paddingTop="@dimen/pm_space_6">
+
+        <Button
+            android:id="@+id/shop_btn_next"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:text="@string/onboarding_next" />
+
+        <Button
+            android:id="@+id/shop_btn_start"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:text="@string/onboarding_start"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

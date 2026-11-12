@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/pm_space_6"
+            android:paddingHorizontal="@dimen/pm_space_6"
+            android:paddingTop="@dimen/pm_space_12">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_logo"
+                    android:importantForAccessibility="no"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_bag"
+                    app:tint="@color/pm_on_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/pm_space_3"
+                    android:fontFamily="@font/space_grotesk"
+                    app:fontFamily="@font/space_grotesk"
+                    android:text="@string/app_name"
+                    android:textColor="@color/pm_ink"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/Pm.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_8"
+                android:text="@string/login_title" />
+
+            <TextView
+                style="@style/Pm.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_1_5"
+                android:text="@string/login_subtitle" />
+
+            <LinearLayout
+                android:id="@+id/shop_banner_login_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4_5"
+                android:background="@drawable/bg_banner_error"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/pm_space_3_5"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_error"
+                    app:tint="@color/pm_error_strong" />
+
+                <TextView
+                    android:id="@+id/shop_txt_login_error"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/pm_space_3"
+                    android:layout_weight="1"
+                    android:accessibilityLiveRegion="assertive"
+                    android:textColor="@color/pm_error_strong"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4_5"
+                android:labelFor="@+id/shop_input_username"
+                android:text="@string/login_username" />
+
+            <EditText
+                android:id="@+id/shop_input_username"
+                style="@style/Pm.Field"
+                android:autofillHints="username"
+                android:hint="@string/login_username_hint"
+                android:imeOptions="actionNext"
+                android:inputType="text" />
+
+            <TextView
+                android:id="@+id/shop_txt_username_error"
+                style="@style/Pm.FieldError"
+                android:text="@string/error_username_required"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4_5"
+                android:labelFor="@+id/shop_input_password"
+                android:text="@string/login_password" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/shop_input_password"
+                    style="@style/Pm.Field"
+                    android:autofillHints="password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:paddingEnd="@dimen/pm_space_12" />
+
+                <ImageButton
+                    android:id="@+id/shop_btn_toggle_password"
+                    android:layout_width="@dimen/pm_touch_min"
+                    android:layout_height="@dimen/pm_touch_min"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/pm_space_2"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/password_show"
+                    android:src="@drawable/ic_visibility"
+                    app:tint="@color/pm_ink_secondary" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/shop_txt_password_error"
+                style="@style/Pm.FieldError"
+                android:text="@string/error_password_required"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/shop_chk_remember"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:minHeight="@dimen/pm_touch_min"
+                    android:text="@string/login_remember"
+                    android:textColor="@color/pm_ink"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/shop_btn_forgot_password"
+                    style="@style/Widget.PracticeMart.Button.Text"
+                    android:text="@string/login_forgot" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2">
+
+                <Button
+                    android:id="@+id/shop_btn_login"
+                    style="@style/Widget.PracticeMart.Button.Primary"
+                    android:text="@string/login_submit" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/shop_progress_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/pm_ink_muted"
+                    app:indicatorSize="20dp"
+                    app:trackThickness="2dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/pm_space_4_5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/pm_outline" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/pm_space_3"
+                    android:text="@string/login_or"
+                    android:textColor="@color/pm_ink_muted"
+                    android:textSize="13sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="@color/pm_outline" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/shop_btn_biometric"
+                style="@style/Widget.PracticeMart.Button.Outline"
+                android:text="@string/login_biometric"
+                app:icon="@drawable/ic_fingerprint" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pm_space_4">
+
+        <TextView
+            style="@style/Pm.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_no_account"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/shop_btn_register_link"
+            style="@style/Widget.PracticeMart.Button.Text"
+            android:text="@string/login_register" />
+    </LinearLayout>
+</LinearLayout>

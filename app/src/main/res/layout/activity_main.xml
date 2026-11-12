@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder sampai SHOP-01 Beranda dibangun. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/pm_space_6">
+
+    <TextView
+        android:id="@+id/shop_txt_greeting"
+        style="@style/Pm.Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/shop_btn_logout"
+        style="@style/Widget.PracticeMart.Button.Outline"
+        android:layout_marginTop="@dimen/pm_space_6"
+        android:text="@string/home_logout" />
+</LinearLayout>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.PracticeMart" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/pm_primary</item>
+        <item name="colorOnPrimary">@color/pm_on_primary</item>
+        <item name="colorPrimaryContainer">@color/pm_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/pm_primary_pressed</item>
+        <item name="colorSurface">@color/pm_surface</item>
+        <item name="colorOnSurface">@color/pm_ink</item>
+        <item name="colorOnSurfaceVariant">@color/pm_ink_secondary</item>
+        <item name="colorOutline">@color/pm_outline_strong</item>
+        <item name="colorError">@color/pm_error</item>
+        <item name="android:colorBackground">@color/pm_background</item>
+        <item name="android:windowBackground">@color/pm_surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+    </style>
+</resources>

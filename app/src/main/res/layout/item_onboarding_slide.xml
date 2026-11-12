@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/pm_space_8">
+
+    <ImageView
+        android:id="@+id/shop_img_slide"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/shop_txt_onboarding_title"
+        style="@style/Pm.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_9"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/shop_txt_onboarding_body"
+        style="@style/Pm.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_3"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.15"
+        android:textSize="16sp" />
+</LinearLayout>

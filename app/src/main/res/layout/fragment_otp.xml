@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/shop_btn_back"
+        android:layout_width="@dimen/pm_touch_min"
+        android:layout_height="@dimen/pm_touch_min"
+        android:layout_margin="@dimen/pm_space_2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/nav_back"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/pm_ink" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/pm_space_6"
+            android:paddingTop="@dimen/pm_space_2">
+
+            <!-- Fase 1: email -->
+            <LinearLayout
+                android:id="@+id/phase_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Pm.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/forgot_title" />
+
+                <TextView
+                    style="@style/Pm.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_2"
+                    android:lineSpacingMultiplier="1.15"
+                    android:text="@string/forgot_subtitle" />
+
+                <TextView
+                    style="@style/Pm.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_6"
+                    android:labelFor="@+id/shop_input_forgot_email"
+                    android:text="@string/register_email" />
+
+                <EditText
+                    android:id="@+id/shop_input_forgot_email"
+                    style="@style/Pm.Field"
+                    android:autofillHints="emailAddress"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress" />
+
+                <TextView
+                    android:id="@+id/shop_txt_forgot_email_error"
+                    style="@style/Pm.FieldError"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/shop_btn_send_code"
+                    style="@style/Widget.PracticeMart.Button.Primary"
+                    android:layout_marginTop="@dimen/pm_space_6"
+                    android:text="@string/forgot_send" />
+            </LinearLayout>
+
+            <!-- Fase 2: OTP -->
+            <LinearLayout
+                android:id="@+id/phase_otp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Pm.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/otp_title" />
+
+                <TextView
+                    android:id="@+id/shop_txt_otp_subtitle"
+                    style="@style/Pm.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_2"
+                    android:lineSpacingMultiplier="1.15" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_6"
+                    android:contentDescription="@string/otp_group"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_1"
+                        style="@style/Pm.OtpBox"
+                        android:layout_marginEnd="@dimen/pm_space_2" />
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_2"
+                        style="@style/Pm.OtpBox"
+                        android:layout_marginEnd="@dimen/pm_space_2" />
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_3"
+                        style="@style/Pm.OtpBox"
+                        android:layout_marginEnd="@dimen/pm_space_2" />
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_4"
+                        style="@style/Pm.OtpBox"
+                        android:layout_marginEnd="@dimen/pm_space_2" />
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_5"
+                        style="@style/Pm.OtpBox"
+                        android:layout_marginEnd="@dimen/pm_space_2" />
+
+                    <EditText
+                        android:id="@+id/shop_input_otp_6"
+                        style="@style/Pm.OtpBox" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/shop_txt_otp_error"
+                    style="@style/Pm.FieldError"
+                    android:text="@string/otp_error"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/shop_btn_verify_otp"
+                    style="@style/Widget.PracticeMart.Button.Primary"
+                    android:layout_marginTop="@dimen/pm_space_6"
+                    android:enabled="false"
+                    android:text="@string/otp_verify" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_2"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Pm.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/otp_no_code"
+                        android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/shop_btn_resend_otp"
+                        style="@style/Widget.PracticeMart.Button.Text"
+                        android:text="@string/otp_resend" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+</LinearLayout>

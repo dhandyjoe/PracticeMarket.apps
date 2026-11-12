@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/shop_btn_back"
+        android:layout_width="@dimen/pm_touch_min"
+        android:layout_height="@dimen/pm_touch_min"
+        android:layout_margin="@dimen/pm_space_2"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/nav_back"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/pm_ink" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/pm_space_6">
+
+            <TextView
+                style="@style/Pm.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_title" />
+
+            <TextView
+                style="@style/Pm.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_1_5"
+                android:text="@string/register_subtitle" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:labelFor="@+id/shop_input_reg_name"
+                android:text="@string/register_name" />
+
+            <EditText
+                android:id="@+id/shop_input_reg_name"
+                style="@style/Pm.Field"
+                android:autofillHints="name"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName|textCapWords" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_3_5"
+                android:labelFor="@+id/shop_input_reg_email"
+                android:text="@string/register_email" />
+
+            <EditText
+                android:id="@+id/shop_input_reg_email"
+                style="@style/Pm.Field"
+                android:autofillHints="emailAddress"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/shop_txt_reg_email_error"
+                style="@style/Pm.FieldError"
+                android:text="@string/error_email_invalid"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_3_5"
+                android:labelFor="@+id/shop_input_reg_password"
+                android:text="@string/register_password" />
+
+            <EditText
+                android:id="@+id/shop_input_reg_password"
+                style="@style/Pm.Field"
+                android:autofillHints="newPassword"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:importantForAccessibility="no"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/strength_bar_1"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_strength_bar" />
+
+                    <View
+                        android:id="@+id/strength_bar_2"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_marginHorizontal="@dimen/pm_space_1"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_strength_bar" />
+
+                    <View
+                        android:id="@+id/strength_bar_3"
+                        android:layout_width="0dp"
+                        android:layout_height="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_strength_bar" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/shop_txt_password_strength"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/TextAppearance.PracticeMart.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_1_5"
+                android:text="@string/register_password_helper" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_3_5"
+                android:labelFor="@+id/shop_input_reg_confirm"
+                android:text="@string/register_confirm" />
+
+            <EditText
+                android:id="@+id/shop_input_reg_confirm"
+                style="@style/Pm.Field"
+                android:autofillHints="newPassword"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/shop_txt_reg_confirm_error"
+                style="@style/Pm.FieldError"
+                android:text="@string/error_confirm_mismatch"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/shop_chk_terms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/register_terms_cd"
+                    android:minHeight="@dimen/pm_touch_min"
+                    android:minWidth="@dimen/pm_touch_min" />
+
+                <TextView
+                    android:id="@+id/shop_txt_terms"
+                    style="@style/Pm.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pm_space_4"
+        android:paddingHorizontal="@dimen/pm_space_6"
+        android:paddingTop="@dimen/pm_space_3">
+
+        <Button
+            android:id="@+id/shop_btn_register"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:enabled="false"
+            android:text="@string/register_submit" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Pm.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_have_account"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/shop_btn_login_link"
+                style="@style/Widget.PracticeMart.Button.Text"
+                android:text="@string/register_login" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

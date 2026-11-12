@@ -1,0 +1,7 @@
+[
+  {"username": "standard_user", "password": "Practice123!", "displayName": "Standard User", "email": "standard@contoh.id", "behavior": "normal"},
+  {"username": "locked_user", "password": "Practice123!", "displayName": "Locked User", "email": "locked@contoh.id", "behavior": "locked"},
+  {"username": "slow_user", "password": "Practice123!", "displayName": "Slow User", "email": "slow@contoh.id", "behavior": "slow"},
+  {"username": "glitch_user", "password": "Practice123!", "displayName": "Glitch User", "email": "glitch@contoh.id", "behavior": "glitch"},
+  {"username": "new_user", "password": "Practice123!", "displayName": "New User", "email": "new@contoh.id", "behavior": "new"}
+]

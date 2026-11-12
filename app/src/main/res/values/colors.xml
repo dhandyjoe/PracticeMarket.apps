@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Token dari DESIGN.md §2.1. Tambah token lain saat layar yang memakainya dibangun. -->
+<resources>
+    <color name="pm_primary">#0E7C66</color>
+    <color name="pm_primary_pressed">#0A5E4D</color>
+    <color name="pm_primary_container">#DDF0EA</color>
+    <color name="pm_primary_surface">#EEF7F4</color>
+    <color name="pm_primary_outline">#9CC9BD</color>
+    <color name="pm_on_primary">#FFFFFF</color>
+    <color name="pm_ink">#12161C</color>
+    <color name="pm_ink_secondary">#3A4350</color>
+    <color name="pm_ink_muted">#5B6573</color>
+    <color name="pm_ink_disabled">#9AA4B2</color>
+    <color name="pm_background">#F4F6F5</color>
+    <color name="pm_surface">#FFFFFF</color>
+    <color name="pm_surface_subtle">#F1F3F6</color>
+    <color name="pm_surface_disabled">#E3E6EB</color>
+    <color name="pm_outline">#E3E6EB</color>
+    <color name="pm_outline_strong">#D5DAE1</color>
+    <color name="pm_track">#C9CFD8</color>
+    <color name="pm_error">#B42318</color>
+    <color name="pm_error_strong">#8A1C12</color>
+    <color name="pm_error_container">#FDECEA</color>
+    <color name="pm_warning">#B4400A</color>
+    <color name="pm_warning_outline">#F6C9A9</color>
+    <color name="pm_dark_surface">#12161C</color>
+    <color name="pm_dark_accent">#7CE3A4</color>
+</resources>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PracticeMart</string>
+    <string name="nav_back">Kembali</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_next">Lanjut</string>
+    <string name="onboarding_start">Mulai</string>
+    <string name="onboarding_1_title">Belanja apa saja, dari satu app</string>
+    <string name="onboarding_1_body">60 produk dari 6 kategori, siap diantar ke rumah.</string>
+    <string name="onboarding_2_title">Bayar dengan cara favoritmu</string>
+    <string name="onboarding_2_body">PracticePay, kartu kredit, virtual account, atau bayar di tempat.</string>
+    <string name="onboarding_3_title">Pantau pesanan sampai tiba</string>
+    <string name="onboarding_3_body">Lihat status dari dikemas sampai diterima, lengkap dengan notifikasi.</string>
+
+    <!-- Login -->
+    <string name="login_title">Masuk</string>
+    <string name="login_subtitle">Lanjutkan belanja dan cek pesananmu.</string>
+    <string name="login_username">Username</string>
+    <string name="login_username_hint">mis. standard_user</string>
+    <string name="login_password">Password</string>
+    <string name="login_remember">Ingat saya</string>
+    <string name="login_forgot">Lupa password?</string>
+    <string name="login_submit">Masuk</string>
+    <string name="login_or">atau</string>
+    <string name="login_biometric">Masuk dengan sidik jari</string>
+    <string name="login_no_account">Belum punya akun?</string>
+    <string name="login_register">Daftar</string>
+    <string name="login_locked_fmt">Coba lagi dalam %d detik</string>
+    <string name="password_show">Tampilkan password</string>
+    <string name="password_hide">Sembunyikan password</string>
+    <string name="error_username_required">Username wajib diisi</string>
+    <string name="error_password_required">Password wajib diisi</string>
+    <string name="login_error_invalid">Username atau password salah</string>
+    <string name="login_error_locked">Akun Anda terkunci. Hubungi admin.</string>
+    <string name="biometric_title">Masuk dengan sidik jari</string>
+    <string name="biometric_cancel">Batal</string>
+    <string name="biometric_failed">Autentikasi gagal</string>
+
+    <!-- Register -->
+    <string name="register_title">Buat akun</string>
+    <string name="register_subtitle">Belanja dan pakai PracticePay dengan satu akun.</string>
+    <string name="register_name">Nama lengkap</string>
+    <string name="register_email">Email</string>
+    <string name="register_password">Password</string>
+    <string name="register_password_helper">Minimal 8 karakter, berisi huruf dan angka</string>
+    <string name="register_confirm">Konfirmasi password</string>
+    <string name="register_terms_link">Syarat &amp; Ketentuan</string>
+    <string name="register_terms_fmt">Saya menyetujui %1$s PracticeMart</string>
+    <string name="register_terms_cd">Setujui Syarat &amp; Ketentuan</string>
+    <string name="register_submit">Daftar</string>
+    <string name="register_have_account">Sudah punya akun?</string>
+    <string name="register_login">Masuk</string>
+    <string name="register_success">Akun berhasil dibuat. Silakan masuk.</string>
+    <string name="error_email_invalid">Format email tidak valid</string>
+    <string name="error_email_taken">Email sudah terdaftar</string>
+    <string name="error_confirm_mismatch">Konfirmasi password tidak sama</string>
+    <string name="strength_weak">Lemah</string>
+    <string name="strength_medium">Sedang</string>
+    <string name="strength_strong">Kuat</string>
+    <string name="terms_title">Syarat &amp; Ketentuan</string>
+
+    <!-- Lupa password · OTP -->
+    <string name="forgot_title">Lupa password</string>
+    <string name="forgot_subtitle">Masukkan email akunmu. Kami kirim kode 6 digit.</string>
+    <string name="forgot_send">Kirim kode</string>
+    <string name="forgot_email_unknown">Email tidak terdaftar</string>
+    <string name="otp_title">Masukkan kode OTP</string>
+    <string name="otp_subtitle_fmt">Kode 6 digit sudah dikirim ke %s.</string>
+    <string name="otp_group">Kode OTP</string>
+    <string name="otp_digit_fmt">Digit %d</string>
+    <string name="otp_error">Kode OTP salah</string>
+    <string name="otp_verify">Verifikasi</string>
+    <string name="otp_no_code">Tidak menerima kode?</string>
+    <string name="otp_resend">Kirim ulang</string>
+    <string name="otp_resend_fmt">Kirim ulang dalam 00:%02d</string>
+
+    <!-- Password baru -->
+    <string name="newpw_title">Buat password baru</string>
+    <string name="newpw_subtitle">Pilih password yang kuat dan mudah kamu ingat.</string>
+    <string name="newpw_label">Password baru</string>
+    <string name="newpw_confirm_label">Ulangi password baru</string>
+    <string name="newpw_rules">Syarat password</string>
+    <string name="rule_min">Minimal 8 karakter</string>
+    <string name="rule_letter">Berisi huruf</string>
+    <string name="rule_digit">Berisi angka</string>
+    <string name="rule_match">Kedua password sama</string>
+    <string name="newpw_save">Simpan Password</string>
+    <string name="newpw_done_title">Password berhasil diubah</string>
+    <string name="newpw_done_body">Silakan masuk dengan password baru.</string>
+    <string name="newpw_goto_login">Ke halaman Masuk</string>
+
+    <!-- Beranda sementara (SHOP-01 belum dibangun) -->
+    <string name="home_greeting_fmt">Halo, %s</string>
+    <string name="home_logout">Keluar</string>
+</resources>

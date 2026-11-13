@@ -1,0 +1,932 @@
+{
+"categories": [
+{
+"slug": "fashion",
+"name": "Fashion"
+},
+{
+"slug": "elektronik",
+"name": "Elektronik"
+},
+{
+"slug": "rumah-tangga",
+"name": "Rumah Tangga"
+},
+{
+"slug": "olahraga",
+"name": "Olahraga"
+},
+{
+"slug": "buku",
+"name": "Buku"
+},
+{
+"slug": "kecantikan",
+"name": "Kecantikan"
+}
+],
+"products": [
+{
+"id": "P001",
+"name": "Kaos Polos Basic",
+"cat": "fashion",
+"price": 75000,
+"orig": null,
+"rating": 4.8,
+"colors": [
+"Hitam",
+"Putih",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": [
+"Hitam|XL"
+]
+},
+{
+"id": "P002",
+"name": "Sepatu Lari Ringan",
+"cat": "olahraga",
+"price": 450000,
+"orig": 600000,
+"rating": 4.7,
+"colors": [],
+"sizes": [
+"39",
+"40",
+"41",
+"42",
+"43",
+"44"
+],
+"stock": 3,
+"zero": []
+},
+{
+"id": "P003",
+"name": "Kaos Oversize Katun Combed 30s",
+"cat": "fashion",
+"price": 99000,
+"orig": null,
+"rating": 4.6,
+"colors": [
+"Hitam",
+"Putih",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P004",
+"name": "Kaos Raglan Lengan Panjang",
+"cat": "fashion",
+"price": 119000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Putih",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P005",
+"name": "Kaos Kerah Polo Pique",
+"cat": "fashion",
+"price": 149000,
+"orig": null,
+"rating": 4.7,
+"colors": [
+"Hitam",
+"Putih",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P006",
+"name": "Kaos Grafis Urban",
+"cat": "fashion",
+"price": 89000,
+"orig": null,
+"rating": 4.2,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P007",
+"name": "Kaos V-Neck Slim Fit",
+"cat": "fashion",
+"price": 85000,
+"orig": null,
+"rating": 4.0,
+"colors": [
+"Hitam",
+"Putih",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P008",
+"name": "Kemeja Flanel Kotak",
+"cat": "fashion",
+"price": 189000,
+"orig": null,
+"rating": 4.4,
+"colors": [
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P009",
+"name": "Celana Chino Slim",
+"cat": "fashion",
+"price": 229000,
+"orig": 259000,
+"rating": 4.3,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [
+"30",
+"32",
+"34"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P010",
+"name": "Headphone Nirkabel",
+"cat": "elektronik",
+"price": 850000,
+"orig": null,
+"rating": 4.6,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [],
+"stock": 8,
+"zero": []
+},
+{
+"id": "P011",
+"name": "Kaos Olahraga Dry-Fit",
+"cat": "olahraga",
+"price": 79000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P012",
+"name": "Kaos Latihan Lengan Pendek",
+"cat": "olahraga",
+"price": 69000,
+"orig": null,
+"rating": 4.1,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P013",
+"name": "Kaos Lari Reflektif",
+"cat": "olahraga",
+"price": 109000,
+"orig": null,
+"rating": 4.6,
+"colors": [
+"Hitam"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P014",
+"name": "Kaos Tim Retro",
+"cat": "olahraga",
+"price": 95000,
+"orig": null,
+"rating": 3.9,
+"colors": [
+"Navy",
+"Putih"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P015",
+"name": "Powerbank 10.000 mAh",
+"cat": "elektronik",
+"price": 189000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [],
+"stock": 20,
+"zero": []
+},
+{
+"id": "P016",
+"name": "Speaker Bluetooth Mini",
+"cat": "elektronik",
+"price": 325000,
+"orig": null,
+"rating": 4.4,
+"colors": [
+"Hitam"
+],
+"sizes": [],
+"stock": 6,
+"zero": []
+},
+{
+"id": "P017",
+"name": "Earbud Nirkabel",
+"cat": "elektronik",
+"price": 275000,
+"orig": 350000,
+"rating": 4.3,
+"colors": [
+"Putih"
+],
+"sizes": [],
+"stock": 12,
+"zero": []
+},
+{
+"id": "P018",
+"name": "Kabel USB-C 1m",
+"cat": "elektronik",
+"price": 35000,
+"orig": null,
+"rating": 4.2,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [],
+"stock": 50,
+"zero": []
+},
+{
+"id": "P019",
+"name": "Mouse Nirkabel Senyap",
+"cat": "elektronik",
+"price": 129000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Hitam"
+],
+"sizes": [],
+"stock": 15,
+"zero": []
+},
+{
+"id": "P020",
+"name": "Smartwatch Sport",
+"cat": "elektronik",
+"price": 1250000,
+"orig": null,
+"rating": 4.6,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [],
+"stock": 5,
+"zero": []
+},
+{
+"id": "P021",
+"name": "Lampu Meja LED",
+"cat": "rumah-tangga",
+"price": 145000,
+"orig": null,
+"rating": 4.4,
+"colors": [
+"Putih"
+],
+"sizes": [],
+"stock": 9,
+"zero": []
+},
+{
+"id": "P022",
+"name": "Set Panci Anti Lengket",
+"cat": "rumah-tangga",
+"price": 385000,
+"orig": 450000,
+"rating": 4.6,
+"colors": [],
+"sizes": [],
+"stock": 4,
+"zero": []
+},
+{
+"id": "P023",
+"name": "Botol Minum Stainless 600 ml",
+"cat": "rumah-tangga",
+"price": 85000,
+"orig": null,
+"rating": 4.7,
+"colors": [
+"Hitam",
+"Putih",
+"Navy"
+],
+"sizes": [],
+"stock": 25,
+"zero": []
+},
+{
+"id": "P024",
+"name": "Rak Sepatu Susun 4",
+"cat": "rumah-tangga",
+"price": 169000,
+"orig": null,
+"rating": 4.1,
+"colors": [],
+"sizes": [],
+"stock": 7,
+"zero": []
+},
+{
+"id": "P025",
+"name": "Sprei Katun Queen",
+"cat": "rumah-tangga",
+"price": 249000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Putih",
+"Navy"
+],
+"sizes": [],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P026",
+"name": "Gantungan Baju Lipat",
+"cat": "rumah-tangga",
+"price": 29000,
+"orig": null,
+"rating": 3.8,
+"colors": [],
+"sizes": [],
+"stock": 40,
+"zero": []
+},
+{
+"id": "P027",
+"name": "Organizer Kabel Meja",
+"cat": "rumah-tangga",
+"price": 39000,
+"orig": null,
+"rating": 4.0,
+"colors": [
+"Hitam"
+],
+"sizes": [],
+"stock": 30,
+"zero": []
+},
+{
+"id": "P028",
+"name": "Jam Dinding Minimalis",
+"cat": "rumah-tangga",
+"price": 119000,
+"orig": null,
+"rating": 4.3,
+"colors": [
+"Putih",
+"Hitam"
+],
+"sizes": [],
+"stock": 6,
+"zero": []
+},
+{
+"id": "P029",
+"name": "Keset Anti Slip",
+"cat": "rumah-tangga",
+"price": 45000,
+"orig": null,
+"rating": 4.2,
+"colors": [
+"Navy"
+],
+"sizes": [],
+"stock": 18,
+"zero": []
+},
+{
+"id": "P030",
+"name": "Tempat Sampah Injak",
+"cat": "rumah-tangga",
+"price": 99000,
+"orig": null,
+"rating": 4.4,
+"colors": [
+"Putih"
+],
+"sizes": [],
+"stock": 11,
+"zero": []
+},
+{
+"id": "P031",
+"name": "Sepatu Futsal Grip",
+"cat": "olahraga",
+"price": 320000,
+"orig": null,
+"rating": 4.3,
+"colors": [],
+"sizes": [
+"39",
+"40",
+"41",
+"42",
+"43"
+],
+"stock": 4,
+"zero": []
+},
+{
+"id": "P032",
+"name": "Matras Yoga 6 mm",
+"cat": "olahraga",
+"price": 135000,
+"orig": null,
+"rating": 4.6,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [],
+"stock": 14,
+"zero": []
+},
+{
+"id": "P033",
+"name": "Dumbbell Neoprene 3 kg",
+"cat": "olahraga",
+"price": 89000,
+"orig": null,
+"rating": 4.5,
+"colors": [
+"Hitam"
+],
+"sizes": [],
+"stock": 16,
+"zero": []
+},
+{
+"id": "P034",
+"name": "Tali Skipping Speed",
+"cat": "olahraga",
+"price": 49000,
+"orig": null,
+"rating": 4.2,
+"colors": [
+"Hitam"
+],
+"sizes": [],
+"stock": 22,
+"zero": []
+},
+{
+"id": "P035",
+"name": "Tas Gym Duffel",
+"cat": "olahraga",
+"price": 179000,
+"orig": 215000,
+"rating": 4.4,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [],
+"stock": 8,
+"zero": []
+},
+{
+"id": "P036",
+"name": "Kaos Jersey Sepeda",
+"cat": "olahraga",
+"price": 129000,
+"orig": null,
+"rating": 4.0,
+"colors": [
+"Hitam"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 12,
+"zero": []
+},
+{
+"id": "P037",
+"name": "Botol Shaker 700 ml",
+"cat": "olahraga",
+"price": 39000,
+"orig": null,
+"rating": 4.1,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [],
+"stock": 35,
+"zero": []
+},
+{
+"id": "P038",
+"name": "Topi Lari Breathable",
+"cat": "olahraga",
+"price": 65000,
+"orig": null,
+"rating": 4.3,
+"colors": [
+"Hitam",
+"Putih"
+],
+"sizes": [],
+"stock": 19,
+"zero": []
+},
+{
+"id": "P039",
+"name": "Bola Futsal Size 4",
+"cat": "olahraga",
+"price": 155000,
+"orig": null,
+"rating": 4.5,
+"colors": [],
+"sizes": [],
+"stock": 9,
+"zero": []
+},
+{
+"id": "P040",
+"name": "Kaos Kompresi Lengan Panjang",
+"cat": "olahraga",
+"price": 115000,
+"orig": null,
+"rating": 4.4,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [
+"S",
+"M",
+"L",
+"XL"
+],
+"stock": 17,
+"zero": []
+},
+{
+"id": "P041",
+"name": "Novel Fiksi Ilmiah",
+"cat": "buku",
+"price": 89000,
+"orig": null,
+"rating": 4.7,
+"colors": [],
+"sizes": [],
+"stock": 13,
+"zero": []
+},
+{
+"id": "P042",
+"name": "Buku Resep Nusantara",
+"cat": "buku",
+"price": 119000,
+"orig": null,
+"rating": 4.5,
+"colors": [],
+"sizes": [],
+"stock": 8,
+"zero": []
+},
+{
+"id": "P043",
+"name": "Panduan Belajar Kotlin",
+"cat": "buku",
+"price": 149000,
+"orig": null,
+"rating": 4.8,
+"colors": [],
+"sizes": [],
+"stock": 10,
+"zero": []
+},
+{
+"id": "P044",
+"name": "Kumpulan Cerpen Pilihan",
+"cat": "buku",
+"price": 65000,
+"orig": null,
+"rating": 4.2,
+"colors": [],
+"sizes": [],
+"stock": 14,
+"zero": []
+},
+{
+"id": "P045",
+"name": "Komik Petualangan Jilid 1",
+"cat": "buku",
+"price": 45000,
+"orig": null,
+"rating": 4.6,
+"colors": [],
+"sizes": [],
+"stock": 30,
+"zero": []
+},
+{
+"id": "P046",
+"name": "Buku Mewarnai Dewasa",
+"cat": "buku",
+"price": 55000,
+"orig": null,
+"rating": 4.0,
+"colors": [],
+"sizes": [],
+"stock": 21,
+"zero": []
+},
+{
+"id": "P047",
+"name": "Biografi Tokoh Bangsa",
+"cat": "buku",
+"price": 99000,
+"orig": null,
+"rating": 4.4,
+"colors": [],
+"sizes": [],
+"stock": 6,
+"zero": []
+},
+{
+"id": "P048",
+"name": "Kamus Inggris-Indonesia",
+"cat": "buku",
+"price": 125000,
+"orig": null,
+"rating": 4.3,
+"colors": [],
+"sizes": [],
+"stock": 9,
+"zero": []
+},
+{
+"id": "P049",
+"name": "Jurnal Harian Bergaris",
+"cat": "buku",
+"price": 39000,
+"orig": null,
+"rating": 4.1,
+"colors": [
+"Hitam",
+"Navy"
+],
+"sizes": [],
+"stock": 28,
+"zero": []
+},
+{
+"id": "P050",
+"name": "Buku Sketsa A4",
+"cat": "buku",
+"price": 59000,
+"orig": null,
+"rating": 4.5,
+"colors": [],
+"sizes": [],
+"stock": 15,
+"zero": []
+},
+{
+"id": "P051",
+"name": "Pelembap Wajah SPF 30",
+"cat": "kecantikan",
+"price": 95000,
+"orig": null,
+"rating": 4.6,
+"colors": [],
+"sizes": [],
+"stock": 20,
+"zero": []
+},
+{
+"id": "P052",
+"name": "Sabun Cuci Muka Gentle",
+"cat": "kecantikan",
+"price": 42000,
+"orig": null,
+"rating": 4.4,
+"colors": [],
+"sizes": [],
+"stock": 34,
+"zero": []
+},
+{
+"id": "P053",
+"name": "Serum Vitamin C",
+"cat": "kecantikan",
+"price": 135000,
+"orig": 165000,
+"rating": 4.7,
+"colors": [],
+"sizes": [],
+"stock": 12,
+"zero": []
+},
+{
+"id": "P054",
+"name": "Lip Balm Natural",
+"cat": "kecantikan",
+"price": 25000,
+"orig": null,
+"rating": 4.2,
+"colors": [],
+"sizes": [],
+"stock": 45,
+"zero": []
+},
+{
+"id": "P055",
+"name": "Masker Wajah Tanah Liat",
+"cat": "kecantikan",
+"price": 58000,
+"orig": null,
+"rating": 4.1,
+"colors": [],
+"sizes": [],
+"stock": 16,
+"zero": []
+},
+{
+"id": "P056",
+"name": "Sampo Anti Ketombe",
+"cat": "kecantikan",
+"price": 48000,
+"orig": null,
+"rating": 4.0,
+"colors": [],
+"sizes": [],
+"stock": 27,
+"zero": []
+},
+{
+"id": "P057",
+"name": "Tabir Surya Ringan",
+"cat": "kecantikan",
+"price": 79000,
+"orig": null,
+"rating": 4.6,
+"colors": [],
+"sizes": [],
+"stock": 18,
+"zero": []
+},
+{
+"id": "P058",
+"name": "Parfum Citrus 50 ml",
+"cat": "kecantikan",
+"price": 189000,
+"orig": null,
+"rating": 4.5,
+"colors": [],
+"sizes": [],
+"stock": 7,
+"zero": []
+},
+{
+"id": "P059",
+"name": "Sisir Rambut Anti Statis",
+"cat": "kecantikan",
+"price": 29000,
+"orig": null,
+"rating": 3.9,
+"colors": [],
+"sizes": [],
+"stock": 24,
+"zero": []
+},
+{
+"id": "P060",
+"name": "Buku Catatan A5",
+"cat": "buku",
+"price": 15000,
+"orig": null,
+"rating": 4.0,
+"colors": [],
+"sizes": [],
+"stock": 0,
+"zero": []
+}
+]
+}

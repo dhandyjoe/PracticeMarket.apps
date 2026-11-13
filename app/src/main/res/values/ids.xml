@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Id baris menu yang dibuat lewat kode (item_menu_row) supaya tetap muncul sebagai resource-id. -->
+<resources>
+    <item name="shop_item_orders" type="id" />
+    <item name="shop_item_wishlist" type="id" />
+    <item name="acc_item_address" type="id" />
+    <item name="acc_item_pay" type="id" />
+    <item name="acc_item_settings" type="id" />
+    <item name="acc_item_help" type="id" />
+    <item name="acc_item_dev" type="id" />
+    <item name="acc_seg_language" type="id" />
+    <item name="acc_seg_theme" type="id" />
+    <item name="acc_sw_notifications" type="id" />
+    <item name="dev_sw_deterministic" type="id" />
+    <item name="dev_seg_latency" type="id" />
+    <item name="dev_sw_animations" type="id" />
+    <item name="dev_seg_flaky" type="id" />
+    <item name="dev_sw_hints" type="id" />
+    <item name="dev_sw_persist" type="id" />
+    <item name="dev_seg_va" type="id" />
+    <item name="dev_seg_interval" type="id" />
+    <item name="dev_btn_reset_data" type="id" />
+    <item name="dev_btn_reset_prefs" type="id" />
+    <item name="dev_txt_version" type="id" />
+    <item name="dev_txt_commit" type="id" />
+    <item name="dev_txt_build_date" type="id" />
+    <item name="dev_txt_contract" type="id" />
+</resources>

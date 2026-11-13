@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/pm_space_4">
+
+    <LinearLayout
+        android:id="@+id/shop_item_banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_banner_voucher"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/pm_space_4_5">
+
+        <TextView
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.06"
+            android:text="@string/home_banner_label"
+            android:textColor="@color/pm_dark_accent"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/shop_txt_banner_code"
+            style="@style/Pm.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_1_5"
+            android:textColor="@color/pm_on_primary"
+            android:textSize="26sp" />
+
+        <TextView
+            android:id="@+id/shop_txt_banner_desc"
+            style="@style/Pm.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_1_5"
+            android:textColor="@color/pm_outline_strong"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>

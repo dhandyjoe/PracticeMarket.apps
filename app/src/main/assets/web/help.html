@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pusat Bantuan</title>
+<style>
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #F4F6F5; color: #12161C; }
+  main { padding: 16px 16px 32px; }
+  h1 { font-size: 20px; margin: 4px 0 14px; }
+  label { display: block; font-size: 13px; font-weight: 700; color: #3A4350; margin-bottom: 6px; }
+  input[type=search] { box-sizing: border-box; width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid #D5DAE1; border-radius: 12px; font-size: 15px; background: #fff; }
+  .faq { margin-top: 14px; background: #fff; border: 1px solid #E3E6EB; border-radius: 14px; overflow: hidden; }
+  .faq-item + .faq-item { border-top: 1px solid #E3E6EB; }
+  .faq-q { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 52px; padding: 0 16px; border: 0; background: transparent; font-size: 15px; font-weight: 600; text-align: left; color: #12161C; }
+  .faq-a { margin: 0; padding: 0 16px 16px; font-size: 14px; line-height: 1.5; color: #3A4350; }
+  .faq-a[hidden] { display: none; }
+  .empty { padding: 20px 16px; color: #5B6573; font-size: 14px; }
+  .contact { margin-top: 18px; padding: 16px; background: #fff; border: 1px solid #E3E6EB; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .contact span { font-size: 15px; font-weight: 600; }
+  button.primary { min-height: 48px; padding: 0 18px; border: 0; border-radius: 12px; background: #0E7C66; color: #fff; font-size: 15px; font-weight: 700; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Halo, ada yang bisa kami bantu?</h1>
+  <label for="faq-search">Cari pertanyaan</label>
+  <input id="faq-search" data-testid="faq-search" type="search" placeholder="Cari pertanyaan" autocomplete="off">
+
+  <div class="faq" id="faq" data-testid="faq-list"></div>
+  <p class="empty" id="faq-empty" data-testid="faq-empty" hidden>Tidak ada pertanyaan yang cocok.</p>
+
+  <div class="contact">
+    <span>Masih butuh bantuan?</span>
+    <button id="btn-contact" data-testid="btn-contact" class="primary" type="button">Hubungi kami</button>
+  </div>
+</main>
+<script>
+  var FAQ = [
+    ['Bagaimana cara melacak pesanan?', 'Buka Akun › Pesanan Saya, lalu pilih pesanan. Status diperbarui otomatis dari Dikemas sampai Selesai.'],
+    ['Kenapa Same Day tidak tersedia?', 'Same Day hanya tersedia untuk alamat pengiriman di DKI Jakarta.'],
+    ['Batas COD berapa?', 'Bayar di tempat bisa dipakai untuk total belanja maksimal Rp1.000.000.'],
+    ['Voucher saya tidak bisa dipakai', 'Periksa minimal belanja dan masa berlaku voucher. Hanya satu voucher yang bisa aktif per pesanan.'],
+    ['Bagaimana cara top up PracticePay?', 'Pilih Top Up di PracticePay, lalu ikuti instruksi transfer dari bank pilihanmu.']
+  ];
+  var open = 0;
+  var list = document.getElementById('faq');
+  var search = document.getElementById('faq-search');
+
+  function render() {
+    var q = search.value.trim().toLowerCase();
+    list.innerHTML = '';
+    var shown = 0;
+    FAQ.forEach(function (f, i) {
+      if (q && f[0].toLowerCase().indexOf(q) < 0) return;
+      shown++;
+      var item = document.createElement('div');
+      item.className = 'faq-item';
+      item.setAttribute('data-testid', 'faq-item');
+      var isOpen = i === open;
+      item.innerHTML = '<button class="faq-q" type="button" aria-expanded="' + isOpen + '"><span></span><span aria-hidden="true">' + (isOpen ? '−' : '+') + '</span></button>' +
+        '<p class="faq-a"' + (isOpen ? '' : ' hidden') + '></p>';
+      item.querySelector('.faq-q span').textContent = f[0];
+      item.querySelector('.faq-a').textContent = f[1];
+      item.querySelector('.faq-q').addEventListener('click', function () { open = open === i ? -1 : i; render(); });
+      list.appendChild(item);
+    });
+    document.getElementById('faq-empty').hidden = shown > 0;
+  }
+
+  search.addEventListener('input', render);
+  document.getElementById('btn-contact').addEventListener('click', function () {
+    if (window.Android && Android.contact) Android.contact();
+  });
+  render();
+</script>
+</body>
+</html>

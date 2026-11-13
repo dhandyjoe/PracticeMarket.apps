@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PracticeMart" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.PracticeMart" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pm_primary</item>
         <item name="colorOnPrimary">@color/pm_on_primary</item>
         <item name="colorPrimaryContainer">@color/pm_primary_container</item>
@@ -12,8 +12,17 @@
         <item name="colorError">@color/pm_error</item>
         <item name="android:colorBackground">@color/pm_background</item>
         <item name="android:windowBackground">@color/pm_surface</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/pm_light_bars</item>
         <item name="android:fontFamily">@font/inter</item>
         <item name="fontFamily">@font/inter</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.PracticeMart.BottomSheet</item>
+    </style>
+
+    <style name="ThemeOverlay.PracticeMart.BottomSheet" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.PracticeMart.BottomSheet</item>
+    </style>
+    <!-- Latar sheet digambar layout sendiri (bg_sheet, radius 24 dp). -->
+    <style name="Widget.PracticeMart.BottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@android:color/transparent</item>
     </style>
 </resources>

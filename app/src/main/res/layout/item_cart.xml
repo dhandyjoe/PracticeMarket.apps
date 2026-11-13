@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_item_cart_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/pm_space_1_5"
+    android:background="@drawable/bg_cart_row"
+    android:orientation="horizontal"
+    android:padding="@dimen/pm_space_3_5">
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/shop_chk_cart_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:padding="0dp" />
+
+    <FrameLayout
+        android:id="@+id/shop_img_cart_bg"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="@dimen/pm_space_3">
+
+        <ImageView
+            android:id="@+id/shop_img_cart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/pm_space_3"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/shop_txt_cart_name"
+            style="@style/Pm.Label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/pm_ink"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/shop_txt_cart_variant"
+            style="@style/Pm.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_1"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/shop_txt_cart_price"
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_1"
+            android:textColor="@color/pm_ink"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_cart_save"
+                style="@style/Widget.PracticeMart.Button.Text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical"
+                android:insetLeft="0dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="0dp"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:id="@+id/shop_stepper_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_qty"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/shop_btn_cart_minus"
+                    android:layout_width="@dimen/pm_touch_min"
+                    android:layout_height="@dimen/pm_touch_min"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/product_qty_minus"
+                    android:src="@drawable/ic_remove"
+                    app:tint="@color/pm_icon_enabled" />
+
+                <TextView
+                    android:id="@+id/shop_txt_cart_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/jetbrains_mono"
+                    android:gravity="center"
+                    android:minWidth="@dimen/pm_space_6"
+                    android:textColor="@color/pm_ink"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/shop_btn_cart_plus"
+                    android:layout_width="@dimen/pm_touch_min"
+                    android:layout_height="@dimen/pm_touch_min"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/product_qty_plus"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/pm_icon_enabled" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

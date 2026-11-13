@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_black"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/shop_header_viewer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/pm_header_height"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/pm_space_2">
+
+        <ImageButton
+            android:id="@+id/shop_btn_close_viewer"
+            android:layout_width="@dimen/pm_touch_min"
+            android:layout_height="@dimen/pm_touch_min"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/common_close"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pm_white" />
+
+        <TextView
+            android:id="@+id/shop_txt_image_counter"
+            style="@style/Pm.Label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/pm_white"
+            android:textSize="15sp" />
+
+        <Space
+            android:layout_width="@dimen/pm_touch_min"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.automation.practice.feature.shop.ZoomLayout
+            android:id="@+id/shop_zoom_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/viewer_image_cd">
+
+            <FrameLayout
+                android:id="@+id/shop_img_viewer_bg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pm_gallery_height"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/shop_img_viewer"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no" />
+            </FrameLayout>
+        </com.automation.practice.feature.shop.ZoomLayout>
+
+        <TextView
+            android:id="@+id/shop_txt_zoom_level"
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/pm_space_4"
+            android:accessibilityLiveRegion="polite"
+            android:background="@drawable/bg_pill_overlay"
+            android:paddingHorizontal="@dimen/pm_space_3"
+            android:paddingVertical="@dimen/pm_space_1"
+            android:textColor="@color/pm_white"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/shop_btn_prev_image"
+            android:layout_width="@dimen/pm_touch_min"
+            android:layout_height="@dimen/pm_touch_min"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="@dimen/pm_space_2"
+            android:background="@drawable/bg_circle_dark"
+            android:contentDescription="@string/product_prev_image"
+            android:src="@drawable/ic_chevron_left"
+            app:tint="@color/pm_white" />
+
+        <ImageButton
+            android:id="@+id/shop_btn_next_image"
+            android:layout_width="@dimen/pm_touch_min"
+            android:layout_height="@dimen/pm_touch_min"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="@dimen/pm_space_2"
+            android:background="@drawable/bg_circle_dark"
+            android:contentDescription="@string/product_next_image"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/pm_white" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_list_viewer_thumbs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/viewer_pick"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pm_space_8"
+        android:paddingTop="@dimen/pm_space_4" />
+</LinearLayout>

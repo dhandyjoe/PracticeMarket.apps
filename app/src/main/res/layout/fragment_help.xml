@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/shop_topbar"
+        layout="@layout/layout_topbar" />
+
+    <WebView
+        android:id="@+id/help_web"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/help_bar_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pm_surface"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pm_space_5"
+        android:paddingHorizontal="@dimen/pm_space_4"
+        android:paddingTop="@dimen/pm_space_3">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/help_btn_chat"
+            style="@style/Widget.PracticeMart.Button.Outline"
+            android:text="@string/help_chat" />
+    </LinearLayout>
+</LinearLayout>

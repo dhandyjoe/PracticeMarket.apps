@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_sheet_filter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sheet"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pm_space_2_5"
+        android:background="@drawable/bg_handle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/pm_space_2"
+        android:paddingStart="@dimen/pm_space_5"
+        android:paddingVertical="@dimen/pm_space_2">
+
+        <TextView
+            style="@style/Pm.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/filter_title"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/shop_btn_close_filter"
+            style="@style/Pm.IconButton"
+            android:contentDescription="@string/common_close"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pm_ink" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fillViewport="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/pm_space_4"
+            android:paddingHorizontal="@dimen/pm_space_5">
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_sort"
+                android:textColor="@color/pm_ink"
+                android:textSize="14sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/shop_group_sort"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                app:chipSpacingHorizontal="@dimen/pm_space_2"
+                app:chipSpacingVertical="@dimen/pm_space_2"
+                app:selectionRequired="true"
+                app:singleSelection="true" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_5"
+                android:text="@string/filter_category"
+                android:textColor="@color/pm_ink"
+                android:textSize="14sp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/shop_group_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                app:chipSpacingHorizontal="@dimen/pm_space_2"
+                app:chipSpacingVertical="@dimen/pm_space_2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_5"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Pm.Label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/filter_price"
+                    android:textColor="@color/pm_ink"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/shop_txt_price_range"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/jetbrains_mono"
+                    android:textColor="@color/pm_ink_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/shop_slider_price"
+                style="@style/Widget.PracticeMart.Slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="2000000"
+                app:labelBehavior="gone"
+                android:stepSize="5000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/pm_space_2_5"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Pm.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@+id/shop_input_price_min"
+                        android:text="@string/filter_price_min" />
+
+                    <EditText
+                        android:id="@+id/shop_input_price_min"
+                        style="@style/Pm.Field"
+                        android:layout_height="@dimen/pm_icon_button"
+                        android:imeOptions="actionDone|flagNoExtractUi"
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Pm.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@+id/shop_input_price_max"
+                        android:text="@string/filter_price_max" />
+
+                    <EditText
+                        android:id="@+id/shop_input_price_max"
+                        style="@style/Pm.Field"
+                        android:layout_height="@dimen/pm_icon_button"
+                        android:imeOptions="actionDone|flagNoExtractUi"
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_5"
+                android:text="@string/filter_rating"
+                android:textColor="@color/pm_ink"
+                android:textSize="14sp" />
+
+            <RadioGroup
+                android:id="@+id/shop_group_rating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_1"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/shop_rdo_rating_all"
+                    style="@style/Pm.Radio"
+                    android:text="@string/rating_all" />
+
+                <RadioButton
+                    android:id="@+id/shop_rdo_rating_3"
+                    style="@style/Pm.Radio"
+                    android:text="@string/rating_3" />
+
+                <RadioButton
+                    android:id="@+id/shop_rdo_rating_4"
+                    style="@style/Pm.Radio"
+                    android:text="@string/rating_4" />
+
+                <RadioButton
+                    android:id="@+id/shop_rdo_rating_45"
+                    style="@style/Pm.Radio"
+                    android:text="@string/rating_45" />
+            </RadioGroup>
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/shop_sw_stock_only"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_3"
+                android:minHeight="@dimen/pm_touch_min"
+                android:text="@string/filter_stock_only"
+                android:textColor="@color/pm_ink"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_outline" />
+
+    <LinearLayout
+        android:id="@+id/shop_bar_filter_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/pm_space_4">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_reset"
+            style="@style/Widget.PracticeMart.Button.Outline"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/filter_reset" />
+
+        <LinearLayout
+            android:id="@+id/shop_btn_apply"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/pm_button_height"
+            android:layout_marginStart="@dimen/pm_space_2_5"
+            android:layout_weight="2"
+            android:background="@drawable/bg_apply_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextAppearance.PracticeMart.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_apply"
+                android:textColor="@color/pm_on_primary" />
+
+            <TextView
+                android:id="@+id/shop_badge_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_marginStart="@dimen/pm_space_2"
+                android:background="@drawable/bg_apply_badge"
+                android:gravity="center"
+                android:minWidth="22dp"
+                android:paddingHorizontal="@dimen/pm_space_1_5"
+                android:textColor="@color/pm_primary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder sampai SHOP-01 Beranda dibangun. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pm_background"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/pm_space_6">
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/shop_txt_greeting"
-        style="@style/Pm.Headline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/shop_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/pm_background" />
 
-    <Button
-        android:id="@+id/shop_btn_logout"
-        style="@style/Widget.PracticeMart.Button.Outline"
-        android:layout_marginTop="@dimen/pm_space_6"
-        android:text="@string/home_logout" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_outline" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/shop_nav_bottom"
+        style="@style/Widget.PracticeMart.BottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_bottom_nav" />
 </LinearLayout>

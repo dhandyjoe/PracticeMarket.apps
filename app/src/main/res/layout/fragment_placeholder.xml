@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/pm_space_8">
+
+    <TextView
+        android:id="@+id/shop_txt_placeholder_title"
+        style="@style/Pm.Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        style="@style/Pm.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_2"
+        android:text="@string/coming_soon" />
+</LinearLayout>

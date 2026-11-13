@@ -22,4 +22,19 @@
     <dimen name="pm_stroke_field">1.5dp</dimen>
     <dimen name="pm_dot">8dp</dimen>
     <dimen name="pm_dot_active">28dp</dimen>
+    <dimen name="pm_radius_card">14dp</dimen>
+    <dimen name="pm_radius_sheet">24dp</dimen>
+    <dimen name="pm_chip_height">40dp</dimen>
+    <dimen name="pm_icon_button">44dp</dimen>
+    <dimen name="pm_product_image">140dp</dimen>
+    <dimen name="pm_product_thumb">64dp</dimen>
+    <dimen name="pm_wish_thumb">60dp</dimen>
+    <dimen name="pm_badge">18dp</dimen>
+    <dimen name="pm_gallery_height">360dp</dimen>
+    <dimen name="pm_banner_height">120dp</dimen>
+    <dimen name="pm_search_height">46dp</dimen>
+    <dimen name="pm_thumb_viewer">52dp</dimen>
+    <dimen name="pm_stroke_hairline">1dp</dimen>
+    <dimen name="pm_space_0_5">2dp</dimen>
+    <dimen name="pm_space_2_5">10dp</dimen>
 </resources>

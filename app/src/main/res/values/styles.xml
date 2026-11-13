@@ -65,7 +65,8 @@
         <item name="android:layout_height">@dimen/pm_field_height</item>
         <item name="android:layout_marginTop">@dimen/pm_space_1_5</item>
         <item name="android:background">@drawable/bg_field</item>
-        <item name="android:paddingHorizontal">@dimen/pm_space_3_5</item>
+        <item name="android:paddingStart">@dimen/pm_space_3_5</item>
+        <item name="android:paddingEnd">@dimen/pm_space_3_5</item>
         <item name="android:maxLines">1</item>
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/pm_ink</item>
@@ -123,5 +124,146 @@
         <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Button</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/pm_button_text_link</item>
+    </style>
+
+    <style name="Pm.Title">
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Title</item>
+    </style>
+    <style name="Pm.Caption">
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Caption</item>
+    </style>
+    <style name="Pm.IconButton">
+        <item name="android:layout_width">@dimen/pm_icon_button</item>
+        <item name="android:layout_height">@dimen/pm_icon_button</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="TextAppearance.PracticeMart.Title" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/pm_ink</item>
+    </style>
+    <style name="TextAppearance.PracticeMart.Chip" parent="TextAppearance.PracticeMart.Label">
+        <item name="android:textColor">@color/pm_chip_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.PracticeMart.Button.OutlinePrimary" parent="Widget.PracticeMart.Button.Outline">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/pm_outline_primary_text</item>
+        <item name="strokeColor">@color/pm_outline_primary_stroke</item>
+        <item name="backgroundTint">@color/pm_outline_primary_bg</item>
+    </style>
+
+    <style name="Widget.PracticeMart.Chip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipMinHeight">@dimen/pm_chip_height</item>
+        <item name="chipCornerRadius">20dp</item>
+        <item name="chipBackgroundColor">@color/pm_chip_bg</item>
+        <item name="chipStrokeColor">@color/pm_chip_stroke</item>
+        <item name="chipStrokeWidth">@dimen/pm_stroke_field</item>
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Chip</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="chipIconVisible">false</item>
+        <item name="chipStartPadding">@dimen/pm_space_1</item>
+        <item name="chipEndPadding">@dimen/pm_space_1</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+        <item name="rippleColor">@color/pm_primary_container</item>
+    </style>
+    <style name="Widget.PracticeMart.Chip.Action" parent="Widget.Material3.Chip.Assist">
+        <item name="chipMinHeight">38dp</item>
+        <item name="chipCornerRadius">19dp</item>
+        <item name="chipBackgroundColor">@color/pm_surface</item>
+        <item name="chipStrokeColor">@color/pm_outline_strong</item>
+        <item name="chipStrokeWidth">@dimen/pm_stroke_hairline</item>
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Chip</item>
+        <item name="chipStartPadding">@dimen/pm_space_1</item>
+        <item name="chipEndPadding">@dimen/pm_space_1</item>
+        <item name="ensureMinTouchTargetSize">false</item>
+    </style>
+
+    <style name="Widget.PracticeMart.BottomNav" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/pm_surface</item>
+        <item name="backgroundTint">@color/pm_surface</item>
+        <item name="elevation">0dp</item>
+        <item name="itemIconTint">@color/pm_nav_item</item>
+        <item name="itemTextColor">@color/pm_nav_item</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.PracticeMart.NavLabel</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.PracticeMart.NavLabel</item>
+        <item name="itemActiveIndicatorStyle">@style/Pm.NavIndicator</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+    <style name="TextAppearance.PracticeMart.NavLabel" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+    <style name="Pm.NavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
+    </style>
+
+    <style name="Pm.Radio" parent="Widget.Material3.CompoundButton.RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/pm_touch_min</item>
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Body</item>
+        <item name="android:textColor">@color/pm_ink</item>
+        <item name="buttonTint">@color/pm_primary</item>
+    </style>
+
+    <style name="Widget.PracticeMart.Slider" parent="Widget.Material3.Slider">
+        <item name="trackColorActive">@color/pm_primary</item>
+        <item name="trackColorInactive">@color/pm_surface_disabled</item>
+        <item name="thumbColor">@color/pm_surface</item>
+        <item name="thumbStrokeColor">@color/pm_primary</item>
+        <item name="thumbStrokeWidth">3dp</item>
+        <item name="haloColor">@color/pm_primary_container</item>
+    </style>
+
+    <!-- Segmented control (DESIGN.md §4.4): item aktif putih di atas track subtle. -->
+    <style name="Widget.PracticeMart.Segment" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.PracticeMart.Label</item>
+        <item name="android:textColor">@color/pm_seg_text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="backgroundTint">@color/pm_seg_bg</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="cornerRadius">9dp</item>
+        <item name="rippleColor">@color/pm_primary_container</item>
+    </style>
+
+    <!-- Aksi cepat header PracticePay (DESIGN.md §4.19). -->
+    <style name="Pm.WalletAction">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:minHeight">@dimen/pm_touch_min</item>
+        <item name="android:paddingTop">@dimen/pm_space_2_5</item>
+        <item name="android:paddingBottom">@dimen/pm_space_2_5</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+    <style name="Pm.WalletActionIcon">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@drawable/bg_wallet_action</item>
+        <item name="android:padding">13dp</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="tint">@color/pm_dark_accent</item>
+    </style>
+    <style name="Pm.WalletActionLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/pm_space_2</item>
+        <item name="android:fontFamily">@font/inter</item>
+        <item name="android:textColor">@color/pm_white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

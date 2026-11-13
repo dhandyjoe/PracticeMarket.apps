@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_item_viewer_thumb"
+    android:layout_width="@dimen/pm_thumb_viewer"
+    android:layout_height="@dimen/pm_thumb_viewer"
+    android:layout_marginHorizontal="@dimen/pm_space_1"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/bg_thumb_state">
+
+    <ImageView
+        android:id="@+id/shop_img_viewer_thumb"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no" />
+</FrameLayout>

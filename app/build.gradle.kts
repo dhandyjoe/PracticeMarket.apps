@@ -1,7 +1,16 @@
+import java.time.LocalDate
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
+
+/** Commit pendek untuk About (DEV-04); "dev" bila bukan repo git. */
+val gitSha = runCatching {
+    ProcessBuilder("git", "rev-parse", "--short", "HEAD").redirectErrorStream(true).start()
+        .inputStream.bufferedReader().readText().trim().ifEmpty { "dev" }
+}.getOrDefault("dev")
 
 android {
     namespace = "com.automation.practice"
@@ -13,9 +22,17 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
+        buildConfigField("String", "COMMIT_SHA", "\"$gitSha\"")
+        buildConfigField("String", "BUILD_DATE", "\"${LocalDate.now()}\"")
     }
 
-    buildFeatures { viewBinding = true }
+    // English baru mencakup layar Pesanan, PracticePay, Akun & Pengaturan; sisanya jatuh ke teks Indonesia.
+    lint { disable += "MissingTranslation" }
+
+    buildFeatures { viewBinding = true
+        compose = true
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -36,7 +53,13 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.activity.compose)
 
     testImplementation(libs.junit)
 }

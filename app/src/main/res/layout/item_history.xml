@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_item_history_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="48dp"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/pm_space_5">
+
+    <ImageView
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_history"
+        app:tint="@color/pm_ink_muted" />
+
+    <TextView
+        android:id="@+id/shop_txt_history"
+        style="@style/Pm.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/pm_space_3_5"
+        android:layout_weight="1"
+        android:textColor="@color/pm_ink" />
+
+    <ImageButton
+        android:id="@+id/shop_btn_delete_history"
+        style="@style/Pm.IconButton"
+        android:src="@drawable/ic_close"
+        app:tint="@color/pm_ink_muted" />
+</LinearLayout>

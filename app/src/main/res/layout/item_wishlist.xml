@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_item_wishlist_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/pm_space_1"
+    android:background="@drawable/bg_card"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/pm_space_2_5">
+
+    <ImageView
+        android:id="@+id/shop_img_drag_handle"
+        android:layout_width="@dimen/pm_icon_button"
+        android:layout_height="@dimen/pm_icon_button"
+        android:scaleType="center"
+        android:src="@drawable/ic_drag_handle"
+        android:visibility="gone"
+        app:tint="@color/pm_ink_muted" />
+
+    <LinearLayout
+        android:id="@+id/shop_item_wishlist_open"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/shop_img_wish_bg"
+            android:layout_width="@dimen/pm_wish_thumb"
+            android:layout_height="@dimen/pm_wish_thumb">
+
+            <ImageView
+                android:id="@+id/shop_img_wish"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/pm_space_3"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/shop_txt_wish_name"
+                style="@style/Pm.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/pm_ink"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/shop_txt_wish_price"
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_1"
+                android:textColor="@color/pm_ink"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/shop_btn_wish_remove"
+        style="@style/Pm.IconButton"
+        android:src="@drawable/ic_favorite_filled"
+        app:tint="@color/pm_error" />
+
+    <ImageButton
+        android:id="@+id/shop_btn_wish_up"
+        style="@style/Pm.IconButton"
+        android:src="@drawable/ic_arrow_up"
+        android:visibility="gone"
+        app:tint="@color/pm_ink" />
+</LinearLayout>

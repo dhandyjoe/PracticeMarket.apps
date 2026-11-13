@@ -62,11 +62,8 @@ Id memakai prefix `com.automation.practice:id/`.
 | `shop_txt_password_changed` | Judul sukses | `Password berhasil diubah` |
 | `shop_btn_goto_login` | "Ke halaman Masuk" | |
 
-## Beranda sementara (MainActivity, sampai SHOP-01)
-| Id | Elemen | Catatan |
-|---|---|---|
-| `shop_txt_greeting` | Sapaan | `Halo, Standard User` |
-| `shop_btn_logout` | "Keluar" | |
+## Setelah login
+`shop_txt_greeting` kini ada di Beranda dan `shop_btn_logout` di tab Akun. Lihat [shop.md](shop.md).
 
 ## WebView S&K (`help.practicemart.test/terms.html`)
 `#terms` (`data-testid="terms"`), `#akun`, `#belanja`, `#practicepay`, `#privasi` (masing-masing punya `data-testid` `terms-*`).

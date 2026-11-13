@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/shop_header_cart"
+        style="@style/Pm.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pm_surface"
+        android:minHeight="@dimen/pm_header_height"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/pm_space_5"
+        android:text="@string/cart_title"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_outline" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/shop_content_cart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/shop_row_select_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/pm_space_4"
+                android:layout_marginTop="@dimen/pm_space_3"
+                android:background="@drawable/bg_cart_row"
+                android:gravity="center_vertical"
+                android:minHeight="@dimen/pm_touch_min"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/shop_chk_select_all"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/pm_touch_min"
+                    android:paddingStart="@dimen/pm_space_3"
+                    android:text="@string/cart_select_all"
+                    android:textColor="@color/pm_ink"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:checkedState="unchecked" />
+
+                <TextView
+                    android:id="@+id/shop_txt_selected_count"
+                    style="@style/Pm.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/shop_list_cart"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/pm_space_4"
+                android:paddingVertical="@dimen/pm_space_1_5" />
+
+            <LinearLayout
+                android:id="@+id/shop_btn_voucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/pm_space_4"
+                android:layout_marginVertical="@dimen/pm_space_2"
+                android:background="@drawable/bg_voucher_dashed"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_voucher"
+                    app:tint="@color/pm_primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/pm_space_3"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/shop_txt_voucher_title"
+                        style="@style/Pm.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/pm_ink"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/shop_txt_voucher_note"
+                        style="@style/Pm.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pm_space_0_5"
+                        android:textColor="@color/pm_ink_secondary" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/shop_txt_voucher_off"
+                    style="@style/Pm.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pm_primary_pressed"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shop_empty_cart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_space_8"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Pm.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cart_empty_title" />
+
+            <TextView
+                style="@style/Pm.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2"
+                android:gravity="center"
+                android:text="@string/cart_empty_body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_start_shopping"
+                style="@style/Widget.PracticeMart.Button.Primary"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_6"
+                android:paddingHorizontal="@dimen/pm_space_8"
+                android:text="@string/wishlist_start_shopping" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_bar_cart_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pm_surface"
+        android:orientation="vertical"
+        android:padding="@dimen/pm_space_4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/shop_txt_cart_subtotal_label"
+                style="@style/Pm.Body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/shop_txt_cart_subtotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/jetbrains_mono"
+                android:textColor="@color/pm_ink_secondary"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shop_row_cart_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_2"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Pm.Body"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cart_discount"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/shop_txt_cart_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/jetbrains_mono"
+                android:textColor="@color/pm_primary_pressed"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_2_5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Pm.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cart_total_label" />
+
+                <TextView
+                    android:id="@+id/shop_txt_cart_total"
+                    style="@style/Pm.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_checkout"
+                style="@style/Widget.PracticeMart.Button.Primary"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="@dimen/pm_space_3"
+                android:paddingHorizontal="@dimen/pm_space_5" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_sheet_cancel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sheet"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/pm_space_6"
+    android:paddingHorizontal="@dimen/pm_space_5">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pm_space_2_5"
+        android:background="@drawable/bg_handle" />
+
+    <LinearLayout
+        android:id="@+id/shop_panel_cancel_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <TextView
+        style="@style/Pm.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/pm_space_4"
+        android:text="@string/cancel_title"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/shop_txt_cancel_sub"
+        style="@style/Pm.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_1"
+        android:textSize="14sp" />
+
+    <TextView
+        style="@style/Pm.Label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_3_5"
+        android:text="@string/cancel_pick_reason"
+        android:textColor="@color/pm_ink" />
+
+    <RadioGroup
+        android:id="@+id/shop_group_cancel_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/shop_label_cancel_note"
+        style="@style/Pm.Label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_2"
+        android:text="@string/cancel_note_label"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/shop_input_cancel_note"
+        style="@style/Pm.Field"
+        android:layout_height="wrap_content"
+        android:autofillHints="@null"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine|textCapSentences"
+        android:maxLines="3"
+        android:minHeight="@dimen/pm_field_height"
+        android:paddingVertical="@dimen/pm_space_3"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/pm_space_4"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_cancel_back"
+            style="@style/Widget.PracticeMart.Button.Outline"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/pm_space_2_5"
+            android:layout_weight="1"
+            android:text="@string/cancel_back" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_cancel_confirm"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/cancel_confirm"
+            app:backgroundTint="@color/pm_cancel_confirm_bg" />
+    </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_panel_cancel_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/pm_space_5"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/Pm.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_done_title" />
+
+        <TextView
+            style="@style/Pm.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_2"
+            android:gravity="center"
+            android:text="@string/cancel_done_body"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_cancel_done"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:layout_marginTop="@dimen/pm_space_4"
+            android:text="@string/cancel_to_orders" />
+    </LinearLayout>
+</LinearLayout>

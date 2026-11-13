@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/pay_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dark_header"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pm_space_6"
+        android:paddingHorizontal="@dimen/pm_space_5"
+        android:paddingTop="@dimen/pm_space_5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:accessibilityHeading="true"
+                android:fontFamily="@font/space_grotesk"
+                android:text="@string/nav_pay"
+                android:textColor="@color/pm_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pay_badge_verified"
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_wallet_action"
+                android:paddingHorizontal="@dimen/pm_space_2"
+                android:paddingVertical="@dimen/pm_space_1"
+                android:text="@string/pay_verified"
+                android:textColor="@color/pm_dark_accent"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/Pm.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_4_5"
+            android:text="@string/pay_balance_label"
+            android:textColor="@color/pm_dark_muted"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pay_txt_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/space_grotesk"
+                android:textColor="@color/pm_white"
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/pay_btn_toggle_balance"
+                style="@style/Pm.IconButton"
+                android:layout_marginStart="@dimen/pm_space_2"
+                android:src="@drawable/ic_visibility"
+                app:tint="@color/pm_dark_muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_4_5"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/pay_btn_topup"
+                style="@style/Pm.WalletAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView style="@style/Pm.WalletActionIcon" android:src="@drawable/ic_add" />
+
+                <TextView style="@style/Pm.WalletActionLabel" android:text="@string/pay_topup" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pay_btn_transfer"
+                style="@style/Pm.WalletAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView style="@style/Pm.WalletActionIcon" android:src="@drawable/ic_send" />
+
+                <TextView style="@style/Pm.WalletActionLabel" android:text="@string/pay_transfer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pay_btn_scan"
+                style="@style/Pm.WalletAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView style="@style/Pm.WalletActionIcon" android:src="@drawable/ic_qr_scan" />
+
+                <TextView style="@style/Pm.WalletActionLabel" android:text="@string/pay_scan" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pay_btn_history"
+                style="@style/Pm.WalletAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView style="@style/Pm.WalletActionIcon" android:src="@drawable/ic_history" />
+
+                <TextView style="@style/Pm.WalletActionLabel" android:text="@string/pay_history" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_space_4">
+
+            <LinearLayout
+                android:id="@+id/pay_banner_cashback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_banner_voucher"
+                android:orientation="vertical"
+                android:padding="@dimen/pm_space_3_5">
+
+                <TextView
+                    style="@style/Pm.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pay_cashback_title"
+                    android:textColor="@color/pm_primary_pressed"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/Pm.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pay_cashback_body" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Pm.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:accessibilityHeading="true"
+                    android:text="@string/pay_recent_tx"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/pay_link_see_all"
+                    style="@style/Widget.PracticeMart.Button.Text"
+                    android:text="@string/pay_see_all" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pay_list_recent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:divider="@drawable/divider_hairline"
+                android:orientation="vertical"
+                android:showDividers="middle" />
+
+            <TextView
+                android:id="@+id/pay_txt_no_tx"
+                style="@style/Pm.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/pm_space_6"
+                android:text="@string/pay_history_empty"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

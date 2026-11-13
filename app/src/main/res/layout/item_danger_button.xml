@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.PracticeMart.Button.Outline"
+    android:layout_width="match_parent"
+    android:textColor="@color/pm_error"
+    app:strokeColor="@color/pm_error" />

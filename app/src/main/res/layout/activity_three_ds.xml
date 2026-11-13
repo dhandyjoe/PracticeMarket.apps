@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_surface"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_header_height"
+        android:gravity="center_vertical"
+        android:paddingEnd="@dimen/pm_space_4"
+        android:paddingStart="@dimen/pm_space_2">
+
+        <ImageButton
+            android:id="@+id/shop_btn_close_threeds"
+            android:layout_width="@dimen/pm_touch_min"
+            android:layout_height="@dimen/pm_touch_min"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/threeds_close"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pm_ink" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/pm_space_1"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Pm.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/threeds_title" />
+
+            <TextView
+                style="@style/Pm.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/pm_space_1"
+                android:drawableStart="@drawable/ic_lock"
+                android:text="secure.practicebank.test"
+                tools:ignore="HardcodedText"
+                xmlns:tools="http://schemas.android.com/tools" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_outline" />
+
+    <WebView
+        android:id="@+id/shop_web_threeds"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

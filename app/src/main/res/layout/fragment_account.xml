@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/shop_header_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pm_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/pm_space_5">
+
+        <ImageView
+            android:id="@+id/acc_img_avatar"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_avatar"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/acc_txt_initials"
+            style="@style/Pm.Headline"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_avatar"
+            android:gravity="center"
+            android:importantForAccessibility="no"
+            android:textColor="@color/pm_primary_pressed"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/pm_space_3_5"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/acc_txt_name"
+                style="@style/Pm.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/acc_txt_username"
+                style="@style/Pm.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/acc_btn_edit_profile"
+            style="@style/Widget.PracticeMart.Button.Text"
+            android:text="@string/acc_edit" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_space_4">
+
+            <LinearLayout
+                android:id="@+id/acc_list_menu_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card"
+                android:divider="@drawable/divider_hairline"
+                android:orientation="vertical"
+                android:showDividers="middle" />
+
+            <LinearLayout
+                android:id="@+id/acc_list_menu_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_3"
+                android:background="@drawable/bg_card"
+                android:divider="@drawable/divider_hairline"
+                android:orientation="vertical"
+                android:showDividers="middle" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_logout"
+                style="@style/Widget.PracticeMart.Button.Outline"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:text="@string/home_logout"
+                android:textColor="@color/pm_error"
+                app:strokeColor="@color/pm_error" />
+
+            <TextView
+                android:id="@+id/acc_txt_version"
+                style="@style/Pm.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:gravity="center" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

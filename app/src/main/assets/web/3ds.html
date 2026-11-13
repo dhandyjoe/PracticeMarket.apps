@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PracticeBank SecureCode</title>
+<style>
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #F2F4F7; color: #1F2933; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #1A3D6D; color: #FFFFFF; }
+  header strong { font-size: 18px; letter-spacing: 0.3px; }
+  header span { font-size: 12px; font-weight: 700; padding: 4px 8px; border: 1px solid #FFFFFF; border-radius: 3px; }
+  main { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+  p { margin: 0; font-size: 15px; line-height: 1.5; }
+  table { border-collapse: collapse; font-size: 14px; background: #FFFFFF; border: 1px solid #D0D5DD; width: 100%; }
+  td { padding: 10px 12px; border-bottom: 1px solid #E4E7EB; }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { color: #52606D; }
+  td:last-child { text-align: right; font-weight: 700; }
+  label { font-size: 14px; font-weight: 700; }
+  input { box-sizing: border-box; width: 100%; height: 46px; margin-top: 6px; padding: 0 12px; border: 1px solid #9AA5B1; border-radius: 4px; background: #FFFFFF;
+          font-family: monospace; font-size: 20px; letter-spacing: 6px; outline: none; }
+  input.bad { border-color: #B42318; }
+  #error { display: none; margin-top: 6px; font-size: 13px; font-weight: 700; color: #B42318; }
+  button { height: 46px; border: 0; border-radius: 4px; background: #1A5FB4; color: #FFFFFF; font-size: 16px; font-weight: 700; }
+  nav { display: flex; justify-content: space-between; font-size: 14px; }
+  a { color: #1A4A8C; }
+</style>
+</head>
+<body>
+<header><strong>PracticeBank</strong><span>SecureCode</span></header>
+<main>
+  <p>Masukkan kode OTP yang kami kirim ke nomor ponsel terdaftar untuk menyetujui transaksi ini.</p>
+  <table>
+    <tr><td>Merchant</td><td>PracticeMart</td></tr>
+    <tr><td>Jumlah</td><td id="amount" data-testid="amount">IDR 0</td></tr>
+    <tr><td>Kartu</td><td id="card" data-testid="card">**** **** **** ----</td></tr>
+  </table>
+  <div>
+    <label for="otp">Kode OTP</label>
+    <input id="otp" name="otp" data-testid="otp" inputmode="numeric" maxlength="6" placeholder="6 digit" autocomplete="off">
+    <div id="error" role="alert" data-testid="otp-error">Kode OTP salah</div>
+  </div>
+  <button id="submit" data-testid="submit" type="button">Submit</button>
+  <nav>
+    <a href="#" id="resend" data-testid="resend">Kirim ulang kode</a>
+    <a href="#" id="cancel" data-testid="cancel">Batal</a>
+  </nav>
+</main>
+<script>
+  var params = new URLSearchParams(location.search);
+  var amount = Number(params.get('amount') || 0);
+  document.getElementById('amount').textContent = 'IDR ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  document.getElementById('card').textContent = '**** **** **** ' + (params.get('card') || '----');
+
+  var otp = document.getElementById('otp');
+  var error = document.getElementById('error');
+  otp.addEventListener('input', function () {
+    otp.value = otp.value.replace(/\D/g, '').slice(0, 6);
+    otp.classList.remove('bad');
+    error.style.display = 'none';
+  });
+  // OTP benar: 123456 (PRD FR-PAYM-07). Hasil dikirim ke app lewat jembatan native.
+  document.getElementById('submit').addEventListener('click', function () {
+    if (otp.value === '123456') {
+      PracticeBank.onResult(true);
+    } else {
+      otp.classList.add('bad');
+      error.style.display = 'block';
+    }
+  });
+  document.getElementById('cancel').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (confirm('Batalkan transaksi?')) PracticeBank.onResult(false);
+  });
+  document.getElementById('resend').addEventListener('click', function (e) { e.preventDefault(); });
+</script>
+</body>
+</html>

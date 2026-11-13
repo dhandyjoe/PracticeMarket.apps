@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/pm_space_4"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/pm_space_2"
+        android:paddingHorizontal="@dimen/pm_space_1">
+
+        <TextView
+            android:id="@+id/dev_txt_group_title"
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:accessibilityHeading="true"
+            android:letterSpacing="0.05"
+            android:textColor="@color/pm_ink_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/dev_badge_dev"
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/pm_space_2"
+            android:background="@drawable/bg_status_warning"
+            android:paddingHorizontal="@dimen/pm_space_1_5"
+            android:text="@string/dev_badge"
+            android:textColor="@color/pm_warning_strong"
+            android:textSize="10sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dev_group_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card"
+        android:divider="@drawable/divider_hairline"
+        android:orientation="vertical"
+        android:showDividers="middle" />
+</LinearLayout>

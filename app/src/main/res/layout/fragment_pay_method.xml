@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/shop_header_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pm_surface"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/pm_header_height"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/pm_space_2"
+            android:paddingStart="@dimen/pm_space_1">
+
+            <ImageButton
+                android:id="@+id/shop_btn_back"
+                style="@style/Pm.IconButton"
+                android:contentDescription="@string/nav_back"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/pm_ink" />
+
+            <TextView
+                style="@style/Pm.Title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/pm_space_2"
+                android:layout_weight="1"
+                android:text="@string/pay_title"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pm_stroke_hairline"
+            android:background="@color/pm_outline" />
+
+        <ScrollView
+            android:id="@+id/shop_scroll_pay"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:id="@+id/shop_group_pay_method"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/pm_space_4"
+                android:paddingHorizontal="@dimen/pm_space_4"
+                android:paddingTop="@dimen/pm_space_1">
+
+            <LinearLayout
+                android:id="@+id/shop_box_pay_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                android:background="@drawable/bg_option"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/shop_row_pay_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="60dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/shop_rdo_pay_card"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/pm_primary"
+                            android:minHeight="@dimen/pm_touch_min"
+                            android:paddingStart="@dimen/pm_space_2"
+                            android:text="@string/pay_card"
+                            android:textColor="@color/pm_option_text"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/jetbrains_mono"
+                android:text="@string/pay_card_brands"
+                android:textColor="@color/pm_ink_muted"
+                android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/shop_form_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/pm_space_4"
+                    android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                        <TextView
+                            style="@style/Pm.Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/shop_input_card_number"
+                            android:text="@string/pay_card_number"
+                            android:textSize="13sp" />
+
+                        <EditText
+                            android:id="@+id/shop_input_card_number"
+                            style="@style/Pm.Field"
+                            android:fontFamily="@font/jetbrains_mono"
+                            android:importantForAutofill="no"
+                            android:imeOptions="flagNoExtractUi"
+                            android:inputType="number"
+                            android:maxLength="19" />
+                        <TextView
+                            android:id="@+id/shop_txt_card_number_error"
+                            style="@style/Pm.FieldError"
+                            android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pm_space_3"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/pm_space_2_5"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Pm.Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/shop_input_card_exp"
+                            android:text="@string/pay_card_exp"
+                            android:textSize="13sp" />
+
+                        <EditText
+                            android:id="@+id/shop_input_card_exp"
+                            style="@style/Pm.Field"
+                            android:fontFamily="@font/jetbrains_mono"
+                            android:importantForAutofill="no"
+                            android:imeOptions="flagNoExtractUi"
+                            android:hint="@string/pay_card_exp_hint"
+                            android:inputType="number"
+                            android:maxLength="5" />
+                        <TextView
+                            android:id="@+id/shop_txt_card_exp_error"
+                            style="@style/Pm.FieldError"
+                            android:visibility="gone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Pm.Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:labelFor="@+id/shop_input_card_cvv"
+                            android:text="@string/pay_card_cvv"
+                            android:textSize="13sp" />
+
+                        <EditText
+                            android:id="@+id/shop_input_card_cvv"
+                            style="@style/Pm.Field"
+                            android:fontFamily="@font/jetbrains_mono"
+                            android:importantForAutofill="no"
+                            android:imeOptions="flagNoExtractUi"
+                            android:inputType="numberPassword"
+                            android:maxLength="3" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shop_box_pay_va"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                android:background="@drawable/bg_option"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/shop_row_pay_va"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="60dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/shop_rdo_pay_va"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/pm_primary"
+                            android:minHeight="@dimen/pm_touch_min"
+                            android:paddingStart="@dimen/pm_space_2"
+                            android:text="@string/pay_va"
+                            android:textColor="@color/pm_option_text"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/jetbrains_mono"
+                android:text="@string/pay_va_banks"
+                android:textColor="@color/pm_ink_muted"
+                android:textSize="11sp" />
+                </LinearLayout>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/shop_group_bank"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/pm_space_4"
+                    android:paddingHorizontal="@dimen/pm_space_3_5"
+                    app:chipSpacingHorizontal="@dimen/pm_space_2"
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shop_chip_bank_bca"
+                        style="@style/Widget.PracticeMart.Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="BCA" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shop_chip_bank_bni"
+                        style="@style/Widget.PracticeMart.Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="BNI" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shop_chip_bank_mandiri"
+                        style="@style/Widget.PracticeMart.Chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="Mandiri" />
+                </com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shop_box_pay_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                android:background="@drawable/bg_option"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/shop_row_pay_wallet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="60dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/shop_rdo_pay_wallet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/pm_primary"
+                            android:minHeight="@dimen/pm_touch_min"
+                            android:paddingStart="@dimen/pm_space_2"
+                            android:text="@string/pay_wallet"
+                            android:textColor="@color/pm_option_text"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/shop_txt_pay_wallet_note"
+                            style="@style/Pm.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/pm_space_2" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shop_box_pay_cod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2_5"
+                android:background="@drawable/bg_option"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/shop_row_pay_cod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:minHeight="60dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/pm_space_3_5">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/shop_rdo_pay_cod"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/pm_primary"
+                            android:minHeight="@dimen/pm_touch_min"
+                            android:paddingStart="@dimen/pm_space_2"
+                            android:text="@string/pay_cod"
+                            android:textColor="@color/pm_option_text"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/shop_txt_pay_cod_note"
+                    style="@style/Pm.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/pm_space_2"
+                    android:text="@string/pay_cod_note" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/shop_bar_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pm_surface"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_space_4">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Pm.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pay_total_label"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/shop_txt_pay_total"
+                    style="@style/Pm.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_pay"
+                style="@style/Widget.PracticeMart.Button.Primary"
+                android:layout_marginTop="@dimen/pm_space_2_5" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_overlay_processing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pm_scrim"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/shop_progress_pay"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:indeterminateTint="@color/pm_white" />
+
+        <TextView
+            android:id="@+id/shop_txt_processing"
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_4"
+            android:accessibilityLiveRegion="polite"
+            android:text="@string/pay_processing"
+            android:textColor="@color/pm_white"
+            android:textSize="15sp" />
+    </LinearLayout>
+</FrameLayout>

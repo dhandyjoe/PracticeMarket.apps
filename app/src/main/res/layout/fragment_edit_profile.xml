@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pm_background"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/shop_topbar"
+        layout="@layout/layout_topbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/pm_space_5">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="72dp"
+                    android:layout_height="72dp">
+
+                    <TextView
+                        android:id="@+id/acc_txt_photo_initials"
+                        style="@style/Pm.Headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_avatar"
+                        android:gravity="center"
+                        android:importantForAccessibility="no"
+                        android:textColor="@color/pm_primary_pressed" />
+
+                    <ImageView
+                        android:id="@+id/acc_img_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/acc_photo_cd"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/pm_space_4"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/acc_btn_change_photo"
+                        style="@style/Widget.PracticeMart.Button.OutlinePrimary"
+                        android:layout_width="wrap_content"
+                        android:text="@string/acc_change_photo" />
+
+                    <TextView
+                        style="@style/Pm.Caption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/pm_space_1_5"
+                        android:text="@string/acc_photo_hint" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_5"
+                android:text="@string/acc_name_label" />
+
+            <EditText
+                android:id="@+id/acc_input_name"
+                style="@style/Pm.Field"
+                android:autofillHints="name"
+                android:inputType="textPersonName|textCapWords" />
+
+            <TextView
+                android:id="@+id/acc_error_name"
+                style="@style/Pm.FieldError"
+                android:text="@string/acc_name_required"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:text="@string/acc_email_label" />
+
+            <EditText
+                android:id="@+id/acc_input_email"
+                style="@style/Pm.Field"
+                android:autofillHints="emailAddress"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/acc_error_email"
+                style="@style/Pm.FieldError"
+                android:text="@string/acc_email_invalid"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:text="@string/acc_birth_label" />
+
+            <TextView
+                android:id="@+id/acc_btn_birthdate"
+                style="@style/Pm.Field"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_calendar"
+                android:drawableTint="@color/pm_ink_secondary"
+                android:focusable="true"
+                android:gravity="center_vertical" />
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_4"
+                android:text="@string/acc_gender_label" />
+
+            <RadioGroup
+                android:id="@+id/acc_group_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/acc_rdo_male"
+                    style="@style/Pm.Radio"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/acc_gender_male" />
+
+                <RadioButton
+                    android:id="@+id/acc_rdo_female"
+                    style="@style/Pm.Radio"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/acc_gender_female" />
+            </RadioGroup>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/acc_bar_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/pm_surface"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pm_space_5"
+        android:paddingHorizontal="@dimen/pm_space_4"
+        android:paddingTop="@dimen/pm_space_3">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/acc_btn_save"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:text="@string/acc_save" />
+    </LinearLayout>
+</LinearLayout>

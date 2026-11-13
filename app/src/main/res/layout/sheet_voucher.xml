@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shop_sheet_voucher"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sheet"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/pm_space_2_5"
+        android:background="@drawable/bg_handle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/pm_space_2"
+        android:paddingStart="@dimen/pm_space_5"
+        android:paddingVertical="@dimen/pm_space_2">
+
+        <TextView
+            style="@style/Pm.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/voucher_title"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/shop_btn_close_voucher"
+            style="@style/Pm.IconButton"
+            android:contentDescription="@string/common_close"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pm_ink" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/pm_space_5"
+        android:paddingVertical="@dimen/pm_space_2">
+
+        <TextView
+            style="@style/Pm.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/shop_input_voucher_code"
+            android:text="@string/voucher_have_code"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/pm_space_1_5"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/shop_box_voucher_code"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/pm_space_3_5">
+
+                <EditText
+                    android:id="@+id/shop_input_voucher_code"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/jetbrains_mono"
+                    android:hint="@string/voucher_code_hint"
+                    android:imeOptions="actionDone|flagNoExtractUi"
+                    android:importantForAutofill="no"
+                    android:inputType="textCapCharacters|textNoSuggestions"
+                    android:maxLength="20"
+                    android:maxLines="1"
+                    android:textColor="@color/pm_ink"
+                    android:textColorHint="@color/pm_ink_muted"
+                    android:textSize="15sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shop_btn_paste_voucher"
+                    style="@style/Widget.PracticeMart.Button.Text"
+                    android:layout_width="wrap_content"
+                    android:text="@string/voucher_paste"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/shop_btn_apply_voucher"
+                style="@style/Widget.PracticeMart.Button.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/pm_space_2"
+                android:paddingHorizontal="@dimen/pm_space_4_5"
+                android:text="@string/voucher_apply"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/shop_txt_voucher_error"
+            style="@style/Pm.FieldError"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_surface_subtle" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/shop_list_vouchers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/pm_space_5"
+            android:paddingTop="@dimen/pm_space_3">
+
+            <TextView
+                style="@style/Pm.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/pm_space_2_5"
+                android:text="@string/voucher_available"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pm_stroke_hairline"
+        android:background="@color/pm_outline" />
+
+    <FrameLayout
+        android:id="@+id/shop_bar_voucher_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/pm_space_4">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_voucher_done"
+            style="@style/Widget.PracticeMart.Button.Primary" />
+    </FrameLayout>
+</LinearLayout>

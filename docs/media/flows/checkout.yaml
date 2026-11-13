@@ -1,0 +1,46 @@
+appId: com.automation.practice
+---
+- runFlow:
+    file: _login.yaml
+    when:
+      true: ${typeof LOGGED_IN === 'undefined' || LOGGED_IN != 'true'}
+- scrollUntilVisible:
+    element:
+      id: shop_btn_add_to_cart
+- tapOn:
+    id: shop_btn_add_to_cart
+    index: 0
+- tapOn:
+    id: shop_tab_cart
+- tapOn:
+    id: shop_btn_checkout
+- tapOn:
+    id: shop_btn_pick_payment
+- tapOn:
+    id: shop_input_card_number
+- inputText: "4111111111111111"
+- scrollUntilVisible:
+    element:
+      id: shop_input_card_exp
+- tapOn:
+    id: shop_input_card_exp
+- inputText: "1230"
+- scrollUntilVisible:
+    element:
+      id: shop_input_card_cvv
+- tapOn:
+    id: shop_input_card_cvv
+- inputText: "123"
+- tapOn:
+    id: shop_btn_pay
+- extendedWaitUntil:
+    visible: Submit
+    timeout: 10000
+- tapOn:
+    point: 50%,46%
+- inputText: "123456"
+- tapOn: Submit
+- extendedWaitUntil:
+    visible:
+      id: shop_txt_result_title
+    timeout: 15000

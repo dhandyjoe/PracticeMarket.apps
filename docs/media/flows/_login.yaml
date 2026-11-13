@@ -1,0 +1,23 @@
+# Subflow: reset data, lalu masuk sebagai standard_user.
+appId: com.automation.practice
+---
+- launchApp:
+    clearState: true
+- openLink: practiceapp://settings?deterministic=true&latency=0&flaky=0
+- extendedWaitUntil:
+    visible:
+      id: shop_btn_skip
+    timeout: 10000
+- tapOn:
+    id: shop_btn_skip
+- tapOn:
+    id: shop_input_username
+- inputText: standard_user
+- tapOn:
+    id: shop_input_password
+- inputText: Practice123!
+- hideKeyboard
+- tapOn:
+    id: shop_btn_login
+- assertVisible:
+    id: shop_txt_greeting

@@ -1,0 +1,27 @@
+appId: com.automation.practice
+---
+- runFlow:
+    file: _login.yaml
+    when:
+      true: ${typeof LOGGED_IN === 'undefined' || LOGGED_IN != 'true'}
+- tapOn:
+    id: shop_tab_pay
+- tapOn:
+    id: pay_btn_transfer
+- tapOn:
+    id: pay_item_contact_row
+    index: 0
+- tapOn:
+    id: pay_chip_50k
+- tapOn:
+    id: pay_btn_next
+- tapOn: "1"
+- tapOn: "2"
+- tapOn: "3"
+- tapOn: "4"
+- tapOn: "5"
+- tapOn: "6"
+- extendedWaitUntil:
+    visible:
+      id: pay_txt_success
+    timeout: 10000

@@ -10,6 +10,7 @@ import androidx.core.view.isInvisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import com.automation.practice.R
+import com.automation.practice.data.repo.PinCheck
 import com.automation.practice.core.ui.applySystemInsets
 import com.automation.practice.databinding.ItemPinKeyBinding
 import com.automation.practice.databinding.SheetPinBinding
@@ -82,26 +83,22 @@ class PinSheetFragment : BottomSheetDialogFragment() {
     private fun press(digit: String) {
         if (pin.length >= PIN_LENGTH) return
         val session = vm.session
-        val lockLeft = (session.pinLockedUntil - System.currentTimeMillis()).coerceAtLeast(0)
-        if (lockLeft > 0) return showError(getString(R.string.pin_locked_fmt, ((lockLeft + 999) / 1000).toInt()))
+        session.pinLockSeconds().takeIf { it > 0 }?.let { return showError(getString(R.string.pin_locked_fmt, it)) }
         pin += digit
         render()
         if (pin.length < PIN_LENGTH) return
-        if (pin == VALID_PIN) {
-            session.pinFailures = 0
+        val result = session.checkPin(pin)
+        if (result == PinCheck.Ok) {
             setFragmentResult(RESULT_KEY, bundleOf(RESULT_OK to true))
             dismiss()
             return
         }
-        session.pinFailures++
         pin = ""
         render()
-        if (session.pinFailures >= MAX_FAILURES) {
-            session.pinFailures = 0
-            session.pinLockedUntil = System.currentTimeMillis() + LOCK_MS
-            showError(getString(R.string.pin_locked_fmt, (LOCK_MS / 1000).toInt()))
-        } else {
-            showError(getString(R.string.pin_wrong_fmt, MAX_FAILURES - session.pinFailures))
+        when (result) {
+            is PinCheck.Locked -> showError(getString(R.string.pin_locked_fmt, result.secondsLeft))
+            is PinCheck.Wrong -> showError(getString(R.string.pin_wrong_fmt, result.attemptsLeft))
+            PinCheck.Ok -> Unit
         }
     }
 
@@ -121,8 +118,5 @@ class PinSheetFragment : BottomSheetDialogFragment() {
         const val RESULT_OK = "ok"
         private const val DELETE = "⌫"
         private const val PIN_LENGTH = 6
-        private const val VALID_PIN = "123456"
-        private const val MAX_FAILURES = 3
-        private const val LOCK_MS = 30_000L
     }
 }

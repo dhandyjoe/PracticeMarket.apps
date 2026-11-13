@@ -49,7 +49,7 @@ class SettingsFragment : ShopFragment(R.layout.fragment_settings) {
             switch(it, R.id.dev_sw_animations, R.string.dev_animations, 0, p.animations) { on -> change { c -> c.copy(animations = on) } }
             seg(it, R.id.dev_seg_flaky, R.string.dev_flaky, R.string.dev_flaky_sub, listOf("0%", "30%", "50%"), FLAKY.indexOf(p.flaky)) { i -> change { c -> c.copy(flaky = FLAKY[i]) } }
             switch(it, R.id.dev_sw_hints, R.string.dev_hints, R.string.dev_hints_sub, p.locatorHints) { on -> change { c -> c.copy(locatorHints = on) } }
-            switch(it, R.id.dev_sw_persist, R.string.dev_persist, R.string.dev_persist_sub, p.persistData) { on -> change { c -> c.copy(persistData = on) } }
+            switch(it, R.id.dev_sw_reset_on_launch, R.string.dev_reset_on_launch, R.string.dev_reset_on_launch_sub, p.resetOnLaunch) { on -> change { c -> c.copy(resetOnLaunch = on) } }
         }
         group(R.string.set_group_sim, dev = true) {
             seg(it, R.id.dev_seg_va, R.string.dev_va_window, 0, listOf("30 dtk", "2 mnt", "15 mnt"), VA_WINDOWS.indexOf(p.vaWindowMs)) { i -> change { c -> c.copy(vaWindowMs = VA_WINDOWS[i]) } }
@@ -149,7 +149,7 @@ class SettingsFragment : ShopFragment(R.layout.fragment_settings) {
         nav.openSettings(dev = true)
     }
 
-    /** Data sesi, sesi login, dan status onboarding kembali ke awal tanpa kill proses (PRD §10, ARCHITECTURE §10). */
+    /** Database, sesi login, dan status onboarding kembali ke awal tanpa kill proses (PRD §10, ARCHITECTURE §11). */
     private fun resetData() {
         requireContext().app.container.resetAll()
         startActivity(Intent(requireContext(), AuthActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))

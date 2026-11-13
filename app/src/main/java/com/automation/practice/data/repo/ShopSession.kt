@@ -2,9 +2,11 @@ package com.automation.practice.data.repo
 
 import com.automation.practice.domain.Address
 import com.automation.practice.domain.CartLine
+import com.automation.practice.domain.Hashing
 import com.automation.practice.domain.MAX_QTY
 import com.automation.practice.domain.Order
 import com.automation.practice.domain.OrderStatus
+import com.automation.practice.domain.PAY_PIN
 import com.automation.practice.domain.PayMethod
 import com.automation.practice.domain.Profile
 import com.automation.practice.domain.SEED_ADDRESSES
@@ -19,20 +21,28 @@ import kotlinx.coroutines.flow.update
 
 const val INITIAL_BALANCE = 500_000L
 
+/** Hasil cek PIN PracticePay (PRD FR-PAY-06). */
+sealed interface PinCheck {
+    data object Ok : PinCheck
+    data class Wrong(val attemptsLeft: Int) : PinCheck
+    data class Locked(val secondsLeft: Int) : PinCheck
+}
+
 /**
- * Data sesi belanja di memori: bertahan lintas logout–login, kembali ke default saat app di-kill (PRD §6.3 no. 6).
+ * Data belanja & PracticePay akun yang sedang login. StateFlow di sini adalah cache; setiap mutasi langsung
+ * ditulis ke [store] sehingga data bertahan setelah kill dan update APK (PRD §6.3 no. 6, ARCHITECTURE.md D15).
  * [stockOf] memberi stok varian untuk batas jumlah per baris keranjang.
- * shortcut: satu sesi untuk semua akun, belum per-user; pindah ke WishlistEntity/CartItemEntity (username) bersama Room.
  */
 class ShopSession(
     private val stockOf: (CartLine) -> Int,
     /** Jam aplikasi; mode deterministik memberi tanggal tetap 2026-01-15 (PRD §10). */
     private val now: () -> Long = System::currentTimeMillis,
+    private val store: ShopStore = MemoryShopStore(),
 ) {
-    private val _wishlist = MutableStateFlow(listOf("P001", "P010", "P002", "P020"))
+    private val _wishlist = MutableStateFlow(SEED_WISHLIST)
     val wishlist: StateFlow<List<String>> = _wishlist.asStateFlow()
 
-    private val _history = MutableStateFlow(listOf("sepatu lari", "headphone", "buku catatan", "smartwatch"))
+    private val _history = MutableStateFlow(SEED_HISTORY)
     val history: StateFlow<List<String>> = _history.asStateFlow()
 
     private val _cart = MutableStateFlow(emptyList<CartLine>())
@@ -68,16 +78,13 @@ class ShopSession(
     val addresses: StateFlow<List<Address>> = _addresses.asStateFlow()
 
     private var userKey: String? = null
-    private var isNewUser = false
 
-    /** Kunci PIN PracticePay setelah 3× salah (PRD FR-PAY-06). */
-    var pinLockedUntil = 0L
-    var pinFailures = 0
+    private var pinHash = ""
+    private var pinFailures = 0
+    private var pinLockedUntil = 0L
 
-    /** Bug `glitch_user`: tap pertama "Bayar" tidak bereaksi; nilai ini menandai sudah dipakai. */
+    /** Bug `glitch_user`: tap pertama "Bayar" tidak bereaksi; nilai ini menandai sudah dipakai (tidak disimpan). */
     var glitchPayTapUsed = false
-
-    private var orderSequence = 0
 
     /** Flash sale berakhir 2 jam 14 menit 37 detik sejak sesi dimulai. */
     val flashEndsAt = System.currentTimeMillis() + FLASH_DURATION_MS
@@ -90,19 +97,21 @@ class ShopSession(
     fun toggleWishlist(id: String): Boolean {
         val wished = isWished(id)
         _wishlist.update { if (wished) it - id else it + id }
+        save()
         return !wished
     }
 
-    fun setWishlistOrder(order: List<String>) { _wishlist.value = order }
+    fun setWishlistOrder(order: List<String>) { _wishlist.value = order; save() }
 
     fun addHistory(q: String) {
         val t = q.trim()
         if (t.isEmpty()) return
         _history.update { (listOf(t) + it.filterNot { h -> h.equals(t, ignoreCase = true) }).take(MAX_HISTORY) }
+        save()
     }
 
-    fun removeHistory(q: String) = _history.update { it - q }
-    fun clearHistory() { _history.value = emptyList() }
+    fun removeHistory(q: String) { _history.update { it - q }; save() }
+    fun clearHistory() { _history.value = emptyList(); save() }
 
     // --- keranjang ---
 
@@ -124,10 +133,12 @@ class ShopSession(
         syncBadge()
     }
 
-    fun setSelected(line: CartLine, selected: Boolean) = update(line) { it.copy(selected = selected) }
+    fun setSelected(line: CartLine, selected: Boolean) { update(line) { it.copy(selected = selected) }; save() }
 
-    fun setAllSelected(selected: Boolean) =
+    fun setAllSelected(selected: Boolean) {
         _cart.update { lines -> lines.map { if (it.saved) it else it.copy(selected = selected) } }
+        save()
+    }
 
     /** "Simpan untuk nanti": baris tetap di daftar, tapi tidak dipilih dan tidak dihitung. */
     fun toggleSaved(line: CartLine) {
@@ -138,7 +149,7 @@ class ShopSession(
     /** @param keepBadge true meniru bug `glitch_user`: badge tidak ikut turun. */
     fun remove(line: CartLine, keepBadge: Boolean = false) {
         _cart.update { lines -> lines.filterNot { it.sameItem(line) } }
-        if (!keepBadge) syncBadge()
+        if (!keepBadge) syncBadge() else save()
     }
 
     /** Batalkan hapus: kembalikan baris di posisi semula. */
@@ -150,22 +161,31 @@ class ShopSession(
     private fun update(line: CartLine, f: (CartLine) -> CartLine) =
         _cart.update { lines -> lines.map { if (it.sameItem(line)) f(it) else it } }
 
-    private fun syncBadge() { _badge.value = _cart.value.filterNot { it.saved }.sumOf { it.qty } }
+    /** Hitung ulang badge lalu simpan keranjang; semua mutasi keranjang lewat sini. */
+    private fun syncBadge() {
+        _badge.value = _cart.value.filterNot { it.saved }.sumOf { it.qty }
+        save()
+    }
 
     // --- voucher ---
 
-    fun setVoucher(code: String?) { _voucher.value = code }
+    fun setVoucher(code: String?) { _voucher.value = code; save() }
 
     // --- pesanan & saldo ---
 
     /** Buat pesanan baru dengan ID berikutnya. Pemanggil bertanggung jawab atas stok, saldo, dan keranjang. */
-    fun newOrder(build: (id: String) -> Order): Order = build(orderId(++orderSequence)).let { o -> o.copy(statusAt = now(), stamps = mapOf(o.status to now())) }.also { o -> _orders.update { listOf(o) + it } }
+    fun newOrder(build: (id: String) -> Order): Order = build(orderId(store.nextOrderSequence())).let { o -> o.copy(statusAt = now(), stamps = mapOf(o.status to now())) }
+        .also { o -> _orders.update { listOf(o) + it }; save() }
 
-    fun updateOrder(id: String, status: OrderStatus, reason: String = "") =
+    fun updateOrder(id: String, status: OrderStatus, reason: String = "") {
         _orders.update { list -> list.map { if (it.id == id) it.copy(status = status, statusAt = now(), stamps = it.stamps + (status to now()), cancelReason = reason) else it } }
+        save()
+    }
 
-    fun setVaDeadline(id: String, deadline: Long) =
+    fun setVaDeadline(id: String, deadline: Long) {
         _orders.update { list -> list.map { if (it.id == id) it.copy(vaDeadline = deadline) else it } }
+        save()
+    }
 
     fun order(id: String) = _orders.value.firstOrNull { it.id == id }
 
@@ -200,11 +220,34 @@ class ShopSession(
 
     private fun record(title: String, amount: Long) {
         _transactions.update { listOf(Tx(++txSequence, title, amount, now())) + it }
+        save()
+    }
+
+    // --- PIN PracticePay ---
+
+    /** Sisa detik kunci PIN setelah 3× salah; 0 bila tidak terkunci. Pakai jam sungguhan agar tetap jalan setelah kill. */
+    fun pinLockSeconds(): Int = ((pinLockedUntil - System.currentTimeMillis()).coerceAtLeast(0) + 999).div(1000).toInt()
+
+    /** Cocokkan dengan hash PIN akun; 3× salah → terkunci 30 dtk (PRD FR-PAY-06). Hitungan ikut tersimpan. */
+    fun checkPin(pin: String): PinCheck {
+        pinLockSeconds().takeIf { it > 0 }?.let { return PinCheck.Locked(it) }
+        val result = if (Hashing.verify(pin, pinHash)) {
+            pinFailures = 0
+            PinCheck.Ok
+        } else if (++pinFailures >= MAX_PIN_FAILURES) {
+            pinFailures = 0
+            pinLockedUntil = System.currentTimeMillis() + PIN_LOCK_MS
+            PinCheck.Locked(pinLockSeconds())
+        } else {
+            PinCheck.Wrong(MAX_PIN_FAILURES - pinFailures)
+        }
+        save()
+        return result
     }
 
     // --- akun ---
 
-    fun updateProfile(p: Profile) { _profile.value = p }
+    fun updateProfile(p: Profile) { _profile.value = p; save() }
 
     /** Simpan alamat baru atau perbarui yang ada; hanya satu alamat utama. */
     fun saveAddress(a: Address) {
@@ -214,45 +257,56 @@ class ShopSession(
             (others + withId).let { all -> if (all.none { it.primary }) all.mapIndexed { i, x -> if (i == 0) x.copy(primary = true) else x } else all }
                 .sortedBy { it.id }
         }
+        save()
     }
 
-    fun deleteAddress(id: Int) = _addresses.update { list -> list.filterNot { it.id == id } }
+    fun deleteAddress(id: Int) { _addresses.update { list -> list.filterNot { it.id == id } }; save() }
 
     /**
-     * Siapkan data pribadi saat akun berganti. `new_user`: saldo Rp0, tanpa alamat dan riwayat (PRD §11.1, §11.4).
-     * shortcut: data belanja lain (keranjang, wishlist) tetap dibagi semua akun; pecah per user bersama Room.
+     * Muat data akun dari [store] saat akun berganti; akun yang belum pernah login dibuat dari seed.
+     * `new_user`: saldo Rp0, tanpa alamat dan riwayat (PRD §11.1, §11.4).
      */
     fun applyUser(username: String, displayName: String, email: String, isNew: Boolean) {
         if (userKey == username) return
+        val state = store.load(username) ?: seedState(displayName, email, isNew).also { store.save(username, it) }
         userKey = username
-        isNewUser = isNew
-        loadUserData(displayName, email)
+        _profile.value = state.profile
+        _addresses.value = state.addresses
+        _balance.value = state.balance
+        _homeBalance.value = state.homeBalance
+        _transactions.value = state.transactions
+        txSequence = state.transactions.maxOfOrNull { it.id } ?: 0
+        _cart.value = state.cart
+        _badge.value = state.cart.filterNot { it.saved }.sumOf { it.qty }
+        _wishlist.value = state.wishlist
+        _history.value = state.history
+        _voucher.value = state.voucher
+        _orders.value = state.orders
+        pinHash = state.pinHash
+        pinFailures = state.pinFailures
+        pinLockedUntil = state.pinLockedUntil
     }
 
-    private fun loadUserData(displayName: String, email: String) {
-        _profile.value = Profile(displayName, email)
-        _addresses.value = if (isNewUser) emptyList() else SEED_ADDRESSES.map { it.copy(recipient = displayName) }
-        _balance.value = if (isNewUser) 0 else INITIAL_BALANCE
-        _homeBalance.value = _balance.value
-        _transactions.value = if (isNewUser) emptyList() else seedTransactions()
-        txSequence = _transactions.value.size
-    }
-
-    /** "Reset semua data": data sesi kembali ke default tanpa kill (PRD §10). [onReset] memulihkan stok katalog. */
-    fun reset(onReset: () -> Unit) {
-        _wishlist.value = listOf("P001", "P010", "P002", "P020")
-        _history.value = listOf("sepatu lari", "headphone", "buku catatan", "smartwatch")
-        _cart.value = emptyList()
-        _badge.value = 0
-        _voucher.value = null
-        _orders.value = emptyList()
-        orderSequence = 0
-        pinFailures = 0
-        pinLockedUntil = 0
+    /**
+     * "Reset semua data" (PRD §10): kosongkan [store]. Akun aktif dilupakan, jadi [applyUser] berikutnya
+     * membuat ulang data dari seed dan Order ID mulai lagi dari 0001.
+     */
+    fun reset() {
+        store.clear()
+        userKey = null
         glitchPayTapUsed = false
-        onReset()
-        val p = _profile.value
-        loadUserData(p.name, p.email)
+    }
+
+    private fun save() {
+        val key = userKey ?: return
+        store.save(
+            key,
+            UserState(
+                _profile.value, _addresses.value, _balance.value, _homeBalance.value, _transactions.value,
+                _cart.value, _wishlist.value, _history.value, _voucher.value, _orders.value,
+                pinHash, pinFailures, pinLockedUntil,
+            ),
+        )
     }
 
     /** Buang baris keranjang yang sudah dibeli. */
@@ -263,6 +317,29 @@ class ShopSession(
 
     private companion object {
         const val MAX_HISTORY = 5
+        const val MAX_PIN_FAILURES = 3
+        const val PIN_LOCK_MS = 30_000L
+        val SEED_WISHLIST = listOf("P001", "P010", "P002", "P020")
+        val SEED_HISTORY = listOf("sepatu lari", "headphone", "buku catatan", "smartwatch")
+
+        fun seedState(displayName: String, email: String, isNew: Boolean): UserState {
+            val balance = if (isNew) 0 else INITIAL_BALANCE
+            return UserState(
+                profile = Profile(displayName, email),
+                addresses = if (isNew) emptyList() else SEED_ADDRESSES.map { it.copy(recipient = displayName) },
+                balance = balance,
+                homeBalance = balance,
+                transactions = if (isNew) emptyList() else seedTransactions(),
+                cart = emptyList(),
+                wishlist = SEED_WISHLIST,
+                history = SEED_HISTORY,
+                voucher = null,
+                orders = emptyList(),
+                pinHash = Hashing.hash(PAY_PIN),
+                pinFailures = 0,
+                pinLockedUntil = 0,
+            )
+        }
 
         /** 8 transaksi awal deterministik, 12–15 Januari 2026 (PRD §11.4). Terbaru di atas. */
         fun seedTransactions(): List<Tx> {

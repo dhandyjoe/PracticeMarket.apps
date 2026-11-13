@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.automation.practice.R
+import com.automation.practice.app
 import com.automation.practice.core.ui.applySystemInsets
 import com.automation.practice.databinding.FragmentVaBinding
 import com.automation.practice.databinding.ItemVaGuideBinding
@@ -62,7 +63,8 @@ class VaFragment : ShopFragment(R.layout.fragment_va) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (true) {
-                    val left = ((pending.deadline - System.currentTimeMillis()) / 1000).coerceAtLeast(0)
+                    // Jam aplikasi, sama dengan pembuat deadline; mode deterministik memakai tanggal 2026-01-15.
+                    val left = ((pending.deadline - requireContext().app.container.now()) / 1000).coerceAtLeast(0)
                     b.shopTxtVaTimer.text = "%02d:%02d".format(left / 60, left % 60)
                     if (left == 0L) { vm.vaExpired(); break }
                     delay(1000)

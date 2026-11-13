@@ -16,7 +16,7 @@
     <item name="dev_sw_animations" type="id" />
     <item name="dev_seg_flaky" type="id" />
     <item name="dev_sw_hints" type="id" />
-    <item name="dev_sw_persist" type="id" />
+    <item name="dev_sw_reset_on_launch" type="id" />
     <item name="dev_seg_va" type="id" />
     <item name="dev_seg_interval" type="id" />
     <item name="dev_btn_reset_data" type="id" />

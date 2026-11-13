@@ -109,9 +109,8 @@ class ShopSessionWalletTest {
         s.addToCart(line)
         s.order(PayMethod.WALLET, OrderStatus.PAID)
         s.debit(50_000)
-        var restored = false
-        s.reset { restored = true }
-        assertTrue(restored)
+        s.reset()
+        s.applyUser("standard_user", "Standard User", "s@x.id", isNew = false)
         assertTrue(s.orders.value.isEmpty() && s.cart.value.isEmpty())
         assertEquals(INITIAL_BALANCE, s.balance.value)
         assertEquals("PM-20260115-0001", s.order(PayMethod.CARD, OrderStatus.WAITING).id)

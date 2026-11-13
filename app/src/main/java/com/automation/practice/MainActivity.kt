@@ -63,8 +63,8 @@ import com.automation.practice.feature.shop.WishlistFragment
 import kotlinx.coroutines.launch
 
 /**
- * Launcher (`appActivity=.MainActivity`, PRD §14). Tanpa sesi login, langsung ke Auth;
- * ini juga menangani proses baru setelah kill (ARCHITECTURE.md §6.3).
+ * Launcher (`appActivity=.MainActivity`, PRD §14). Tanpa sesi login (belum login, Keluar, Reset), langsung ke Auth;
+ * sesi tersimpan di database, jadi setelah kill app langsung kembali ke sini (PRD FR-AUTH-17).
  * Menjadi host bottom navigation dan seluruh layar Belanja.
  */
 class MainActivity : AppCompatActivity(), ShopNavigator {
@@ -291,7 +291,8 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
     override fun openResult() {
         val fm = supportFragmentManager
         if (fm.findFragmentById(R.id.shop_container) is ResultFragment) return
-        fm.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        // Tidak immediate: hasil bisa datang saat FragmentManager sedang menjalankan transaksi (VA kedaluwarsa saat layar dibuka).
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         push(ResultFragment())
     }
     /** Kembali ke Pesanan Saya bila sudah ada di tumpukan (mis. setelah batal), selain itu buka baru. */

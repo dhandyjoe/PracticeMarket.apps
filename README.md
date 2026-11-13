@@ -4,7 +4,7 @@ Aplikasi marketplace Android untuk **latihan automation testing mobile**, dengan
 
 - Package: `com.automation.practice`
 - Full offline: tanpa backend dan tanpa permission `INTERNET`
-- Data sesi (keranjang, stok, pesanan, saldo) kembali ke default setiap app di-kill, jadi setiap cold start bersih untuk test
+- Data (akun, sesi login, keranjang, stok, pesanan, saldo, PIN) disimpan di database lokal: tetap ada setelah app di-kill atau di-update, hilang saat *Clear data*/uninstall. Untuk test isolation: Developer Options › "Reset data setiap app dibuka", `practiceapp://settings/reset`, atau Maestro `clearState`
 
 > Status: **Masuk & Onboarding**, **Belanja & Checkout**, **Pesanan**, **PracticePay**, serta **Akun & Pengaturan** sudah dibangun. Belum: Kategori (SHOP-02), Ulasan (SHOP-07, ORD-04), Top Up (PAY-02), dan halaman tidak ditemukan (SYS-01).
 
@@ -21,7 +21,8 @@ Akun uji: `standard_user` / `Practice123!`, kode OTP `123456`.
 | Dokumen | Isi |
 |---|---|
 | [PRD.md](PRD.md) | Product requirements: fitur, skenario E2E, test data, kontrak locator |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Arsitektur & tech stack |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Arsitektur, tech stack, skema database |
+| [CLAUDE.md](CLAUDE.md) | Panduan kontributor & agent: build, aturan data, konvensi |
 | [DESIGN.md](DESIGN.md) | Design system & spesifikasi layar |
 | [docs/locators/auth.md](docs/locators/auth.md) | Locator layar Auth |
 | [docs/locators/shop.md](docs/locators/shop.md) | Locator layar Belanja |
@@ -40,7 +41,7 @@ Prasyarat: JDK 17 dan Android SDK (platform 35, build-tools 35.0.0). Gradle wrap
 export JAVA_HOME=<path JDK 17>
 export ANDROID_HOME=<path Android SDK>
 echo "sdk.dir=$ANDROID_HOME" > local.properties
-./gradlew :app:testDebugUnitTest      # unit test AuthRules
+./gradlew :app:testDebugUnitTest      # unit test (domain, hash, persistensi)
 ./gradlew :app:assembleDebug          # app/build/outputs/apk/debug/app-debug.apk
 ```
 

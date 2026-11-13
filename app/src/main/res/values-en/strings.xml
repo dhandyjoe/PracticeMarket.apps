@@ -121,8 +121,8 @@
     <string name="dev_flaky">Server error chance</string>
     <string name="dev_flaky_sub">For retry practice</string>
     <string name="dev_hints_sub">Show resource-id above elements</string>
-    <string name="dev_persist">Keep data after app closes</string>
-    <string name="dev_persist_sub">Off by default: data resets when the app is killed. Applies after the app is reopened</string>
+    <string name="dev_reset_on_launch">Reset data on every launch</string>
+    <string name="dev_reset_on_launch_sub">Data &amp; login session reset on each cold start</string>
     <string name="dev_va_window">VA time limit</string>
     <string name="dev_interval">Order status update</string>
     <string name="dev_interval_manual">Manual</string>

@@ -339,7 +339,7 @@ Status: **Didesain** = ada artboard. **Belum** = belum ada artboard; ikuti kompo
 | ACC-01 | Akun | `Account.dc.html` | Didesain | profil, menu (Pesanan, Wishlist, Alamat, PracticePay, Pengaturan, Bantuan, Developer Options), Keluar | – |
 | ACC-02 | Edit Profil | `EditProfile.dc.html` | Didesain | ubah foto, field, date picker dialog, radio | ACC-01 |
 | ACC-03 | Form Alamat | `AddressForm.dc.html` | Didesain | lokasi saat ini, chip label, provinsi → kota, kode pos, alamat utama | ACC-01 |
-| ACC-04 | Pengaturan & Developer Options | `DevOptions.dc.html` | Didesain | Umum (bahasa, tema, notifikasi), DEV (deterministik, latency, animasi, error server, locator hint, simpan data), simulasi pembayaran, reset, About | ACC-01 |
+| ACC-04 | Pengaturan & Developer Options | `DevOptions.dc.html` | Didesain | Umum (bahasa, tema, notifikasi), DEV (deterministik, latency, animasi, error server, locator hint, reset data setiap app dibuka), simulasi pembayaran, reset, About | ACC-01 |
 | HELP-01 | Pusat Bantuan | `HelpCenter.dc.html` | Didesain | WebView: cari FAQ, accordion, Hubungi kami (JS bridge → toast); tombol native Chat dengan CS | ACC-01 |
 | SYS-01 | Halaman tidak ditemukan | – | Belum | ilustrasi sederhana + "Kembali ke Beranda" (pola empty state) | SHOP-01 |
 | – | Dialog Keluar / Reset data | – | Belum | §4.11 | – |

@@ -511,8 +511,8 @@
     <string name="dev_flaky_sub">Untuk latihan retry</string>
     <string name="dev_hints">Locator Hint Overlay</string>
     <string name="dev_hints_sub">Tampilkan resource-id di atas elemen</string>
-    <string name="dev_persist">Simpan data setelah app ditutup</string>
-    <string name="dev_persist_sub">Default mati: data kembali ke awal saat app di-kill. Berlaku setelah app dibuka ulang</string>
+    <string name="dev_reset_on_launch">Reset data setiap app dibuka</string>
+    <string name="dev_reset_on_launch_sub">Data &amp; sesi login kembali ke awal setiap cold start</string>
     <string name="dev_va_window">Batas waktu VA</string>
     <string name="dev_interval">Update status pesanan</string>
     <string name="dev_interval_manual">Manual</string>

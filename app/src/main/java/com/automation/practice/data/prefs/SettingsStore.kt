@@ -27,7 +27,8 @@ data class Prefs(
     /** Kode bahasa per-app; kosong = ikuti sistem. */
     val language: String = "",
     val orderNotifications: Boolean = true,
-    val persistData: Boolean = false,
+    /** Kosongkan database setiap cold start, untuk test isolation (PRD §10). */
+    val resetOnLaunch: Boolean = false,
     val deterministic: Boolean = false,
     /** Pengali latency: 0, 1, 2, atau 3. */
     val latency: Int = 1,
@@ -67,7 +68,7 @@ class SettingsStore(private val context: Context) {
         val d = Prefs()
         return Prefs(
             this[THEME] ?: d.theme, this[LANGUAGE] ?: d.language, this[NOTIF] ?: d.orderNotifications,
-            this[PERSIST] ?: d.persistData, this[DETERMINISTIC] ?: d.deterministic, this[LATENCY] ?: d.latency,
+            this[RESET_ON_LAUNCH] ?: d.resetOnLaunch, this[DETERMINISTIC] ?: d.deterministic, this[LATENCY] ?: d.latency,
             this[ANIMATIONS] ?: d.animations, this[FLAKY] ?: d.flaky, this[VA_WINDOW] ?: d.vaWindowMs,
             this[STATUS_INTERVAL] ?: d.statusIntervalMs, this[HINTS] ?: d.locatorHints,
         )
@@ -75,7 +76,7 @@ class SettingsStore(private val context: Context) {
 
     private fun androidx.datastore.preferences.core.MutablePreferences.write(p: Prefs) {
         this[THEME] = p.theme; this[LANGUAGE] = p.language; this[NOTIF] = p.orderNotifications
-        this[PERSIST] = p.persistData; this[DETERMINISTIC] = p.deterministic; this[LATENCY] = p.latency
+        this[RESET_ON_LAUNCH] = p.resetOnLaunch; this[DETERMINISTIC] = p.deterministic; this[LATENCY] = p.latency
         this[ANIMATIONS] = p.animations; this[FLAKY] = p.flaky; this[VA_WINDOW] = p.vaWindowMs
         this[STATUS_INTERVAL] = p.statusIntervalMs; this[HINTS] = p.locatorHints
     }
@@ -106,7 +107,7 @@ class SettingsStore(private val context: Context) {
         val THEME = intPreferencesKey("theme")
         val LANGUAGE = stringPreferencesKey("language")
         val NOTIF = booleanPreferencesKey("order_notifications")
-        val PERSIST = booleanPreferencesKey("persist_data")
+        val RESET_ON_LAUNCH = booleanPreferencesKey("reset_on_launch")
         val DETERMINISTIC = booleanPreferencesKey("deterministic")
         val LATENCY = intPreferencesKey("latency")
         val ANIMATIONS = booleanPreferencesKey("animations")

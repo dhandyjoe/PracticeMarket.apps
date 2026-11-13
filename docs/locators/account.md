@@ -55,7 +55,7 @@ Deep link: `practiceapp://account`, `account/address`, `settings`, `help`. Test 
 | `dev_sw_animations` | Animasi | disimpan, belum memengaruhi animasi |
 | `dev_seg_flaky` | Peluang error server | 0% / 30% / 50% |
 | `dev_sw_hints` | Locator Hint Overlay | menampilkan id View di atas elemen; Compose tidak ikut |
-| `dev_sw_persist` | Simpan data setelah app ditutup | disimpan, belum diterapkan |
+| `dev_sw_reset_on_launch` | Reset data setiap app dibuka | ON: database dikosongkan setiap cold start (harus login ulang) |
 | `dev_seg_va` | Batas waktu VA | 30 dtk / 2 mnt / 15 mnt |
 | `dev_seg_interval` | Update status pesanan | 3 / 10 / 30 dtk / Manual |
 | `dev_btn_reset_data` / `dev_btn_reset_prefs` | Reset data… / Reset pengaturan… | dialog konfirmasi; reset data kembali ke Onboarding |

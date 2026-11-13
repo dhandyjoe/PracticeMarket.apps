@@ -4,9 +4,9 @@
 |---|---|
 | Dokumen | Product Requirements Document |
 | Produk | **PracticeMart**: aplikasi marketplace Android untuk latihan automation mobile, dengan fitur dompet digital **PracticePay** di dalamnya. Nama tampilan `PracticeMart`, package `com.automation.practice` |
-| Dokumen terkait | `architecture.md` v0.2 (arsitektur & tech stack) · `design.md` v1.0 (design system & spesifikasi layar) · Canvas Claude Design "PracticeMart — UI Design" (judul artboard = ID layar) |
-| Versi dokumen | 0.4 (Draft) |
-| Tanggal | 12 November 2026 |
+| Dokumen terkait | `architecture.md` v0.3 (arsitektur & tech stack) · `design.md` v1.0 (design system & spesifikasi layar) · Canvas Claude Design "PracticeMart — UI Design" (judul artboard = ID layar) |
+| Versi dokumen | 0.5 (Draft) |
+| Tanggal | 13 November 2026 |
 | Owner | Dhandy (Product & QA Automation) |
 | Status | Draft, menunggu review |
 | Target rilis | v1.0.0 |
@@ -19,6 +19,7 @@
 | 0.2 | 2026-11-12 | **Arah produk diubah.** Aplikasi tidak lagi berupa kumpulan modul latihan bergaya materi. Sekarang satu aplikasi simulasi yang realistis (PracticeMart + PracticePay), dan semua skill automation tersebar di fitur-fiturnya. Practice Hub, Info Sheet, dan result panel dihapus dari app. Materi, peta skill, dan locator pindah ke `docs/`. Test Controls menjadi **Developer Options**. Skill dari M01–M17 dipetakan ke fitur (§7). | Dhandy |
 | 0.3 | 2026-11-12 | Keputusan arsitektur (lihat `architecture.md`): app full offline tanpa permission `INTERNET`; data sesi (keranjang, stok, pesanan, saldo) disimpan di database in-memory dan **kembali ke default setiap app di-kill**; pengaturan tetap disimpan. Disesuaikan: §6.3, §7, FR-SHOP-17, EDGE-01, EDGE-07, §10, NFR-04, NFR-14, §14, §15. | Dhandy |
 | 0.4 | 2026-11-12 | Nama aplikasi ditetapkan **PracticeMart**, dengan **PracticePay** sebagai fitur di dalamnya (Q1 terjawab). Sinkronisasi dengan desain & `architecture.md`: teks persis untuk Register, Password Baru, Voucher, Bayar QR; kartu produk punya tombol "+ Keranjang"; overflow menu & Image Viewer; touch target; referensi `design.md`. | Dhandy |
+| 0.5 | 2026-11-13 | **Database lokal persisten** (Room `practice.db`, lihat `architecture.md` §6): akun & password (hash), sesi login, keranjang, wishlist, stok, pesanan, alamat, profil, saldo & PIN PracticePay (hash), riwayat transaksi, riwayat pencarian **bertahan setelah app di-kill dan update APK**; hilang hanya lewat *Clear data*/uninstall/Reset. Data per akun. Toggle "Simpan data setelah app ditutup" diganti "Reset data setiap app dibuka". Disesuaikan: §6.3, §7, FR-AUTH-17, FR-SHOP-17, FR-PAY-06, EDGE-01, EDGE-07, EDGE-10, §10, NFR-14, NFR-15, §15, Lampiran A. | Dhandy |
 
 ---
 
@@ -210,7 +211,7 @@ Setiap ID layar di atas sama dengan judul artboard di canvas desain. Status desa
 3. **Kesulitan automation muncul secara alami**, bukan dibuat-buat: delay jaringan, countdown, konten acak, error server sesekali, WebView pembayaran, dialog izin sistem.
 4. **Setiap kesulitan bisa dikendalikan** lewat Developer Options atau deep link (§10), sehingga kelas dan CI tetap deterministik.
 5. **Fitur khusus test disembunyikan** seperti developer menu di app produksi: Akun › Pengaturan › Developer Options, serta deep link `practiceapp://settings…`.
-6. **Data sesi bersifat sementara.** Keranjang, stok, pesanan, saldo, dan data lain bertahan selama app berjalan (termasuk rotasi, pindah layar, background, logout–login). **Saat app di-kill, semua data sesi kembali ke default.** Pengaturan (Developer Options, bahasa, tema, "Ingat saya") tetap tersimpan. Detail di `architecture.md` §6.
+6. **Data tersimpan seperti app sungguhan.** Akun, sesi login, keranjang, wishlist, stok, pesanan, alamat, saldo, dan data lain disimpan di database lokal per akun. **Data bertahan saat app di-kill dan saat update APK**; kembali ke default hanya lewat *Clear data* Android, uninstall, "Reset semua data", deep link `settings/reset`, atau toggle "Reset data setiap app dibuka". Pengaturan (Developer Options, bahasa, tema, "Ingat saya") juga tersimpan. Detail di `architecture.md` §6.
 
 ### 6.4 Learning Path per Level (di `docs/curriculum.md`)
 Level tetap ada, tetapi berupa daftar tugas yang menunjuk ke fitur app. Setiap level diakhiri checkpoint E2E.
@@ -296,7 +297,7 @@ Semua skill dari modul M01–M17 di v0.1 tetap wajib tercakup. Tabel ini menentu
 | | keyboard & IME | Search (IME Search), OTP, field yang tertutup keyboard di Form Alamat | Must |
 | | clipboard | Salin nomor VA & Order ID; tempel kode voucher | Must |
 | | notifikasi | Pesanan berhasil, status pesanan, transfer masuk | Must |
-| | background / kill / persistence | Background: checkout & keranjang tetap utuh. Kill: semua data sesi kembali default dan user harus login ulang. Persistence: keranjang & sesi bertahan hanya bila "Simpan data setelah app ditutup" ON | Must |
+| | background / kill / persistence | Background: checkout & keranjang tetap utuh. Kill lalu buka lagi: masih login, keranjang, saldo, pesanan utuh (persistence). Test isolation: toggle "Reset data setiap app dibuka", deep link reset, atau `clearState` | Must |
 | | status jaringan | Banner "Tidak ada koneksi" & tombol Bayar disabled | Must |
 | | lokasi | "Gunakan lokasi saat ini" di Form Alamat | Must |
 | | biometrik | Login sidik jari, konfirmasi transfer | Should |
@@ -346,6 +347,7 @@ Format: setiap requirement punya ID `FR-<AREA>-nn`. Teks yang disebut di require
 | FR-AUTH-14 | "Kirim ulang" disabled 30 detik dengan label `"Kirim ulang dalam 00:SS"` | Must |
 | FR-AUTH-16 | Password Baru: dua field + checklist live `"Minimal 8 karakter"`, `"Berisi huruf"`, `"Berisi angka"`, `"Kedua password sama"`; tombol "Simpan Password" disabled sampai semua terpenuhi; sukses → `"Password berhasil diubah"` + tombol "Ke halaman Masuk" | Must |
 | FR-AUTH-15 | Deep link `practiceapp://login?username=<x>` mengisi field username | Should |
+| FR-AUTH-17 | Sesi login disimpan: setelah app di-kill atau di-update, app langsung membuka Beranda dengan akun yang sama sampai user Keluar. Akun hasil Register dan password hasil Lupa Password juga tersimpan. Password disimpan dalam bentuk hash | Must |
 
 ### 8.2 Belanja (SHOP-01 … SHOP-10)
 | ID | Requirement | Prioritas |
@@ -367,7 +369,7 @@ Format: setiap requirement punya ID `FR-<AREA>-nn`. Teks yang disebut di require
 | FR-SHOP-14 | Overflow menu (content-desc `"Menu lainnya"`) di Detail Produk: Bagikan (share sheet sistem), Laporkan | Should |
 | FR-SHOP-15 | Flash sale: tombol "Beli" aktif hanya selama countdown; harga flash berlaku hanya selama countdown | Should |
 | FR-SHOP-16 | Keranjang: item dari produk+varian sama digabung; checkbox per item & Pilih Semua (tri-state); ubah qty; swipe-to-delete + Undo 4 dtk; "Simpan untuk nanti" | Must |
-| FR-SHOP-17 | Keranjang bertahan selama app berjalan, termasuk setelah logout lalu login ulang dengan user yang sama. Setelah app di-kill, keranjang kembali kosong (default); bila "Simpan data setelah app ditutup" ON, keranjang tetap ada | Must |
+| FR-SHOP-17 | Keranjang disimpan per akun: bertahan setelah logout lalu login ulang dengan user yang sama, setelah app di-kill, dan setelah update APK. Akun lain punya keranjang, wishlist, riwayat pencarian, pesanan, alamat, dan saldo sendiri | Must |
 | FR-SHOP-18 | Voucher (bottom sheet dari Keranjang): input kode + tombol "Tempel" (clipboard) + "Pakai"; daftar voucher dengan tombol "Pakai"/"Lepas" (voucher kedaluwarsa disabled); hanya 1 voucher aktif; pesan error spesifik (§8.7); tombol bawah `"Selesai · <KODE> terpasang"` | Must |
 
 ### 8.3 Checkout & Pembayaran (SHOP-11 … SHOP-15)
@@ -410,7 +412,7 @@ Seluruh alur Transfer (PAY-03, PAY-04) dibangun dengan **Jetpack Compose** (`tes
 | FR-PAY-03 | Transfer – pilih kontak: banner izin kontak (`READ_CONTACTS`) + tombol "Izinkan"; daftar kontak sticky header A–Z, search nama/nomor, deretan "Terakhir"; empty state `"Kontak tidak ditemukan"` | Must |
 | FR-PAY-04 | Bila izin kontak ditolak, daftar tetap berisi kontak uji bawaan (§11.4) | Must |
 | FR-PAY-05 | Transfer – nominal: input auto-format Rupiah, chip Rp50.000/Rp100.000/Rp200.000, catatan opsional (maks 50 karakter); `"Minimal transfer Rp10.000"`; `"Saldo tidak cukup"`; tombol Lanjut disabled bila tidak valid | Must |
-| FR-PAY-06 | PIN: bottom sheet dengan PIN pad (tombol angka bertext `0`–`9`, content-desc tombol hapus `"Hapus"`), 6 indikator; PIN valid `123456`; salah → `"PIN salah. Sisa N percobaan."`; 3× salah → PracticePay terkunci 30 dtk | Must |
+| FR-PAY-06 | PIN: bottom sheet dengan PIN pad (tombol angka bertext `0`–`9`, content-desc tombol hapus `"Hapus"`), 6 indikator; PIN valid `123456`; salah → `"PIN salah. Sisa N percobaan."`; 3× salah → PracticePay terkunci 30 dtk. PIN disimpan per akun dalam bentuk hash; hitungan salah dan kunci 30 dtk tetap berlaku walau app di-kill | Must |
 | FR-PAY-07 | Transfer berhasil → `"Transfer berhasil"`, saldo berkurang, transaksi muncul di Riwayat, notifikasi sistem untuk penerima simulasi | Must |
 | FR-PAY-08 | Opsi konfirmasi dengan sidik jari sebagai pengganti PIN | Should |
 | FR-PAY-09 | Scan QR: meminta izin kamera (dialog sistem); ditolak → banner `"Izin kamera ditolak"` + "Buka Pengaturan"; QR juga bisa dipilih dari galeri (Photo Picker) memakai gambar QR contoh di `docs/assets/qr/` | Must |
@@ -523,15 +525,16 @@ Skenario ini menjadi acuan suite test bawaan (§14) dan latihan untuk learner. T
 | N-11 | PIN salah 3× → PracticePay terkunci 30 dtk | negative | – |
 | N-12 | Transfer melebihi saldo / di bawah Rp10.000 | negative | validasi |
 | N-13 | Tolak izin kamera di Scan QR → banner + Buka Pengaturan | negative | UI sistem |
-| EDGE-01 | Kill app saat di keranjang → buka lagi → harus login ulang, keranjang kosong, stok kembali default. Variasi: dengan "Simpan data setelah app ditutup" ON → keranjang utuh | edge | lifecycle & persistence |
+| EDGE-01 | Kill app saat di keranjang → buka lagi → masih login, keranjang, badge, dan stok sama seperti sebelum kill. Variasi: dengan "Reset data setiap app dibuka" ON → harus login ulang, keranjang kosong, stok default | edge | lifecycle & persistence |
 | EDGE-02 | App ke background 10 dtk saat checkout → kembali, state utuh | edge | lifecycle |
 | EDGE-03 | Double tap tombol Bayar → hanya 1 order terbuat | edge | idempotensi |
 | EDGE-04 | Offline (airplane mode) saat checkout → banner `"Tidak ada koneksi"` & tombol Bayar disabled | edge | network |
 | EDGE-05 | `slow_user` menjalankan E2E-01 tanpa mengubah test (hanya wait yang benar) | edge | sync |
 | EDGE-06 | `glitch_user` menjalankan E2E-01, test harus **menangkap** bug §8.8 | edge | assertion |
-| EDGE-07 | Stok berkurang setelah order; "Reset semua data" maupun kill app mengembalikannya | edge | test isolation |
+| EDGE-07 | Stok berkurang setelah order dan tetap berkurang setelah kill; hanya "Reset semua data", toggle "Reset data setiap app dibuka", atau *Clear data* yang mengembalikannya | edge | test isolation |
 | EDGE-08 | Peluang error server 50%: Top Up dan Cek Status VA tetap lulus dengan retry yang benar | edge | retry |
 | EDGE-09 | Ganti bahasa ke English → test berbasis resource-id tetap lulus | edge | i18n |
+| EDGE-10 | Buat pesanan & ubah saldo → pasang APK versi baru dengan `adb install -r` → buka app → masih login, pesanan & saldo sama | edge | persistence saat update |
 
 ---
 
@@ -548,9 +551,9 @@ Fitur khusus test tidak tampil di alur utama. Letaknya di **Akun › Pengaturan 
 **Pengaturan Developer Options**
 | Pengaturan | Opsi | Default |
 |---|---|---|
-| Reset semua data (data sesi ke default tanpa kill) | tombol + dialog konfirmasi | – |
+| Reset semua data (semua data aplikasi ke default tanpa kill; user keluar) | tombol + dialog konfirmasi | – |
 | Reset pengaturan (semua pengaturan di tabel ini ke default) | tombol + dialog konfirmasi | – |
-| Simpan data setelah app ditutup (berlaku setelah app dibuka ulang) | on/off | off |
+| Reset data setiap app dibuka (cold start = data default & harus login ulang; untuk test isolation) | on/off | off |
 | Mode deterministik (seed tetap, tanggal app 2026-01-15) | on/off | off |
 | Network latency multiplier | 0× / 1× / 2× / 3× | 1× |
 | Animasi | on/off | on |
@@ -561,7 +564,7 @@ Fitur khusus test tidak tampil di alur utama. Letaknya di **Akun › Pengaturan 
 
 Bahasa dan Tema ada di Pengaturan umum (FR-ACC-06).
 
-**Penyimpanan:** semua pengaturan di atas, bahasa, tema, status onboarding, dan username "Ingat saya" disimpan permanen. Pengaturan tidak hilang saat app di-kill, hanya lewat "Reset pengaturan" atau *Clear data* Android. Data sesi selalu kembali ke default saat kill (prinsip §6.3 no. 6).
+**Penyimpanan:** semua pengaturan di atas, bahasa, tema, status onboarding, dan username "Ingat saya" disimpan permanen di DataStore; hilang hanya lewat "Reset pengaturan", *Clear data*, atau uninstall. Data aplikasi (akun, sesi, keranjang, pesanan, saldo, dst.) disimpan di database lokal dan juga bertahan saat kill & update APK (prinsip §6.3 no. 6).
 
 **AC**
 - *Given* mode deterministik ON, *When* Beranda dibuka dua kali, *Then* urutan rekomendasi identik.
@@ -659,14 +662,15 @@ Contoh: `shop_btn_add_to_cart`, `shop_txt_cart_total`, `shop_item_cart_row`, `pa
 | NFR-11 | Lokalisasi | Semua string di `strings.xml` (ID default, EN) |
 | NFR-12 | Maintainability | Kotlin, lint & detekt bersih, struktur package per area fitur |
 | NFR-13 | Realisme | Tidak ada teks materi, istilah automation, atau locator yang tampil di UI pada konfigurasi default |
-| NFR-14 | Siklus data | Setiap cold start, data sesi identik dengan seed default (`docs/test-data.md`); diverifikasi dengan instrumented test |
+| NFR-14 | Siklus data | Setelah Reset / *Clear data* / cold start dengan toggle "Reset data setiap app dibuka" ON, data identik dengan seed default (`docs/test-data.md`) |
+| NFR-15 | Persistensi | Data aplikasi bertahan setelah kill dan update APK; setiap perubahan skema database wajib punya migrasi (tanpa migrasi destruktif); password & PIN hanya disimpan sebagai hash |
 
 ## 14. Aset Test & Dokumentasi Bawaan
 ```
 tests/
 ├── maestro/
 │   ├── features/       # 1+ flow per fitur, tag smoke
-│   ├── e2e/            # E2E-01…12, N-01…13, EDGE-01…09 (sebisa mungkin dengan Maestro)
+│   ├── e2e/            # E2E-01…12, N-01…13, EDGE-01…10 (sebisa mungkin dengan Maestro)
 │   └── config.yaml
 ├── appium-python/
 │   ├── conftest.py     # capabilities, fixture reset via deep link
@@ -677,7 +681,7 @@ tests/
 architecture.md         # arsitektur & tech stack (root repo)
 design.md               # design system, komponen, spesifikasi layar (root repo)
 docs/
-├── getting-started.md  # install APK, emulator, Appium, Maestro, capabilities, perilaku reset saat kill
+├── getting-started.md  # install APK, emulator, Appium, Maestro, capabilities, data persisten & cara reset
 ├── curriculum.md       # level Basic/Intermediate/Advanced + tugas per fitur
 ├── skill-map.md        # §7 + Lampiran A
 ├── locators/<layar>.md # tabel locator per layar
@@ -695,7 +699,7 @@ docs/
 | Bahasa | Kotlin | Native, hierarchy UiAutomator paling bersih |
 | UI | Android Views (XML) + Material Components 3 untuk sebagian besar app; **Jetpack Compose untuk PracticePay Transfer & Riwayat** | resource-id muncul alami; Compose dipelajari di konteks nyata |
 | Struktur | `MainActivity` (bottom nav + Navigation Component) + Activity terpisah untuk `AuthActivity`, `CheckoutActivity`, `PracticePayActivity`, `SettingsActivity`, `HelpActivity`, semua `exported=true` | `appActivity` jelas; deep link mudah |
-| Data sesi | Room **in-memory** (keranjang, stok, pesanan, saldo, riwayat); file-based hanya bila "Simpan data setelah app ditutup" ON | kill app = kembali default; test isolation otomatis |
+| Data aplikasi | Room (SQLite) file-based `practice.db` di internal storage: akun, sesi login, keranjang, wishlist, riwayat pencarian, stok, pesanan, alamat, profil, saldo, PIN, transaksi (daftar tabel `architecture.md` §6.4) | realistis; bertahan saat kill & update APK; hilang saat *Clear data*/uninstall |
 | Pengaturan | DataStore Preferences | Developer Options & preferensi bertahan saat kill |
 | Data default | `assets/seed/*.json` (katalog, akun, voucher, kontak, alamat, saldo, transaksi), `assets/web/*.html`, `assets/images/` | offline & deterministik |
 | Detail | Lihat `architecture.md` | tech stack lengkap, skema, FakeBackend |
@@ -800,7 +804,7 @@ Dukungan Maestro dicek ulang terhadap versi terbaru saat implementasi.
 | Photo Picker | Foto profil, QR galeri | interaksi UI sistem / `push_file` | `tapOn` UI sistem |
 | Pindah app | Share, dialer, Pengaturan sistem | `activate_app`, `current_package` | `launchApp: appId:` |
 | Compose | Transfer PracticePay | `AppiumBy.ID` (testTagsAsResourceId) / text | `tapOn: id:` |
-| Reset state | Semua | deep link `settings/reset`, `noReset`/`fullReset` | `launchApp: clearState: true`, `openLink` |
+| Reset state | Semua (data persisten) | deep link `settings/reset`, `fullReset` atau `appium:noReset=false`, toggle "Reset data setiap app dibuka" | `launchApp: clearState: true`, `openLink` |
 | Retry & flaky | Top Up, Cek Status VA | pola retry di framework test | `retry` |
 | Menyimpan nilai dinamis | Order ID, nomor VA | simpan `.text` ke variabel | `copyTextFrom` + `${maestro.copiedText}` |
 

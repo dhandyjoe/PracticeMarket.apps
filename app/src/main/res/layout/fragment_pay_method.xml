@@ -43,6 +43,20 @@
             android:layout_height="@dimen/pm_stroke_hairline"
             android:background="@color/pm_outline" />
 
+        <TextView
+            android:id="@+id/shop_banner_offline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/pm_space_4"
+            android:accessibilityLiveRegion="assertive"
+            android:background="@drawable/bg_banner_error"
+            android:padding="@dimen/pm_space_3_5"
+            android:text="@string/offline_banner"
+            android:textColor="@color/pm_error_strong"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
         <ScrollView
             android:id="@+id/shop_scroll_pay"
             android:layout_width="match_parent"

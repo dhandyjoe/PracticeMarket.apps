@@ -41,7 +41,4 @@ data class CartLine(
 /** Maksimal pembelian per produk (FR-SHOP-09). */
 const val MAX_QTY = 10
 
-fun Long.toRupiah(nbsp: Boolean = false): String {
-    val digits = toString().reversed().chunked(3).joinToString(".").reversed()
-    return "Rp" + (if (nbsp) " " else "") + digits
-}
+fun Long.toRupiah(): String = "Rp" + toString().reversed().chunked(3).joinToString(".").reversed()

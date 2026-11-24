@@ -18,8 +18,7 @@ private val PALETTES = listOf(
     R.color.pm_img_purple_bg to R.color.pm_img_purple_ink,
 )
 
-/** [glitch] menukar gambar P003 dan P004 (bug `glitch_user`). */
-fun Product.visual(glitch: Boolean): Visual {
+fun Product.visual(): Visual {
     val icon = when {
         id == "P020" -> R.drawable.ic_prod_watch
         "Kaos" in name -> R.drawable.ic_prod_shirt
@@ -31,8 +30,7 @@ fun Product.visual(glitch: Boolean): Visual {
         else -> R.drawable.ic_prod_shirt
     }
     if (!inStock) return Visual(R.color.pm_img_gray_bg, R.color.pm_img_gray_ink, icon)
-    var n = id.drop(1).toInt()
-    if (glitch) n = when (n) { 3 -> 4; 4 -> 3; else -> n }
+    val n = id.drop(1).toInt()
     val (bg, ink) = PALETTES[(n - 1) % PALETTES.size]
     return Visual(bg, ink, icon)
 }

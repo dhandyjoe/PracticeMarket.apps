@@ -17,7 +17,7 @@ class ProductQueryTest {
         product("P060", "Buku Catatan A5", "buku", 15_000, 4.0, stock = 0),
     )
 
-    private fun ids(f: ProductFilter, glitch: Boolean = false) = catalog.applyFilter(f, glitch).map { it.id }
+    private fun ids(f: ProductFilter) = catalog.applyFilter(f).map { it.id }
 
     @Test fun `query cocok dengan sebagian nama tanpa peduli huruf besar`() {
         assertEquals(listOf("P001", "P003", "P004"), ids(ProductFilter(query = "KAOS")))
@@ -36,11 +36,8 @@ class ProductQueryTest {
         assertEquals("P060", ids(ProductFilter(sort = Sort.NEWEST)).first())
     }
 
-    @Test fun `bug glitch menukar dua item terakhir hanya untuk harga terendah`() {
-        val f = ProductFilter(sort = Sort.PRICE_ASC)
-        assertEquals(listOf("P060", "P001", "P003", "P010", "P004"), ids(f, glitch = true))
-        assertEquals(ids(f), ids(f, glitch = false).also { assertEquals(listOf("P060", "P001", "P003", "P004", "P010"), it) })
-        assertEquals(ids(ProductFilter(sort = Sort.PRICE_DESC)), ids(ProductFilter(sort = Sort.PRICE_DESC), glitch = true))
+    @Test fun `harga terendah urut naik`() {
+        assertEquals(listOf("P060", "P001", "P003", "P004", "P010"), ids(ProductFilter(sort = Sort.PRICE_ASC)))
     }
 
     @Test fun `jumlah filter aktif tidak menghitung urutan`() {
@@ -58,10 +55,9 @@ class ProductQueryTest {
         assertEquals(5, p.stockOf("", ""))
     }
 
-    @Test fun `format rupiah tanpa spasi kecuali glitch`() {
+    @Test fun `format rupiah tanpa spasi`() {
         assertEquals("Rp158.000", 158_000L.toRupiah())
         assertEquals("Rp1.250.000", 1_250_000L.toRupiah())
         assertEquals("Rp0", 0L.toRupiah())
-        assertEquals("Rp 75.000", 75_000L.toRupiah(nbsp = true))
     }
 }

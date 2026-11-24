@@ -15,10 +15,15 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.automation.practice.R
 import com.automation.practice.databinding.FragmentRegisterBinding
 import com.automation.practice.domain.AuthRules
 import com.automation.practice.domain.AuthRules.Strength
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val vm: AuthViewModel by activityViewModels()
@@ -41,13 +46,26 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         render(b)
 
         b.shopBtnRegister.setOnClickListener {
-            val email = b.shopInputRegEmail.text.toString()
-            val error = vm.register(b.shopInputRegName.text.toString(), email, b.shopInputRegPassword.text.toString())
-            if (error != null) {
-                emailServerError = error
-                render(b)
-            } else {
-                nav.showLogin(prefill = email.trim(), flashRes = R.string.register_success)
+            vm.register(b.shopInputRegName.text.toString(), b.shopInputRegEmail.text.toString(), b.shopInputRegPassword.text.toString())
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { vm.registering.collect { render(b) } }
+                launch {
+                    vm.registerEvents.collect { event ->
+                        when (event) {
+                            is RegisterEvent.Done -> nav.showLogin(prefill = event.email, flashRes = R.string.register_success)
+                            // Error format/duplikat tampil di bawah field email; jaringan & limit di Snackbar.
+                            is RegisterEvent.Failed -> if (event.messageRes in EMAIL_ERRORS) {
+                                emailServerError = event.messageRes
+                                render(b)
+                            } else {
+                                Snackbar.make(view, event.messageRes, Snackbar.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -86,7 +104,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         b.shopTxtRegConfirmError.isVisible = confirmBad
 
         b.shopBtnRegister.isEnabled = name.isNotBlank() && email.isNotEmpty() && emailError == null &&
-            strength >= Strength.MEDIUM && confirm == password && b.shopChkTerms.isChecked
+            strength >= Strength.MEDIUM && confirm == password && b.shopChkTerms.isChecked && !vm.registering.value
     }
 
     // FR-AUTH-12: link "Syarat & Ketentuan" membuka WebView.
@@ -104,5 +122,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
         b.shopTxtTerms.text = SpannableString(text).apply { setSpan(span, start, start + link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE) }
         b.shopTxtTerms.movementMethod = LinkMovementMethod.getInstance()
+    }
+    private companion object {
+        val EMAIL_ERRORS = setOf(R.string.error_email_taken, R.string.error_email_invalid)
     }
 }

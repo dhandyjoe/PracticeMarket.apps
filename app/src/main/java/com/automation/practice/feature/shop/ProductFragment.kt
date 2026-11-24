@@ -87,8 +87,7 @@ class ProductFragment : ShopFragment(R.layout.fragment_product) {
     private fun bindInfo() {
         b.shopTxtProductMeta.text = getString(R.string.product_id_category_fmt, product.id, vm.catalog.categoryName(product.categorySlug))
         b.shopTxtProductName.text = product.name
-        // Bug glitch_user: harga detail memakai spasi non-breaking (PRD §8.8).
-        b.shopTxtProductPrice.text = product.price.toRupiah(nbsp = vm.glitch)
+        b.shopTxtProductPrice.text = product.price.toRupiah()
         product.originalPrice?.let {
             b.shopRowDiscount.isVisible = true
             b.shopTxtProductOldPrice.text = it.toRupiah()

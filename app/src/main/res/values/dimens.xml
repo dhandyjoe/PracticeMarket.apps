@@ -18,7 +18,6 @@
     <dimen name="pm_field_height">52dp</dimen>
     <dimen name="pm_touch_min">48dp</dimen>
     <dimen name="pm_header_height">64dp</dimen>
-    <dimen name="pm_otp_box">56dp</dimen>
     <dimen name="pm_stroke_field">1.5dp</dimen>
     <dimen name="pm_dot">8dp</dimen>
     <dimen name="pm_dot_active">28dp</dimen>

@@ -10,6 +10,7 @@ import com.automation.practice.R
 import com.automation.practice.core.ui.applySystemInsets
 import com.automation.practice.databinding.FragmentAddressListBinding
 import com.automation.practice.databinding.ItemAddressBinding
+import com.automation.practice.domain.MAX_ADDRESSES
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -19,13 +20,14 @@ class AddressListFragment : ShopFragment(R.layout.fragment_address_list) {
         val b = FragmentAddressListBinding.bind(view)
         b.shopTopbar.setup(R.string.acc_address)
         b.addrBarAdd.applySystemInsets(bottom = true)
-        b.addrBtnAdd.setOnClickListener { nav.openAddressForm(0) }
+        b.addrBtnAdd.setOnClickListener { nav.openAddressForm("") }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.session.addresses.collect { list ->
                     b.addrList.removeAllViews()
                     b.addrTxtEmpty.isVisible = list.isEmpty()
+                    b.addrBtnAdd.isEnabled = list.size < MAX_ADDRESSES
                     list.forEach { a ->
                         val r = ItemAddressBinding.inflate(layoutInflater, b.addrList, false)
                         r.addrTxtLabel.text = a.label

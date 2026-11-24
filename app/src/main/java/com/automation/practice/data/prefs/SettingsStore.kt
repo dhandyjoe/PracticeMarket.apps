@@ -27,14 +27,12 @@ data class Prefs(
     /** Kode bahasa per-app; kosong = ikuti sistem. */
     val language: String = "",
     val orderNotifications: Boolean = true,
-    /** Kosongkan database setiap cold start, untuk test isolation (PRD §10). */
-    val resetOnLaunch: Boolean = false,
     val deterministic: Boolean = false,
     /** Pengali latency: 0, 1, 2, atau 3. */
     val latency: Int = 1,
     val animations: Boolean = true,
     /** Peluang error server dalam persen: 0, 30, 50. */
-    val flaky: Int = 30,
+    val flaky: Int = 0,
     val vaWindowMs: Long = 15 * 60_000L,
     /** Interval status pesanan (ms); 0 = Manual. */
     val statusIntervalMs: Long = 10_000L,
@@ -46,7 +44,6 @@ class SettingsStore(private val context: Context) {
     data class Snapshot(
         val onboardingSeen: Boolean,
         val rememberedUsername: String?,
-        val biometricUser: String?,
     )
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -68,7 +65,7 @@ class SettingsStore(private val context: Context) {
         val d = Prefs()
         return Prefs(
             this[THEME] ?: d.theme, this[LANGUAGE] ?: d.language, this[NOTIF] ?: d.orderNotifications,
-            this[RESET_ON_LAUNCH] ?: d.resetOnLaunch, this[DETERMINISTIC] ?: d.deterministic, this[LATENCY] ?: d.latency,
+            this[DETERMINISTIC] ?: d.deterministic, this[LATENCY] ?: d.latency,
             this[ANIMATIONS] ?: d.animations, this[FLAKY] ?: d.flaky, this[VA_WINDOW] ?: d.vaWindowMs,
             this[STATUS_INTERVAL] ?: d.statusIntervalMs, this[HINTS] ?: d.locatorHints,
         )
@@ -76,7 +73,7 @@ class SettingsStore(private val context: Context) {
 
     private fun androidx.datastore.preferences.core.MutablePreferences.write(p: Prefs) {
         this[THEME] = p.theme; this[LANGUAGE] = p.language; this[NOTIF] = p.orderNotifications
-        this[RESET_ON_LAUNCH] = p.resetOnLaunch; this[DETERMINISTIC] = p.deterministic; this[LATENCY] = p.latency
+        this[DETERMINISTIC] = p.deterministic; this[LATENCY] = p.latency
         this[ANIMATIONS] = p.animations; this[FLAKY] = p.flaky; this[VA_WINDOW] = p.vaWindowMs
         this[STATUS_INTERVAL] = p.statusIntervalMs; this[HINTS] = p.locatorHints
     }
@@ -84,7 +81,7 @@ class SettingsStore(private val context: Context) {
     // shortcut: baca blocking di main thread agar layar awal tahu tujuan tanpa flicker; pindah ke Flow bila datastore membesar.
     fun snapshot(): Snapshot = runBlocking {
         context.dataStore.data.first().let {
-            Snapshot(it[ONBOARDING_SEEN] ?: false, it[REMEMBERED_USERNAME], it[BIOMETRIC_USER])
+            Snapshot(it[ONBOARDING_SEEN] ?: false, it[REMEMBERED_USERNAME])
         }
     }
 
@@ -96,18 +93,12 @@ class SettingsStore(private val context: Context) {
         context.dataStore.edit { if (username == null) it.remove(REMEMBERED_USERNAME) else it[REMEMBERED_USERNAME] = username }
     }
 
-    suspend fun setBiometricUser(username: String) {
-        context.dataStore.edit { it[BIOMETRIC_USER] = username }
-    }
-
     private companion object {
         val ONBOARDING_SEEN = booleanPreferencesKey("onboarding_seen")
         val REMEMBERED_USERNAME = stringPreferencesKey("remembered_username")
-        val BIOMETRIC_USER = stringPreferencesKey("biometric_user")
         val THEME = intPreferencesKey("theme")
         val LANGUAGE = stringPreferencesKey("language")
         val NOTIF = booleanPreferencesKey("order_notifications")
-        val RESET_ON_LAUNCH = booleanPreferencesKey("reset_on_launch")
         val DETERMINISTIC = booleanPreferencesKey("deterministic")
         val LATENCY = intPreferencesKey("latency")
         val ANIMATIONS = booleanPreferencesKey("animations")

@@ -15,15 +15,6 @@
         android:orientation="horizontal"
         android:padding="@dimen/pm_space_5">
 
-        <ImageView
-            android:id="@+id/acc_img_avatar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_avatar"
-            android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-
         <TextView
             android:id="@+id/acc_txt_initials"
             style="@style/Pm.Headline"

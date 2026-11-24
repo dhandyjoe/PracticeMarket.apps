@@ -7,6 +7,14 @@ enum class Courier(val fee: Long) {
     SAME_DAY(35_000),
 }
 
+/** Provinsi satu-satunya yang dilayani Same Day (contract §2). */
+const val SAME_DAY_PROVINCE = "DKI Jakarta"
+
+fun courierAvailable(courier: Courier, province: String) = courier != Courier.SAME_DAY || province == SAME_DAY_PROVINCE
+
+/** Jam kirim Same Day `HH:mm` antara 09:00 dan 17:00 (PRD FR-PAYM-03). */
+fun isDeliveryTimeValid(hhmm: String) = Regex("""\d{2}:\d{2}""").matches(hhmm) && hhmm >= "09:00" && hhmm <= "17:00"
+
 data class Voucher(val code: String, val title: String, val note: String, val expired: Boolean = false)
 
 const val INSURANCE_FEE = 2_000L

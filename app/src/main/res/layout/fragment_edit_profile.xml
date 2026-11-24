@@ -41,36 +41,7 @@
                         android:gravity="center"
                         android:importantForAccessibility="no"
                         android:textColor="@color/pm_primary_pressed" />
-
-                    <ImageView
-                        android:id="@+id/acc_img_photo"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/acc_photo_cd"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
                 </FrameLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/pm_space_4"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/acc_btn_change_photo"
-                        style="@style/Widget.PracticeMart.Button.OutlinePrimary"
-                        android:layout_width="wrap_content"
-                        android:text="@string/acc_change_photo" />
-
-                    <TextView
-                        style="@style/Pm.Caption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/pm_space_1_5"
-                        android:text="@string/acc_photo_hint" />
-                </LinearLayout>
             </LinearLayout>
 
             <TextView

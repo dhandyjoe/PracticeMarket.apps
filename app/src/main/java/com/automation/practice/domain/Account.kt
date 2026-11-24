@@ -12,8 +12,9 @@ data class Profile(
     val photoUri: String? = null,
 )
 
+/** `id` string: web memakai "home", "office", "addr-<ms>" (contract §8.2); id lama numerik dibaca sebagai string. */
 data class Address(
-    val id: Int,
+    val id: String,
     val label: String,
     val recipient: String,
     val phone: String,
@@ -40,9 +41,17 @@ const val MOCK_PROVINCE = "DKI Jakarta"
 const val MOCK_CITY = "Jakarta Pusat"
 
 /** Seed alamat `standard_user` (PRD §11.3). */
+/** Batas jumlah alamat; sama dengan `validState` di firestore.rules (contract §8.4). */
+const val MAX_ADDRESSES = 20
+
+/** Label alamat yang ditulis ke Firestore: selalu Indonesia, sama dengan chip web (`address.ts`), tidak ikut locale. */
+const val ADDRESS_HOME = "Rumah"
+const val ADDRESS_OFFICE = "Kantor"
+const val ADDRESS_OTHER = "Lainnya"
+
 val SEED_ADDRESSES = listOf(
-    Address(1, "Rumah", "Standard User", "0812-3456-7890", "Jawa Barat", "Bandung", "Jl. Merdeka No. 10", "40111", true),
-    Address(2, "Kantor", "Standard User", "0812-3456-7890", "DKI Jakarta", "Jakarta Pusat", "Jl. Sudirman No. 1", "10220", false),
+    Address("home", "Rumah", "Standard User", "0812-3456-7890", "Jawa Barat", "Bandung", "Jl. Merdeka No. 10", "40111", true),
+    Address("office", "Kantor", "Standard User", "0812-3456-7890", "DKI Jakarta", "Jakarta Pusat", "Jl. Sudirman No. 1", "10220", false),
 )
 
 /** Kode pos valid = tepat 5 digit. */

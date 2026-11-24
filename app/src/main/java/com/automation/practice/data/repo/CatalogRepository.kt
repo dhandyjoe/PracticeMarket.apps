@@ -1,9 +1,6 @@
 package com.automation.practice.data.repo
 
 import android.content.res.AssetManager
-import com.automation.practice.data.db.PracticeDao
-import com.automation.practice.data.db.StockRow
-import com.automation.practice.domain.CartLine
 import com.automation.practice.domain.Category
 import com.automation.practice.domain.Product
 import com.automation.practice.domain.ProductFilter
@@ -13,10 +10,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * Katalog read-only dari assets/seed/catalog.json; stok yang berubah karena pesanan disimpan di tabel `stock`
- * sehingga tetap berkurang setelah kill (PRD EDGE-07).
+ * Katalog read-only dari assets/seed/catalog.json (contract §4.2). Stok berjalan global di Firestore `catalog/stock`;
+ * nilai di sini cache yang diperbarui lewat [applyStock].
  */
-class CatalogRepository(assets: AssetManager, private val dao: PracticeDao) {
+class CatalogRepository(assets: AssetManager) {
     val categories: List<Category>
     private val order: List<String>
     private val byId: MutableMap<String, Product>
@@ -30,29 +27,23 @@ class CatalogRepository(assets: AssetManager, private val dao: PracticeDao) {
         order = parsed.map { it.id }
         byId = parsed.associateBy { it.id }.toMutableMap()
         seed = byId.toMap()
-        dao.stock().forEach { setStock(it.productId, it.color, it.size, it.stock) }
     }
-
-    /** "Reset semua data": stok kembali ke seed (tabel `stock` dikosongkan oleh pemanggil). */
-    fun resetStock() { byId.clear(); byId.putAll(seed) }
 
     fun product(id: String) = byId[id]
 
-    /** Stok berubah oleh pesanan (negatif = kurangi, positif = kembalikan); tidak pernah di bawah 0. */
-    fun adjustStock(line: CartLine, delta: Int) {
-        val current = byId[line.productId]?.stockOf(line.color, line.size) ?: return
-        val next = (current + delta).coerceAtLeast(0)
-        setStock(line.productId, line.color, line.size, next)
-        dao.upsertStock(StockRow(line.productId, line.color, line.size, next))
-    }
+    /** Stok awal dari `catalog.json`, untuk membuat `catalog/stock` bila belum ada (contract §8.3). */
+    fun seedStock(): Stock = seed.mapValues { (_, p) -> p.variants.associate { "${it.color}|${it.size}" to it.stock } }
 
-    private fun setStock(productId: String, color: String, size: String, stock: Int) {
-        val p = byId[productId] ?: return
-        byId[p.id] = p.copy(variants = p.variants.map { if (it.color == color && it.size == size) it.copy(stock = stock) else it })
+    /** Pakai stok global terbaru; varian yang tidak ada di [stock] memakai stok awal. */
+    fun applyStock(stock: Stock) {
+        seed.forEach { (id, p) ->
+            val s = stock[id] ?: return@forEach
+            byId[id] = p.copy(variants = p.variants.map { v -> v.copy(stock = s["${v.color}|${v.size}"] ?: v.stock) })
+        }
     }
     fun categoryName(slug: String) = categories.firstOrNull { it.slug == slug }?.name.orEmpty()
 
-    fun query(filter: ProductFilter, glitch: Boolean = false) = products.applyFilter(filter, glitch)
+    fun query(filter: ProductFilter) = products.applyFilter(filter)
 
     /** Saran muncul mulai 2 karakter (FR-SHOP-04). */
     fun suggestions(q: String, limit: Int = 5): List<Product> {

@@ -56,7 +56,6 @@ import com.automation.practice.domain.filterHistory
 import com.automation.practice.domain.formatDate
 import com.automation.practice.domain.formatHm
 import com.automation.practice.domain.formatHms
-import com.automation.practice.domain.historyBacklog
 import com.automation.practice.domain.toRupiah
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
@@ -71,7 +70,6 @@ class HistoryFragment : ShopFragment(0) {
     private var range by mutableStateOf<LongRange?>(null)
     private var refreshing by mutableStateOf(false)
     private var updatedAt by mutableStateOf(0L)
-    private val backlog = historyBacklog()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val appContainer = requireContext().app.container
@@ -83,13 +81,13 @@ class HistoryFragment : ShopFragment(0) {
                     val session by vm.session.transactions.collectAsState()
                     val scope = rememberCoroutineScope()
                     HistoryScreen(
-                        all = session + backlog, range = range, refreshing = refreshing, updatedAt = updatedAt,
+                        all = session, range = range, refreshing = refreshing, updatedAt = updatedAt,
                         onBack = { nav.back() }, onPickRange = ::pickRange, onClearRange = { range = null },
                         onRefresh = {
                             scope.launch {
                                 refreshing = true
                                 delay(600L * appContainer.settings.prefs.value.latency)
-                                if (appContainer.serverFails()) Snackbar.make(requireView(), R.string.load_failed, Snackbar.LENGTH_LONG).show()
+                                if (appContainer.serverFails() || !appContainer.refresh()) Snackbar.make(requireView(), R.string.load_failed, Snackbar.LENGTH_LONG).show()
                                 else updatedAt = appContainer.now()
                                 refreshing = false
                             }

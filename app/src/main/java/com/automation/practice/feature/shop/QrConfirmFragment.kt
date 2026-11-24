@@ -3,6 +3,7 @@ package com.automation.practice.feature.shop
 import androidx.core.os.bundleOf
 import com.automation.practice.R
 import com.automation.practice.domain.merchantOf
+import com.automation.practice.domain.qrTitle
 
 /** PAY-05 Konfirmasi bayar QR: merchant + nominal (bebas atau tetap) → PIN → "Pembayaran berhasil" (FR-PAY-10). */
 class QrConfirmFragment : PayEntryFragment() {
@@ -19,7 +20,7 @@ class QrConfirmFragment : PayEntryFragment() {
     override val successTitle = R.string.pay_qr_ok
     override val successBodyRes = R.string.pay_qr_ok_body_fmt
 
-    override fun commit(amount: Long, note: String) = vm.session.debit(amount, getString(R.string.pay_tx_qr_fmt, merchant.name))
+    override suspend fun commit(amount: Long, note: String) = vm.failureText(vm.session.spend(amount, qrTitle(merchant.name)))
 
     companion object {
         private const val ARG_MERCHANT = "merchant"

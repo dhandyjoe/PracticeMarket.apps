@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.automation.practice.R
+import com.automation.practice.core.net.onlineFlow
 import com.automation.practice.core.ui.applySystemInsets
 import com.automation.practice.databinding.FragmentPayMethodBinding
 import com.automation.practice.domain.COD_LIMIT
@@ -30,6 +31,7 @@ private const val EXPIRY_DIGITS = 4
 /** SHOP-12 Metode Pembayaran: kartu, Virtual Account, PracticePay, COD. */
 class PayMethodFragment : ShopFragment(R.layout.fragment_pay_method) {
     private var _b: FragmentPayMethodBinding? = null
+    private var online = true
     private val b get() = _b!!
 
     private val total get() = vm.quote().total
@@ -84,7 +86,8 @@ class PayMethodFragment : ShopFragment(R.layout.fragment_pay_method) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.processing.collect { render() }
+                launch { vm.processing.collect { render() } }
+                launch { requireContext().onlineFlow().collect { online = it; render() } }
             }
         }
         render()
@@ -149,7 +152,8 @@ class PayMethodFragment : ShopFragment(R.layout.fragment_pay_method) {
         binding.shopBtnPay.text = getString(R.string.pay_submit_fmt, total.toRupiah())
         val processing = vm.processing.value
         binding.shopOverlayProcessing.isVisible = processing
-        binding.shopBtnPay.isEnabled = !processing && vm.checkoutLines().isNotEmpty() && when (vm.chosenMethod) {
+        binding.shopBannerOffline.isVisible = !online
+        binding.shopBtnPay.isEnabled = online && !processing && vm.checkoutLines().isNotEmpty() && when (vm.chosenMethod) {
             PayMethod.CARD -> cardValid()
             PayMethod.VA -> true
             PayMethod.WALLET -> walletOk
@@ -164,8 +168,6 @@ class PayMethodFragment : ShopFragment(R.layout.fragment_pay_method) {
     }
 
     private fun onPayClicked() {
-        // Bug glitch_user: tap pertama "Bayar" tidak melakukan apa-apa (PRD §8.8 no. 3).
-        if (vm.glitch && !vm.session.glitchPayTapUsed) { vm.session.glitchPayTapUsed = true; return }
         if (vm.chosenMethod == PayMethod.WALLET) PinSheetFragment().show(requireActivity().supportFragmentManager, "pin") else startPay()
     }
 
@@ -177,7 +179,7 @@ class PayMethodFragment : ShopFragment(R.layout.fragment_pay_method) {
             PayMethod.WALLET -> getString(R.string.pay_method_wallet_label)
             PayMethod.COD -> getString(R.string.pay_method_cod_label)
         }
-        vm.pay(vm.chosenMethod, label, digits, vm.chosenBank)
+        vm.pay(vm.chosenMethod, label, digits)
     }
 
     private companion object {

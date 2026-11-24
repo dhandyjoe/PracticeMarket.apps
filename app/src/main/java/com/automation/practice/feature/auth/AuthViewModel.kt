@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.automation.practice.R
 import com.automation.practice.app
-import com.automation.practice.data.repo.Behavior
+import com.automation.practice.data.repo.AuthError
 import com.automation.practice.data.repo.LoginResult
 import com.automation.practice.data.repo.User
 import com.automation.practice.domain.AuthRules
@@ -28,11 +28,14 @@ data class LoginUiState(
     val passwordError: Boolean = false,
 )
 
-data class LoggedIn(val showOnboarding: Boolean)
+sealed interface RegisterEvent {
+    data class Done(val email: String) : RegisterEvent
+    data class Failed(@StringRes val messageRes: Int) : RegisterEvent
+}
 
 /**
  * Satu ViewModel untuk seluruh alur Auth (scope Activity), supaya hitungan gagal login,
- * countdown kunci/kirim ulang, dan email reset bertahan saat rotasi.
+ * countdown kunci bertahan saat rotasi.
  * shortcut: pecah per layar bila alur Auth bertambah besar.
  */
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -44,18 +47,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _lockLeft = MutableStateFlow(0)
     val lockLeft: StateFlow<Int> = _lockLeft.asStateFlow()
 
-    private val _resendLeft = MutableStateFlow(0)
-    val resendLeft: StateFlow<Int> = _resendLeft.asStateFlow()
-
-    private val _resetEmail = MutableStateFlow<String?>(null)
-    val resetEmail: StateFlow<String?> = _resetEmail.asStateFlow()
-
-    private val _events = Channel<LoggedIn>(Channel.BUFFERED)
+    private val _events = Channel<Unit>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
+
+    private val _registering = MutableStateFlow(false)
+    val registering: StateFlow<Boolean> = _registering.asStateFlow()
+
+    private val _registerEvents = Channel<RegisterEvent>(Channel.BUFFERED)
+    val registerEvents = _registerEvents.receiveAsFlow()
 
     private var failedLogins = 0
     private var lockJob: Job? = null
-    private var resendJob: Job? = null
 
     fun login(username: String, password: String, remember: Boolean) {
         val name = username.trim()
@@ -74,34 +76,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     failedLogins = 0
                     finishLogin(result.user, remember)
                 }
-                LoginResult.Locked -> _login.value = LoginUiState(bannerRes = R.string.login_error_locked)
-                LoginResult.Invalid -> {
-                    _login.value = LoginUiState(bannerRes = R.string.login_error_invalid)
-                    if (++failedLogins >= AuthRules.MAX_FAILED_LOGINS) startLock()
+                is LoginResult.Failed -> {
+                    _login.value = LoginUiState(bannerRes = messageRes(result.error))
+                    // Hanya kredensial salah yang dihitung untuk kunci 30 detik (PRD FR-AUTH-07).
+                    if (result.error == AuthError.INVALID_CREDENTIALS && ++failedLogins >= AuthRules.MAX_FAILED_LOGINS) startLock()
                 }
             }
         }
     }
 
-    fun loginWithBiometric() {
-        val username = container.settings.snapshot().biometricUser ?: return
-        viewModelScope.launch {
-            container.auth.loginAs(username)?.let { finishLogin(it, remember = null) }
-        }
-    }
-
-    fun biometricFailed() {
-        _login.value = LoginUiState(bannerRes = R.string.biometric_failed)
-    }
-
     fun editedUsername() = _login.update { it.copy(usernameError = false) }
     fun editedPassword() = _login.update { it.copy(passwordError = false) }
 
-    private suspend fun finishLogin(user: User, remember: Boolean?) {
-        if (remember != null) container.settings.setRememberedUsername(if (remember) user.username else null)
-        container.settings.setBiometricUser(user.username)
+    private suspend fun finishLogin(user: User, remember: Boolean) {
+        container.settings.setRememberedUsername(if (remember) user.email else null)
         _login.value = LoginUiState()
-        _events.send(LoggedIn(showOnboarding = user.behavior == Behavior.NEW))
+        _events.send(Unit)
     }
 
     private fun startLock() {
@@ -112,37 +102,32 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** Null bila sukses, selain itu id string error. */
+    /** Hasil dikirim lewat [registerEvents] supaya tidak hilang saat rotasi. */
+    fun register(name: String, email: String, password: String) {
+        if (_registering.value) return
+        _registering.value = true
+        viewModelScope.launch {
+            val e = email.trim()
+            val error = container.auth.register(name.trim(), e, password)
+            _registering.value = false
+            // Email ditolak Firebase saat Register = format email, bukan kredensial salah.
+            val event = when (error) {
+                null -> RegisterEvent.Done(e)
+                AuthError.INVALID_CREDENTIALS -> RegisterEvent.Failed(R.string.error_email_invalid)
+                else -> RegisterEvent.Failed(messageRes(error))
+            }
+            _registerEvents.send(event)
+        }
+    }
+
     @StringRes
-    fun register(name: String, email: String, password: String): Int? =
-        if (container.auth.register(name.trim(), email.trim(), password) == null) R.string.error_email_taken else null
-
-    /** Null bila sukses, selain itu id string error. */
-    @StringRes
-    fun sendCode(email: String): Int? {
-        val e = email.trim()
-        if (!AuthRules.isValidEmail(e)) return R.string.error_email_invalid
-        if (container.auth.findByEmail(e) == null) return R.string.forgot_email_unknown
-        _resetEmail.value = e
-        resend()
-        return null
+    private fun messageRes(error: AuthError) = when (error) {
+        AuthError.INVALID_CREDENTIALS -> R.string.login_error_invalid
+        AuthError.EMAIL_TAKEN -> R.string.error_email_taken
+        AuthError.TOO_MANY_REQUESTS -> R.string.error_too_many_requests
+        AuthError.NETWORK -> R.string.error_network
+        AuthError.FAILED -> R.string.load_failed
     }
-
-    fun resend() {
-        resendJob?.cancel()
-        resendJob = countdown(_resendLeft, AuthRules.RESEND_SECONDS)
-    }
-
-    fun resetFlow() {
-        resendJob?.cancel()
-        _resendLeft.value = 0
-        _resetEmail.value = null
-    }
-
-    fun verifyOtp(code: String) = code == AuthRules.OTP_CODE
-
-    fun changePassword(newPassword: String): Boolean =
-        _resetEmail.value?.let { container.auth.changePassword(it, newPassword) } ?: false
 
     // Dihitung dari timestamp, bukan dikurangi 1 per tick, supaya tetap benar setelah rotasi (ARCHITECTURE.md §9).
     private fun countdown(out: MutableStateFlow<Int>, seconds: Int, onDone: () -> Unit = {}): Job =

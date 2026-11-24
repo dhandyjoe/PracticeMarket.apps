@@ -18,11 +18,9 @@ import kotlinx.coroutines.launch
 interface AuthNavigator {
     fun showLogin(prefill: String? = null, flashRes: Int = 0)
     fun showRegister()
-    fun showForgotPassword()
-    fun showNewPassword()
     fun showTerms()
     fun onboardingDone(toHome: Boolean)
-    fun onLoggedIn(showOnboarding: Boolean)
+    fun onLoggedIn()
 }
 
 class AuthActivity : AppCompatActivity(), AuthNavigator {
@@ -42,7 +40,6 @@ class AuthActivity : AppCompatActivity(), AuthNavigator {
         val uri = intent.data
         when (uri?.host) {
             "register" -> replaceRoot(RegisterFragment())
-            "forgot-password" -> replaceRoot(OtpFragment())
             "login" -> showLogin(prefill = uri.getQueryParameter("username"))
             else -> if (settings.snapshot().onboardingSeen) showLogin() else replaceRoot(OnboardingFragment.newInstance(toHome = false))
         }
@@ -50,8 +47,6 @@ class AuthActivity : AppCompatActivity(), AuthNavigator {
 
     override fun showLogin(prefill: String?, flashRes: Int) = replaceRoot(LoginFragment.newInstance(prefill, flashRes))
     override fun showRegister() = push(RegisterFragment())
-    override fun showForgotPassword() = push(OtpFragment())
-    override fun showNewPassword() = push(NewPasswordFragment())
     override fun showTerms() = startActivity(Intent(this, TermsActivity::class.java))
 
     override fun onboardingDone(toHome: Boolean) {
@@ -61,9 +56,7 @@ class AuthActivity : AppCompatActivity(), AuthNavigator {
         }
     }
 
-    override fun onLoggedIn(showOnboarding: Boolean) {
-        if (showOnboarding) replaceRoot(OnboardingFragment.newInstance(toHome = true)) else goHome()
-    }
+    override fun onLoggedIn() = goHome()
 
     private fun goHome() {
         startActivity(Intent(this, MainActivity::class.java))

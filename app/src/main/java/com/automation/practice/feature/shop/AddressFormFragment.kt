@@ -19,6 +19,9 @@ import androidx.core.widget.doAfterTextChanged
 import com.automation.practice.R
 import com.automation.practice.core.ui.applySystemInsets
 import com.automation.practice.databinding.FragmentAddressFormBinding
+import com.automation.practice.domain.ADDRESS_HOME
+import com.automation.practice.domain.ADDRESS_OFFICE
+import com.automation.practice.domain.ADDRESS_OTHER
 import com.automation.practice.domain.Address
 import com.automation.practice.domain.MOCK_CITY
 import com.automation.practice.domain.MOCK_PROVINCE
@@ -30,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar
 /** ACC-03 Form Alamat: lokasi saat ini, label, Provinsi→Kota bertingkat, kode pos 5 digit, alamat utama (FR-ACC-03/04). */
 class AddressFormFragment : ShopFragment(R.layout.fragment_address_form) {
     private lateinit var b: FragmentAddressFormBinding
-    private val editId get() = requireArguments().getInt(ARG_ID)
+    private val editId get() = requireArguments().getString(ARG_ID).orEmpty()
     private val provinces = REGIONS.keys.toList()
 
     private val locationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -39,7 +42,7 @@ class AddressFormFragment : ShopFragment(R.layout.fragment_address_form) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         b = FragmentAddressFormBinding.bind(view)
-        b.shopTopbar.setup(if (editId == 0) R.string.addr_title_add else R.string.addr_title_edit)
+        b.shopTopbar.setup(if (editId.isEmpty()) R.string.addr_title_add else R.string.addr_title_edit)
         // Keyboard sengaja menutupi tombol Simpan (FR-ACC-04): bar hanya memakai inset nav bar; isi form tetap bisa digulir.
         b.addrBarSave.applySystemInsets(bottom = true, ime = false)
         b.addrScroll.applySystemInsets(bottom = true)
@@ -78,7 +81,7 @@ class AddressFormFragment : ShopFragment(R.layout.fragment_address_form) {
     }
 
     private fun fill(a: Address) {
-        b.addrGroupLabel.check(when (a.label) { getString(R.string.addr_label_office) -> R.id.addr_chip_office; getString(R.string.addr_label_other) -> R.id.addr_chip_other; else -> R.id.addr_chip_home })
+        b.addrGroupLabel.check(when (a.label) { ADDRESS_OFFICE -> R.id.addr_chip_office; ADDRESS_OTHER -> R.id.addr_chip_other; else -> R.id.addr_chip_home })
         b.addrInputName.setText(a.recipient)
         b.addrInputPhone.setText(a.phone)
         b.addrInputStreet.setText(a.street)
@@ -87,9 +90,7 @@ class AddressFormFragment : ShopFragment(R.layout.fragment_address_form) {
         setProvince(a.province, a.city)
     }
 
-    private fun label() = b.addrGroupLabel.checkedChipId.let {
-        getString(when (it) { R.id.addr_chip_office -> R.string.addr_label_office; R.id.addr_chip_other -> R.string.addr_label_other; else -> R.string.addr_label_home })
-    }
+    private fun label() = when (b.addrGroupLabel.checkedChipId) { R.id.addr_chip_office -> ADDRESS_OFFICE; R.id.addr_chip_other -> ADDRESS_OTHER; else -> ADDRESS_HOME }
 
     private fun setProvince(province: String, city: String?) {
         b.addrSpnProvince.setSelection(provinces.indexOf(province).coerceAtLeast(0))
@@ -134,7 +135,7 @@ class AddressFormFragment : ShopFragment(R.layout.fragment_address_form) {
 
     companion object {
         private const val ARG_ID = "id"
-        fun newInstance(id: Int) = AddressFormFragment().apply { arguments = bundleOf(ARG_ID to id) }
+        fun newInstance(id: String) = AddressFormFragment().apply { arguments = bundleOf(ARG_ID to id) }
 
         private data class CityPoint(val province: String, val city: String, val lat: Double, val lon: Double)
 

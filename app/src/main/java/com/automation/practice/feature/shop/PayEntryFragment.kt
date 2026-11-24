@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import com.automation.practice.R
 import com.automation.practice.core.ui.compose.Pm
 import com.automation.practice.core.ui.compose.PmAvatar
@@ -61,8 +63,10 @@ import com.automation.practice.domain.MIN_TRANSFER
 import com.automation.practice.domain.NOTE_MAX
 import com.automation.practice.domain.amountError
 import com.automation.practice.domain.parseAmount
+import com.automation.practice.domain.topUpError
 import com.automation.practice.domain.toRupiah
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 /**
  * Dasar alur "nominal → PIN → berhasil" PracticePay (Transfer PAY-04 dan Bayar QR PAY-05), Compose + testTag.
@@ -77,16 +81,22 @@ abstract class PayEntryFragment : ShopFragment(0) {
     protected abstract val fixedAmount: Long?
     protected abstract val initialAmount: Long
     protected abstract val isTransfer: Boolean
+
+    /** Top Up: batas min/maks sendiri dan langsung dikomit tanpa PIN. */
+    protected open val topUp = false
     @get:StringRes protected abstract val buttonRes: Int
     @get:StringRes protected abstract val successTitle: Int
     @get:StringRes protected abstract val successBodyRes: Int
 
     /** Kurangi saldo dan catat transaksi; false bila saldo tidak cukup. */
-    protected abstract fun commit(amount: Long, note: String): Boolean
+    /** Transaksi saldo; teks error (contract §6) atau null bila berhasil. */
+    protected abstract suspend fun commit(amount: Long, note: String): String?
 
     private var done by mutableStateOf<Long?>(null)
         private set
     private var pending: Pair<Long, String>? = null
+    private var busy = false
+    private lateinit var backToWallet: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         ComposeView(requireContext()).apply {
@@ -96,14 +106,17 @@ abstract class PayEntryFragment : ShopFragment(0) {
                     val balance by vm.session.balance.collectAsState()
                     PayEntryScreen(
                         title = stringResource(title), name = payeeName, sub = payeeSub, balance = balance,
-                        fixed = fixedAmount, initial = initialAmount, transfer = isTransfer,
+                        fixed = fixedAmount, initial = initialAmount, transfer = isTransfer, topUp = topUp,
                         buttonLabel = { stringResource(buttonRes, it.toRupiah()) },
                         done = done, successTitle = stringResource(successTitle),
                         successBody = done?.let { stringResource(successBodyRes, it.toRupiah(), payeeName) }.orEmpty(),
                         onBack = { nav.back() },
                         onSubmit = { amount, note ->
-                            pending = amount to note
-                            PinSheetFragment().show(requireActivity().supportFragmentManager, "pin")
+                            if (topUp) submit(amount, note)
+                            else {
+                                pending = amount to note
+                                PinSheetFragment().show(requireActivity().supportFragmentManager, "pin")
+                            }
                         },
                         // nav diambil dulu: selectTab melepas fragment ini, sesudahnya requireActivity() melempar.
                         onHistory = { val n = nav; n.selectTab(Tab.PAY); n.openHistory() },
@@ -115,20 +128,30 @@ abstract class PayEntryFragment : ShopFragment(0) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // Setelah sukses, Back kembali ke PracticePay, bukan ke form nominal yang sudah dipakai.
-        val backToWallet = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, enabled = done != null) { nav.selectTab(Tab.PAY) }
+        backToWallet = requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, enabled = done != null) { nav.selectTab(Tab.PAY) }
         requireActivity().supportFragmentManager.setFragmentResultListener(PinSheetFragment.RESULT_KEY, viewLifecycleOwner) { _, r ->
             val (amount, note) = pending ?: return@setFragmentResultListener
             if (!r.getBoolean(PinSheetFragment.RESULT_OK)) return@setFragmentResultListener
             pending = null
-            if (commit(amount, note)) { done = amount; backToWallet.isEnabled = true }
-            else Snackbar.make(requireView(), "Saldo tidak cukup", Snackbar.LENGTH_SHORT).show()
+            submit(amount, note)
+        }
+    }
+
+    private fun submit(amount: Long, note: String) {
+        if (busy) return
+        busy = true
+        viewLifecycleOwner.lifecycleScope.launch {
+            val error = commit(amount, note)
+            busy = false
+            if (error == null) { done = amount; backToWallet.isEnabled = true }
+            else Snackbar.make(requireView(), error, Snackbar.LENGTH_SHORT).show()
         }
     }
 }
 
 @Composable
 private fun PayEntryScreen(
-    title: String, name: String, sub: String, balance: Long, fixed: Long?, initial: Long, transfer: Boolean,
+    title: String, name: String, sub: String, balance: Long, fixed: Long?, initial: Long, transfer: Boolean, topUp: Boolean,
     buttonLabel: @Composable (Long) -> String, done: Long?, successTitle: String, successBody: String,
     onBack: () -> Unit, onSubmit: (Long, String) -> Unit, onHistory: () -> Unit, onFinish: () -> Unit,
 ) {
@@ -139,7 +162,12 @@ private fun PayEntryScreen(
     var raw by remember { mutableStateOf(if (initial > 0) initial.toString() else "") }
     var note by remember { mutableStateOf("") }
     val amount = fixed ?: parseAmount(raw)
-    val err = if (transfer) amountError(amount, balance) else if (amount > balance) "Saldo tidak cukup" else null
+    val err = when {
+        topUp -> topUpError(amount)
+        transfer -> amountError(amount, balance)
+        amount > balance -> "Saldo tidak cukup"
+        else -> null
+    }
     val valid = amount > 0 && err == null && (!transfer || amount >= MIN_TRANSFER)
 
     Column(Modifier.fillMaxSize().background(Pm.surface).imePadding()) {
@@ -172,13 +200,13 @@ private fun PayEntryScreen(
                         textStyle = TextStyle(fontFamily = Pm.Grotesk, fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Pm.ink),
                         cursorBrush = SolidColor(Pm.primary),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.fillMaxWidth().tag(if (transfer) "pay_input_amount" else "pay_input_qr_amount").semantics { contentDescription = hint },
+                        modifier = Modifier.fillMaxWidth().tag(if (transfer) "pay_input_amount" else if (topUp) "pay_input_topup" else "pay_input_qr_amount").semantics { contentDescription = hint },
                         decorationBox = { inner -> Box { if (shown.isEmpty()) PmText(hint, 30, FontWeight.Bold, Pm.muted, Pm.Grotesk); inner() } },
                     )
                 }
                 Row(Modifier.fillMaxWidth().padding(top = 6.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                     if (err != null) PmText(err, 12, FontWeight.Bold, Pm.error, modifier = Modifier.tag("pay_txt_amount_error"))
-                    else PmText(if (transfer) stringResource(R.string.pay_min_hint) else "", 12, color = Pm.muted)
+                    else PmText(if (transfer || topUp) stringResource(R.string.pay_min_hint) else "", 12, color = Pm.muted)
                     PmText(stringResource(R.string.pay_balance_fmt, balance.toRupiah()), 12, color = Pm.muted, modifier = Modifier.tag("pay_txt_balance"))
                 }
             }

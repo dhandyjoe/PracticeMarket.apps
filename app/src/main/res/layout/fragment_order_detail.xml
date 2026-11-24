@@ -158,6 +158,12 @@
         android:paddingTop="@dimen/pm_space_3">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/shop_btn_confirm_paid"
+            style="@style/Widget.PracticeMart.Button.Primary"
+            android:text="@string/va_paid"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/shop_btn_cancel_order"
             style="@style/Widget.PracticeMart.Button.Outline"
             android:text="@string/ord_cancel_order"

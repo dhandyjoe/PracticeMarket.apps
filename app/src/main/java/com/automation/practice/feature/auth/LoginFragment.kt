@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -51,20 +48,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         b.shopBtnLogin.setOnClickListener { submit(b) }
-        b.shopBtnForgotPassword.setOnClickListener { nav.showForgotPassword() }
         b.shopBtnRegisterLink.setOnClickListener { nav.showRegister() }
-
-        // FR-AUTH-11: tersedia setelah login pertama dan bila perangkat punya sidik jari terdaftar.
-        val canUseBiometric = prefs.biometricUser != null &&
-            BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
-            BiometricManager.BIOMETRIC_SUCCESS
-        b.shopBtnBiometric.isEnabled = canUseBiometric
-        b.shopBtnBiometric.setOnClickListener { promptBiometric() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch { combine(vm.loginState, vm.lockLeft, ::Pair).collect { (ui, lock) -> render(b, ui, lock) } }
-                launch { vm.events.collect { nav.onLoggedIn(it.showOnboarding) } }
+                launch { vm.events.collect { nav.onLoggedIn() } }
             }
         }
     }
@@ -89,22 +78,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             else -> getString(R.string.login_submit)
         }
         b.shopProgressLogin.isVisible = ui.loading
-    }
-
-    private fun promptBiometric() {
-        val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.biometric_title))
-            .setNegativeButtonText(getString(R.string.biometric_cancel))
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
-            .build()
-        BiometricPrompt(
-            this,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) = vm.loginWithBiometric()
-                override fun onAuthenticationFailed() = vm.biometricFailed()
-            },
-        ).authenticate(info)
     }
 
     companion object {

@@ -20,7 +20,6 @@ import com.automation.practice.databinding.ItemOrderBinding
 import com.automation.practice.databinding.ItemOrdersPageBinding
 import com.automation.practice.domain.Order
 import com.automation.practice.domain.OrderStatus
-import com.automation.practice.domain.PayMethod
 import com.automation.practice.domain.formatHm
 import com.automation.practice.domain.toRupiah
 import com.google.android.material.snackbar.Snackbar
@@ -73,7 +72,7 @@ class OrdersFragment : ShopFragment(R.layout.fragment_orders) {
         b.shopRefreshOrders.isRefreshing = true
         viewLifecycleOwner.lifecycleScope.launch {
             delay(REFRESH_MS * container.settings.prefs.value.latency)
-            if (container.serverFails()) {
+            if (container.serverFails() || !container.refresh()) {
                 Snackbar.make(b.root, R.string.load_failed, Snackbar.LENGTH_LONG).setAction(R.string.retry) { refresh() }.show()
             } else {
                 updatedAt = container.now()
@@ -90,7 +89,7 @@ class OrdersFragment : ShopFragment(R.layout.fragment_orders) {
     }
 
     private fun open(o: Order) {
-        if (o.status == OrderStatus.WAITING && o.method == PayMethod.VA && vm.showVa(o.id)) nav.openVa() else nav.openOrder(o.id)
+        nav.openOrder(o.id)
     }
 
     private class PageHolder(val b: ItemOrdersPageBinding, val adapter: OrderAdapter) : RecyclerView.ViewHolder(b.root) {
@@ -121,7 +120,7 @@ class OrdersFragment : ShopFragment(R.layout.fragment_orders) {
     /** Catatan di bawah baris: sisa waktu bayar VA (menunggu) atau alasan batal. */
     private fun note(o: Order): String = when {
         o.status == OrderStatus.WAITING && o.vaDeadline > 0 -> {
-            val left = ((o.vaDeadline - requireContext().app.container.now()) / 1000).coerceAtLeast(0)
+            val left = ((o.vaDeadline - requireContext().app.container.realNow()) / 1000).coerceAtLeast(0)
             getString(R.string.ord_pay_within_fmt, "%02d:%02d".format(left / 60, left % 60))
         }
         o.status == OrderStatus.CANCELLED -> o.cancelReason.ifEmpty { "" }

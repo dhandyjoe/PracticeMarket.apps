@@ -26,7 +26,6 @@ class ProductAdapter(
     private val onAdd: (Product) -> Unit,
     private val onSeeAll: () -> Unit = {},
     private val gridNameLines: Int = 2,
-    private val nbspPrice: () -> Boolean = { false },
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: List<Product> = emptyList()
@@ -82,7 +81,7 @@ class ProductAdapter(
         }
     }
 
-    private fun price(p: Product) = p.price.toRupiah(nbspPrice())
+    private fun price(p: Product) = p.price.toRupiah()
 
     private fun rating(p: Product, ctx: android.content.Context) =
         ctx.getString(R.string.rating_fmt, String.format(Locale.US, "%.1f", p.rating))

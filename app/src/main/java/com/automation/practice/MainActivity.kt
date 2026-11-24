@@ -3,62 +3,66 @@ package com.automation.practice
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.view.ViewGroup
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withStarted
+import com.automation.practice.core.net.onlineFlow
 import com.automation.practice.core.ui.LocatorHints
-import com.automation.practice.data.repo.Behavior
+import com.automation.practice.data.repo.User
 import com.automation.practice.databinding.ActivityMainBinding
 import com.automation.practice.domain.merchantOf
 import com.automation.practice.feature.auth.AuthActivity
 import com.automation.practice.feature.shop.AccountFragment
-import com.automation.practice.feature.shop.CartFragment
-import com.automation.practice.feature.shop.CheckoutFragment
 import com.automation.practice.feature.shop.AddressFormFragment
-import com.automation.practice.feature.shop.AmountFragment
-import com.automation.practice.feature.shop.ContactsFragment
-import com.automation.practice.feature.shop.HistoryFragment
-import com.automation.practice.feature.shop.QrConfirmFragment
-import com.automation.practice.feature.shop.ScanQrFragment
-import com.automation.practice.feature.shop.WalletFragment
 import com.automation.practice.feature.shop.AddressListFragment
+import com.automation.practice.feature.shop.AmountFragment
 import com.automation.practice.feature.shop.CancelSheetFragment
+import com.automation.practice.feature.shop.CartFragment
+import com.automation.practice.feature.shop.CategoryFragment
+import com.automation.practice.feature.shop.CheckoutFragment
+import com.automation.practice.feature.shop.ContactsFragment
 import com.automation.practice.feature.shop.EditProfileFragment
+import com.automation.practice.feature.shop.FilterSheetFragment
 import com.automation.practice.feature.shop.HelpFragment
-import com.automation.practice.feature.shop.SettingsFragment
+import com.automation.practice.feature.shop.HistoryFragment
+import com.automation.practice.feature.shop.HomeFragment
+import com.automation.practice.feature.shop.ImageViewerFragment
 import com.automation.practice.feature.shop.OrderDetailFragment
 import com.automation.practice.feature.shop.OrdersFragment
 import com.automation.practice.feature.shop.PayMethodFragment
 import com.automation.practice.feature.shop.PayStep
-import com.automation.practice.feature.shop.ResultFragment
-import com.automation.practice.feature.shop.ThreeDsActivity
-import com.automation.practice.feature.shop.VaFragment
-import com.automation.practice.feature.shop.VoucherSheetFragment
-import com.automation.practice.feature.shop.FilterSheetFragment
-import com.automation.practice.feature.shop.HomeFragment
-import com.automation.practice.feature.shop.ImageViewerFragment
-import com.automation.practice.feature.shop.PlaceholderFragment
 import com.automation.practice.feature.shop.ProductFragment
+import com.automation.practice.feature.shop.QrConfirmFragment
+import com.automation.practice.feature.shop.TopUpFragment
+import com.automation.practice.feature.shop.ResultFragment
 import com.automation.practice.feature.shop.ResultsFragment
+import com.automation.practice.feature.shop.ScanQrFragment
 import com.automation.practice.feature.shop.SearchFragment
+import com.automation.practice.feature.shop.SettingsFragment
 import com.automation.practice.feature.shop.ShopNavigator
 import com.automation.practice.feature.shop.ShopViewModel
 import com.automation.practice.feature.shop.Tab
+import com.automation.practice.feature.shop.ThreeDsActivity
+import com.automation.practice.feature.shop.VaFragment
+import com.automation.practice.feature.shop.VoucherSheetFragment
+import com.automation.practice.feature.shop.WalletFragment
 import com.automation.practice.feature.shop.WishlistFragment
 import kotlinx.coroutines.launch
 
@@ -76,6 +80,9 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
     }
 
     private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    private var loading = false
+    private var loadedAt = SystemClock.elapsedRealtime()
 
     private val tabIds = mapOf(
         Tab.HOME to R.id.shop_tab_home,
@@ -101,7 +108,6 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
 
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
-        app.container.auth.currentUser?.let { app.container.shop.applyUser(it.username, it.displayName, it.email, it.behavior == Behavior.NEW) }
         val hints = LocatorHints(b.root as ViewGroup)
         lifecycleScope.launch { app.container.settings.prefs.collect { hints.set(it.locatorHints) } }
         b.shopNavBottom.setOnItemSelectedListener { item ->
@@ -132,10 +138,58 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
             }
         }
 
-        if (savedInstanceState == null) {
-            showTab(Tab.HOME)
-            route(intent)
-            askNotificationPermission()
+        lifecycleScope.launch { vm.session.stale.collect { b.shopBannerStale.isVisible = it } }
+        b.shopBannerStale.setOnClickListener { softRefresh(force = true) }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                onlineFlow().collect { online -> if (online && vm.session.stale.value) softRefresh(force = true) }
+            }
+        }
+
+        val user = app.container.auth.currentUser!!
+        val fresh = savedInstanceState == null
+        b.shopBtnLoadRetry.setOnClickListener { loadAccount(user, fresh) }
+        // Rotasi memakai cache di memori; app baru dibuka atau proses dipulihkan setelah kill membaca Firestore.
+        if (fresh || vm.session.uid != user.uid) loadAccount(user, fresh)
+    }
+
+    /** Muat data akun (contract §8.1); [fresh] = Beranda & deep link dibuka setelah data siap. */
+    private fun loadAccount(user: User, fresh: Boolean) {
+        b.shopPanelLoad.isVisible = true
+        b.shopProgressLoad.isVisible = true
+        b.shopTxtLoadError.isVisible = false
+        b.shopBtnLoadRetry.isVisible = false
+        loading = true
+        lifecycleScope.launch {
+            val ok = app.container.loadAccount(user)
+            loading = false
+            loadedAt = SystemClock.elapsedRealtime()
+            b.shopProgressLoad.isVisible = false
+            b.shopPanelLoad.isVisible = !ok
+            b.shopTxtLoadError.isVisible = !ok
+            b.shopBtnLoadRetry.isVisible = !ok
+            if (ok && fresh) lifecycle.withStarted {
+                showTab(Tab.HOME)
+                route(intent)
+                askNotificationPermission()
+            }
+        }
+    }
+
+    /** Kembali ke foreground = baca ulang data akun (ARCHITECTURE §10), supaya tulisan dari device lain tidak ditimpa dengan data basi. */
+    override fun onStart() {
+        super.onStart()
+        if (::b.isInitialized) softRefresh(force = false)
+    }
+
+    /** Baca ulang tanpa spinner; gagal = data yang ada dipakai apa adanya. [force] melewati jeda antar muat. */
+    private fun softRefresh(force: Boolean) {
+        if (loading || (!force && SystemClock.elapsedRealtime() - loadedAt < SOFT_REFRESH_GAP_MS)) return
+        loading = true
+        lifecycleScope.launch {
+            app.container.refresh()
+            loading = false
+            loadedAt = SystemClock.elapsedRealtime()
         }
     }
 
@@ -143,7 +197,11 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
         super.onNewIntent(intent)
         setIntent(intent)
         if (handleSettingsHook(intent)) return
-        if (::b.isInitialized) route(intent)
+        if (::b.isInitialized) {
+            // Deep link ke app yang sudah terbuka tidak lewat onStart; muat ulang agar layar tujuan tidak memakai data basi.
+            softRefresh(force = false)
+            route(intent)
+        }
     }
 
     // shortcut: deep link ditangani di sini; pindah ke DeepLinkRouter tunggal saat milestone deep link (ARCHITECTURE.md §11).
@@ -184,7 +242,8 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
     private fun routePay(uri: Uri, path: List<String>) {
         selectTab(Tab.PAY)
         when (path.firstOrNull()) {
-            null, "topup" -> Unit
+            null -> Unit
+            "topup" -> openTopUp()
             "transfer" -> openContacts()
             "history" -> openHistory()
             "qr" -> {
@@ -197,16 +256,11 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
     }
 
     /**
-     * Test hook `practiceapp://settings/reset` dan `practiceapp://settings?deterministic=&latency=&animations=&flaky=` (PRD DEV-02):
+     * Test hook `practiceapp://settings?deterministic=&latency=&animations=&flaky=` (PRD DEV-02):
      * ditangani tanpa UI dan tanpa perlu login. @return true bila [intent] adalah hook dan sudah diproses.
      */
     private fun handleSettingsHook(intent: Intent): Boolean {
         val uri = intent.data?.takeIf { it.scheme == "practiceapp" && it.host == "settings" } ?: return false
-        if (uri.pathSegments.firstOrNull() == "reset") {
-            app.container.resetAll()
-            startActivity(Intent(this, AuthActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-            return true
-        }
         val keys = listOf("deterministic", "latency", "animations", "flaky")
         if (keys.none { uri.getQueryParameter(it) != null }) return false
         app.container.settings.update { p ->
@@ -233,7 +287,7 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
 
     private fun tabFragment(tab: Tab): Fragment = when (tab) {
         Tab.HOME -> HomeFragment()
-        Tab.CATEGORY -> PlaceholderFragment.newInstance(R.string.nav_category)
+        Tab.CATEGORY -> CategoryFragment()
         Tab.PAY -> WalletFragment()
         Tab.CART -> CartFragment()
         Tab.ACCOUNT -> AccountFragment()
@@ -299,13 +353,15 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
     override fun openOrders() {
         if (!supportFragmentManager.popBackStackImmediate(ORDERS, 0)) push(OrdersFragment(), ORDERS)
     }
-    override fun openOrder(id: String) = push(OrderDetailFragment.newInstance(id))
+    // Pesanan VA yang masih menunggu selalu membuka instruksi VA (nomor, hitung mundur, aksi), dari daftar, deep link, maupun notifikasi.
+    override fun openOrder(id: String) = if (vm.showVa(id)) openVa() else push(OrderDetailFragment.newInstance(id))
     override fun openCancel(id: String) = CancelSheetFragment.newInstance(id).show(supportFragmentManager, "cancel")
     override fun openProfile() = push(EditProfileFragment())
     override fun openAddresses() = push(AddressListFragment())
-    override fun openAddressForm(id: Int) = push(AddressFormFragment.newInstance(id))
+    override fun openAddressForm(id: String) = push(AddressFormFragment.newInstance(id))
     override fun openSettings(dev: Boolean) = push(SettingsFragment.newInstance(dev))
     override fun openHelp() = push(HelpFragment())
+    override fun openTopUp() = push(TopUpFragment())
     override fun openContacts() = push(ContactsFragment())
     override fun openAmount(name: String, phone: String) = push(AmountFragment.newInstance(name, phone))
     override fun openScanQr() = push(ScanQrFragment())
@@ -315,6 +371,7 @@ class MainActivity : AppCompatActivity(), ShopNavigator {
 
     private companion object {
         const val ORDERS = "orders"
+        const val SOFT_REFRESH_GAP_MS = 5_000L
     }
 
     override fun logout() {

@@ -17,26 +17,23 @@
     <!-- Login -->
     <string name="login_title">Masuk</string>
     <string name="login_subtitle">Lanjutkan belanja dan cek pesananmu.</string>
-    <string name="login_username">Username</string>
-    <string name="login_username_hint">mis. standard_user</string>
+    <string name="login_username">Email</string>
+    <string name="login_username_hint">mis. rina@email.com</string>
     <string name="login_password">Password</string>
     <string name="login_remember">Ingat saya</string>
-    <string name="login_forgot">Lupa password?</string>
     <string name="login_submit">Masuk</string>
-    <string name="login_or">atau</string>
-    <string name="login_biometric">Masuk dengan sidik jari</string>
     <string name="login_no_account">Belum punya akun?</string>
     <string name="login_register">Daftar</string>
     <string name="login_locked_fmt">Coba lagi dalam %d detik</string>
     <string name="password_show">Tampilkan password</string>
     <string name="password_hide">Sembunyikan password</string>
-    <string name="error_username_required">Username wajib diisi</string>
+    <string name="error_username_required">Email wajib diisi</string>
     <string name="error_password_required">Password wajib diisi</string>
-    <string name="login_error_invalid">Username atau password salah</string>
-    <string name="login_error_locked">Akun Anda terkunci. Hubungi admin.</string>
-    <string name="biometric_title">Masuk dengan sidik jari</string>
-    <string name="biometric_cancel">Batal</string>
-    <string name="biometric_failed">Autentikasi gagal</string>
+    <string name="login_error_invalid">Email atau password salah</string>
+    <string name="offline_banner">Tidak ada koneksi</string>
+    <string name="stale_banner">Data mungkin belum terbaru. Ketuk untuk memuat ulang.</string>
+    <string name="error_network">Tidak ada koneksi. Periksa internet lalu coba lagi.</string>
+    <string name="error_too_many_requests">Terlalu banyak percobaan. Coba lagi nanti.</string>
 
     <!-- Register -->
     <string name="register_title">Buat akun</string>
@@ -61,43 +58,12 @@
     <string name="strength_strong">Kuat</string>
     <string name="terms_title">Syarat &amp; Ketentuan</string>
 
-    <!-- Lupa password · OTP -->
-    <string name="forgot_title">Lupa password</string>
-    <string name="forgot_subtitle">Masukkan email akunmu. Kami kirim kode 6 digit.</string>
-    <string name="forgot_send">Kirim kode</string>
-    <string name="forgot_email_unknown">Email tidak terdaftar</string>
-    <string name="otp_title">Masukkan kode OTP</string>
-    <string name="otp_subtitle_fmt">Kode 6 digit sudah dikirim ke %s.</string>
-    <string name="otp_group">Kode OTP</string>
-    <string name="otp_digit_fmt">Digit %d</string>
-    <string name="otp_error">Kode OTP salah</string>
-    <string name="otp_verify">Verifikasi</string>
-    <string name="otp_no_code">Tidak menerima kode?</string>
-    <string name="otp_resend">Kirim ulang</string>
-    <string name="otp_resend_fmt">Kirim ulang dalam 00:%02d</string>
-
-    <!-- Password baru -->
-    <string name="newpw_title">Buat password baru</string>
-    <string name="newpw_subtitle">Pilih password yang kuat dan mudah kamu ingat.</string>
-    <string name="newpw_label">Password baru</string>
-    <string name="newpw_confirm_label">Ulangi password baru</string>
-    <string name="newpw_rules">Syarat password</string>
-    <string name="rule_min">Minimal 8 karakter</string>
-    <string name="rule_letter">Berisi huruf</string>
-    <string name="rule_digit">Berisi angka</string>
-    <string name="rule_match">Kedua password sama</string>
-    <string name="newpw_save">Simpan Password</string>
-    <string name="newpw_done_title">Password berhasil diubah</string>
-    <string name="newpw_done_body">Silakan masuk dengan password baru.</string>
-    <string name="newpw_goto_login">Ke halaman Masuk</string>
-
     <!-- Bottom navigation -->
     <string name="nav_home">Beranda</string>
     <string name="nav_category">Kategori</string>
     <string name="nav_pay">PracticePay</string>
     <string name="nav_cart">Keranjang</string>
     <string name="nav_account">Akun</string>
-    <string name="coming_soon">Segera hadir</string>
     <string name="not_found">Halaman tidak ditemukan</string>
 
     <!-- Akun (sementara) -->
@@ -260,10 +226,7 @@
     <string name="checkout_title">Checkout</string>
     <string name="checkout_address">ALAMAT PENGIRIMAN</string>
     <string name="checkout_address_change">Ubah</string>
-    <string name="checkout_address_label">Rumah</string>
     <string name="checkout_address_main">Utama</string>
-    <string name="checkout_address_text">Jl. Merdeka No. 10, Bandung, Jawa Barat 40111</string>
-    <string name="checkout_address_soon">Ubah alamat segera hadir</string>
     <string name="checkout_courier">KURIR</string>
     <string name="courier_reguler">Reguler</string>
     <string name="courier_reguler_note">Estimasi 3–5 hari</string>
@@ -306,7 +269,7 @@
     <string name="pay_submit_fmt">Bayar %s</string>
     <string name="pay_processing">Memproses pembayaran…</string>
     <string name="pay_method_card_label_fmt">Kartu Kredit •••• %s</string>
-    <string name="pay_method_va_label_fmt">%s Virtual Account</string>
+    <string name="pay_method_va_label_fmt">Virtual Account %s</string>
     <string name="pay_method_wallet_label">PracticePay</string>
     <string name="pay_method_cod_label">Bayar di Tempat (COD)</string>
 
@@ -377,6 +340,7 @@
     <!-- Pesanan (ORD) -->
     <string name="load_failed">Gagal memuat, coba lagi</string>
     <string name="retry">Coba lagi</string>
+    <string name="stock_short_fmt">Stok tidak cukup untuk %s</string>
     <string name="ord_title">Pesanan Saya</string>
     <string name="ord_updated_fmt">Tarik untuk memperbarui · %s</string>
     <string name="ord_tab_all">Semua</string>
@@ -403,7 +367,7 @@
     <string name="ord_status_heading">STATUS PESANAN</string>
     <string name="ord_interval_fmt">interval %d dtk</string>
     <string name="ord_interval_manual">mode manual</string>
-    <string name="ord_next_status">Status berikutnya (mode manual)</string>
+    <string name="ord_next_status">Status berikutnya</string>
     <string name="ord_step_passed">Selesai</string>
     <string name="ord_step_not_yet">Belum</string>
     <string name="ord_cancelled_body">Pesanan ini sudah dibatalkan.</string>
@@ -412,7 +376,7 @@
     <string name="ord_review_soon">Ulasan segera hadir</string>
     <string name="ord_cannot_cancel">Pesanan yang sudah dikirim tidak bisa dibatalkan</string>
     <string name="cancel_title">Batalkan pesanan?</string>
-    <string name="cancel_sub_fmt">%s · dana dikembalikan ke metode pembayaran asal.</string>
+    <string name="cancel_sub_fmt">%s</string>
     <string name="cancel_pick_reason">Pilih alasan</string>
     <string name="cancel_reason_address">Ingin ubah alamat pengiriman</string>
     <string name="cancel_reason_payment">Ingin ubah metode pembayaran</string>
@@ -441,13 +405,6 @@
     <string name="acc_dev_tag">untuk testing</string>
     <string name="acc_version_fmt">PracticeMart v%1$s (%2$d)</string>
     <string name="acc_edit_title">Edit Profil</string>
-    <string name="acc_photo_cd">Foto profil</string>
-    <string name="acc_change_photo">Ubah foto</string>
-    <string name="acc_photo_hint">Kamera atau galeri · maks 2 MB</string>
-    <string name="acc_photo_camera">Kamera</string>
-    <string name="acc_photo_gallery">Galeri</string>
-    <string name="acc_photo_too_big">Foto terlalu besar, maksimal 2 MB</string>
-    <string name="acc_camera_denied">Izin kamera ditolak</string>
     <string name="acc_name_label">Nama lengkap</string>
     <string name="acc_name_required">Nama wajib diisi</string>
     <string name="acc_email_label">Email</string>
@@ -511,16 +468,10 @@
     <string name="dev_flaky_sub">Untuk latihan retry</string>
     <string name="dev_hints">Locator Hint Overlay</string>
     <string name="dev_hints_sub">Tampilkan resource-id di atas elemen</string>
-    <string name="dev_reset_on_launch">Reset data setiap app dibuka</string>
-    <string name="dev_reset_on_launch_sub">Data &amp; sesi login kembali ke awal setiap cold start</string>
     <string name="dev_va_window">Batas waktu VA</string>
     <string name="dev_interval">Update status pesanan</string>
     <string name="dev_interval_manual">Manual</string>
-    <string name="dev_reset_hint">Kembalikan keranjang, pesanan, stok, saldo, sesi login, dan onboarding ke kondisi awal tanpa menutup app.</string>
-    <string name="dev_reset_data">Reset data…</string>
     <string name="dev_reset_prefs">Reset pengaturan…</string>
-    <string name="dev_reset_data_title">Reset semua data?</string>
-    <string name="dev_reset_data_body">Keranjang, pesanan, stok, saldo, dan sesi login kembali ke awal. Kamu akan masuk dari Onboarding.</string>
     <string name="dev_reset_prefs_title">Reset pengaturan?</string>
     <string name="dev_reset_prefs_body">Semua pengaturan Developer Options, Bahasa, dan Tema kembali ke default.</string>
     <string name="dev_reset_confirm">Reset</string>
@@ -542,7 +493,6 @@
     <string name="pay_transfer">Transfer</string>
     <string name="pay_scan">Scan QR</string>
     <string name="pay_history">Riwayat</string>
-    <string name="pay_soon">Fitur ini segera hadir</string>
     <string name="pay_cashback_title">Cashback 5% pakai PracticePay</string>
     <string name="pay_cashback_body">Maks Rp10.000 per transaksi belanja</string>
     <string name="pay_recent_tx">Transaksi terakhir</string>
@@ -571,9 +521,13 @@
     <string name="pay_note_hint">mis. bayar makan siang</string>
     <string name="pay_next">Lanjut</string>
     <string name="pay_payee_sub_fmt">%s · PracticePay</string>
+    <string name="pay_topup_payee">PracticePay</string>
+    <string name="pay_topup_sub">Isi saldo</string>
+    <string name="pay_topup_button_fmt">Top Up %s</string>
+    <string name="pay_topup_ok">Top Up berhasil</string>
+    <string name="pay_topup_ok_body_fmt">Saldo %2$s bertambah %1$s</string>
     <string name="pay_transfer_ok">Transfer berhasil</string>
     <string name="pay_transfer_ok_body_fmt">%1$s ke %2$s</string>
-    <string name="pay_tx_transfer_fmt">Transfer ke %s</string>
     <string name="pay_notif_received_fmt">%1$s menerima %2$s dari kamu</string>
     <string name="pay_view_history">Lihat Riwayat</string>
     <string name="pay_done">Selesai</string>
@@ -582,7 +536,6 @@
     <string name="pay_merchant_sub">Merchant PracticePay</string>
     <string name="pay_qr_ok">Pembayaran berhasil</string>
     <string name="pay_qr_ok_body_fmt">%1$s ke %2$s</string>
-    <string name="pay_tx_qr_fmt">Bayar QR · %s</string>
     <string name="pay_close">Tutup</string>
     <string name="pay_scan_hint">Arahkan kamera ke kode QR merchant atau teman</string>
     <string name="pay_camera_denied">Izin kamera ditolak</string>
@@ -590,4 +543,10 @@
     <string name="pay_open_settings">Buka Pengaturan</string>
     <string name="pay_gallery">Upload dari galeri</string>
     <string name="pay_qr_invalid">QR tidak dikenali</string>
+    <string name="courier_sameday_available">Tiba hari ini</string>
+    <string name="checkout_address_none">Belum ada alamat pengiriman.</string>
+    <string name="checkout_address_pick_title">Pilih alamat</string>
+    <string name="checkout_delivery_time">Jam kirim (09:00–17:00)</string>
+    <string name="checkout_delivery_time_pick">Pilih jam kirim</string>
+    <string name="checkout_delivery_time_error">Pilih jam kirim antara 09:00 dan 17:00</string>
 </resources>

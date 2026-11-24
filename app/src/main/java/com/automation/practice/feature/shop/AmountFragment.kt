@@ -3,6 +3,7 @@ package com.automation.practice.feature.shop
 import androidx.core.os.bundleOf
 import com.automation.practice.R
 import com.automation.practice.domain.toRupiah
+import com.automation.practice.domain.transferTitle
 
 /** PAY-04 Transfer · nominal & PIN (FR-PAY-05/06/07). */
 class AmountFragment : PayEntryFragment() {
@@ -16,14 +17,13 @@ class AmountFragment : PayEntryFragment() {
     override val successTitle = R.string.pay_transfer_ok
     override val successBodyRes = R.string.pay_transfer_ok_body_fmt
 
-    /** Bug `glitch_user` #6: saldo di Beranda Belanja tidak ikut turun, tapi layar PracticePay benar. */
-    override fun commit(amount: Long, note: String): Boolean {
-        val ok = vm.session.debit(amount, getString(R.string.pay_tx_transfer_fmt, payeeName), syncHome = !vm.glitch)
-        if (ok) OrderNotifier.postText(
+    override suspend fun commit(amount: Long, note: String): String? {
+        val error = vm.failureText(vm.session.spend(amount, transferTitle(payeeName)))
+        if (error == null) OrderNotifier.postText(
             requireContext(), "transfer-$payeeName-${System.currentTimeMillis()}",
             getString(R.string.pay_notif_received_fmt, payeeName, amount.toRupiah()), "practiceapp://pay",
         )
-        return ok
+        return error
     }
 
     companion object {

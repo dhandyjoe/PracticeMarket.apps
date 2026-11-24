@@ -34,7 +34,8 @@ Ketuk pesanan VA yang menunggu membuka instruksi VA; pesanan lain membuka Detail
 | `shop_txt_detail_interval` | Mode update | `interval 10 dtk` atau `mode manual` |
 | `shop_list_timeline` | Timeline | 5 langkah; teks langkah memakai nama status; langkah selesai bercentang |
 | `shop_txt_step_label` / `shop_txt_step_sub` | Nama langkah / waktu | waktu `HH:mm:ss`, `Belum` bila belum tercapai |
-| `shop_btn_next_status` | `Status berikutnya (mode manual)` | hanya tampil di mode Manual |
+| `shop_btn_next_status` | `Status berikutnya` | hanya tampil di mode Manual dan bukan saat status Menunggu |
+| `shop_btn_confirm_paid` | `Saya sudah bayar` | tampil saat status Menunggu pembayaran; memajukan ke Dibayar. Pesanan VA yang menunggu membuka layar VA (nomor, hitung mundur, `Cek Status`, `Saya sudah bayar`) dari daftar, deep link, dan notifikasi |
 | `shop_btn_cancel_order` | `Batalkan Pesanan` | tampil bila status ≤ Dikemas |
 | `shop_txt_cannot_cancel` | `Pesanan yang sudah dikirim tidak bisa dibatalkan` | status Dikirim |
 | `shop_btn_review` | `Beri Ulasan` | status Selesai; ORD-04 belum dibangun, menampilkan snackbar `Ulasan segera hadir` |
@@ -45,7 +46,7 @@ Status maju otomatis tiap interval Developer Options (3/10/30 dtk). Pesanan Prac
 ## ORD-03 Batalkan Pesanan (bottom sheet)
 | Id | Elemen | Catatan |
 |---|---|---|
-| `shop_sheet_cancel` | Sheet | |
+| `shop_sheet_cancel` | Sheet | isi form (`shop_panel_cancel_form`) bisa di-scroll agar tetap terjangkau saat keyboard terbuka |
 | `shop_group_cancel_reason` | Grup radio | 4 alasan, teks persis PRD |
 | `shop_input_cancel_note` / `shop_label_cancel_note` | Field "Tulis alasanmu" | muncul bila `Lainnya` dipilih; wajib terisi |
 | `shop_btn_cancel_back` | `Kembali` | |

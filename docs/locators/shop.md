@@ -9,8 +9,11 @@ Id memakai prefix `com.automation.practice:id/`. Id sama di beberapa baris dafta
 | Id | Elemen | Catatan |
 |---|---|---|
 | `shop_nav_bottom` | Bar navigasi | hanya tampil di layar tab |
-| `shop_tab_home` / `_category` / `_pay` / `_cart` / `_account` | Tab | Beranda, Kategori, PracticePay, Keranjang, Akun. Kategori masih "Segera hadir"; PracticePay lihat [pay.md](pay.md); Keranjang lihat [checkout.md](checkout.md) |
+| `shop_tab_home` / `_category` / `_pay` / `_cart` / `_account` | Tab | Beranda, Kategori, PracticePay, Keranjang, Akun. Kategori: grid kategori (lihat bawah); PracticePay lihat [pay.md](pay.md); Keranjang lihat [checkout.md](checkout.md) |
 | badge di `shop_tab_cart` | Jumlah barang di keranjang | hilang saat 0 |
+| `shop_panel_load` | Layar muat data akun | tampil saat app dibuka sampai data Firestore terbaca (contract §6) |
+| `shop_progress_load` | Indikator muat | – |
+| `shop_txt_load_error` / `shop_btn_load_retry` | Gagal muat / tombol | `Gagal memuat, coba lagi` / `Coba lagi`; hanya bila tanpa cache & tanpa jaringan |
 
 ## SHOP-01 Beranda
 | Id | Elemen | Catatan |
@@ -33,6 +36,12 @@ Id memakai prefix `com.automation.practice:id/`. Id sama di beberapa baris dafta
 | `shop_txt_product_name` / `_price` / `_rating` | Nama / harga / `★ 4.8` | |
 | `shop_txt_product_old_price` / `_discount` | Harga coret / `−25%` | hanya produk diskon |
 | `shop_btn_add_to_cart` | `+ Keranjang` | **teks kembar** di semua kartu. Tampilan list: tombol ikon, content-desc `Tambah <nama> ke keranjang`. Stok 0: disabled, `Stok Habis` |
+
+## SHOP-02 Kategori (Compose, testTag)
+| Id | Elemen | Catatan |
+|---|---|---|
+| `shop_item_category` | Kartu kategori | id sama di 6 kartu (Fashion, Elektronik, Rumah Tangga, Olahraga, Buku, Kecantikan); tap membuka Hasil terfilter kategori itu |
+| `shop_txt_category_name` | Nama kategori | |
 
 ## SHOP-03 Pencarian
 | Id | Elemen | Catatan |
@@ -87,7 +96,7 @@ Id memakai prefix `com.automation.practice:id/`. Id sama di beberapa baris dafta
 | `shop_btn_wishlist` | Hati | content-desc `Tambah ke wishlist` / `Hapus dari wishlist` |
 | `shop_btn_more` | Overflow | content-desc `Menu lainnya`; menu `Bagikan`, `Laporkan` |
 | `shop_txt_product_meta` | `P001 · Fashion` | |
-| `shop_txt_product_name` / `_price` / `_old_price` / `_discount` | Info produk | harga `glitch_user` memakai spasi non-breaking |
+| `shop_txt_product_name` / `_price` / `_old_price` / `_discount` | Info produk | |
 | `shop_txt_color_label` / `shop_group_color` | Warna | chip tunggal; chip dicoret & disabled bila stok 0 |
 | `shop_txt_size_label` / `shop_group_size` | Ukuran | idem |
 | `shop_txt_stock_note` | `Hitam · XL: stok 0` | |

@@ -1,0 +1,66 @@
+rules_version = '2';
+
+// Security Rules PracticeMart (docs/contract.md §8.4). Rules menjaga bentuk data, bukan niat.
+// File ini master; web hanya menyimpan salinan untuk test emulator dan tidak men-deploy-nya.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Dokumen akun tidak pernah dihapus oleh client.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.email == request.auth.token.email;
+    }
+
+    // Bentuk field yang ditulis via update() per field (contract §8.2/§8.3). Batas ukuran mencegah dokumen
+    // membengkak; field lain dibiarkan agar evolusi skema (§8.5) tidak terblokir. Batas yang sama dijaga
+    // client: cart 100, wishlist 60, history 5, alamat 20.
+    function validState(d) {
+      return (!('cart' in d) || (d.cart is list && d.cart.size() <= 100))
+        && (!('wishlist' in d) || (d.wishlist is list && d.wishlist.size() <= 60))
+        && (!('history' in d) || (d.history is list && d.history.size() <= 5))
+        && (!('voucher' in d) || d.voucher == null || d.voucher is string)
+        && (!('balance' in d) || d.balance is int)
+        && (!('orderSeq' in d) || d.orderSeq is int)
+        && (!('profile' in d) || d.profile is map)
+        && (!('addresses' in d) || (d.addresses is list && d.addresses.size() <= 20))
+        && (!('pinFailures' in d) || d.pinFailures is int)
+        && (!('pinLockedUntil' in d) || d.pinLockedUntil is int);
+    }
+
+    match /states/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validState(request.resource.data);
+    }
+
+    // orders/ dan transactions/ (satu tingkat). Bukan {document=**}: itu juga cocok dengan states/{uid}
+    // sendiri dan akan melewati validState.
+    match /states/{uid}/{collection}/{id} {
+      allow read, write: if isOwner(uid);
+    }
+
+    match /catalog/stock {
+      allow read: if signedIn();
+      // create hanya terjadi bila dokumen belum ada.
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['stock', 'schemaVersion'])
+        && request.resource.data.stock is map;
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock'])
+        && stockOk(resource.data.stock, request.resource.data.stock);
+    }
+
+    // shortcut: varian & nilai int >= 0 (contract §8.4) belum dicek; dokumen 60 produk melewati batas 1000 ekspresi rules. Upgrade bila stok dipecah per produk.
+    function stockOk(o, n) {
+      return n.keys().hasOnly(o.keys()) && n.keys().hasAll(o.keys());
+    }
+  }
+}

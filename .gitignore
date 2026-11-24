@@ -6,3 +6,8 @@ build/
 local.properties
 .kotlin/
 /release/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+firebase/.firebase/
+app/google-services.json

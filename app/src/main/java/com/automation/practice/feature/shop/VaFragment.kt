@@ -39,11 +39,12 @@ class VaFragment : ShopFragment(R.layout.fragment_va) {
                 .setPrimaryClip(ClipData.newPlainText("va", pending.number.replace(" ", "")))
             Snackbar.make(view, R.string.va_copied, Snackbar.LENGTH_SHORT).setAnchorView(b.shopBarVa).show()
         }
-        // shortcut: status selalu "belum dibayar"; FR-PAYM-09 (gagal memuat) menunggu "Peluang error server" di Developer Options.
+        // Status VA selalu "belum dibayar" (tidak ada bank sungguhan); gagal memuat mengikuti "Peluang error server" (FR-PAYM-09).
         b.shopBtnCheckStatus.setOnClickListener {
-            Snackbar.make(view, R.string.va_not_paid, Snackbar.LENGTH_SHORT).setAnchorView(b.shopBarVa).show()
+            val failed = requireContext().app.container.serverFails()
+            Snackbar.make(view, if (failed) R.string.load_failed else R.string.va_not_paid, Snackbar.LENGTH_SHORT).setAnchorView(b.shopBarVa).show()
         }
-        b.shopBtnPaid.setOnClickListener { vm.vaPaid() }
+        b.shopBtnPaid.setOnClickListener { vm.vaPaid { Snackbar.make(view, it, Snackbar.LENGTH_LONG).show() } }
 
         val guides = listOf(
             R.string.va_guide_mobile to listOf(R.string.va_step_mobile_1, R.string.va_step_mobile_2, R.string.va_step_mobile_3, R.string.va_step_mobile_4),
@@ -64,7 +65,7 @@ class VaFragment : ShopFragment(R.layout.fragment_va) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (true) {
                     // Jam aplikasi, sama dengan pembuat deadline; mode deterministik memakai tanggal 2026-01-15.
-                    val left = ((pending.deadline - requireContext().app.container.now()) / 1000).coerceAtLeast(0)
+                    val left = ((pending.deadline - requireContext().app.container.realNow()) / 1000).coerceAtLeast(0)
                     b.shopTxtVaTimer.text = "%02d:%02d".format(left / 60, left % 60)
                     if (left == 0L) { vm.vaExpired(); break }
                     delay(1000)

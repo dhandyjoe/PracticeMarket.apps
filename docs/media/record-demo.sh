@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # Rekam 3 flow Maestro di emulator/HP yang tersambung, ubah jadi GIF untuk README.
-# Prasyarat: adb, maestro, ffmpeg di PATH; APK debug sudah terpasang.
+# Prasyarat: adb, maestro, ffmpeg di PATH; APK debug sudah terpasang; PM_EMAIL & PM_PASSWORD = akun hasil Register.
 # Rekaman dipotong dari langkah pertama sampai terakhir flow (startup Maestro dibuang).
 set -euo pipefail
 cd "$(dirname "$0")"
 export MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
+: "${PM_EMAIL:?isi PM_EMAIL}" "${PM_PASSWORD:?isi PM_PASSWORD}"
 
 for name in belanja checkout practicepay; do
   # kecepatan putar per flow (emulator + Maestro lebih lambat dari tangan manusia)
   case $name in belanja) speed=1.5;; checkout) speed=3;; *) speed=2.5;; esac
-  maestro test flows/_login.yaml            # reset data + login, tidak direkam
+  maestro test -e EMAIL="$PM_EMAIL" -e PASSWORD="$PM_PASSWORD" flows/_login.yaml   # reset data + login, tidak direkam
   adb shell screenrecord --size 540x1200 --bit-rate 4000000 /sdcard/$name.mp4 &
   rec=$!; start=$(date +%s.%N); sleep 1
   rm -f /tmp/$name.t0 /tmp/$name.t1

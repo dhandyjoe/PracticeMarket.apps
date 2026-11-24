@@ -16,8 +16,12 @@
         android:layout_marginTop="@dimen/pm_space_2_5"
         android:background="@drawable/bg_handle" />
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/shop_panel_cancel_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -64,6 +68,7 @@
         android:id="@+id/shop_input_cancel_note"
         style="@style/Pm.Field"
         android:layout_height="wrap_content"
+        android:maxLength="100"
         android:autofillHints="@null"
         android:importantForAutofill="no"
         android:inputType="textMultiLine|textCapSentences"
@@ -96,6 +101,7 @@
             app:backgroundTint="@color/pm_cancel_confirm_bg" />
     </LinearLayout>
     </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/shop_panel_cancel_done"

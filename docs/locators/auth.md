@@ -1,4 +1,4 @@
-# Locator: Masuk & Onboarding (AUTH-01…05)
+# Locator: Masuk & Onboarding (AUTH-01…04)
 
 Kontrak publik (PRD §12.3). Mengubah atau menghapus id di sini = breaking change.
 Id memakai prefix `com.automation.practice:id/`.
@@ -15,17 +15,15 @@ Id memakai prefix `com.automation.practice:id/`.
 ## AUTH-02 Login
 | Id | Elemen | Catatan |
 |---|---|---|
-| `shop_input_username` | Field username | boleh diisi username atau email |
+| `shop_input_username` | Field email | id dipertahankan; login hanya dengan email (PRD FR-AUTH-03) |
 | `shop_input_password` | Field password | |
 | `shop_btn_toggle_password` | Mata | content-desc `Tampilkan password` / `Sembunyikan password` |
-| `shop_txt_username_error` / `shop_txt_password_error` | Error inline kosong | `Username wajib diisi` / `Password wajib diisi` |
+| `shop_txt_username_error` / `shop_txt_password_error` | Error inline kosong | `Email wajib diisi` / `Password wajib diisi` |
 | `shop_banner_login_error` | Kontainer banner | |
-| `shop_txt_login_error` | Teks banner | `Username atau password salah`, `Akun Anda terkunci. Hubungi admin.`, `Autentikasi gagal` |
+| `shop_txt_login_error` | Teks banner | `Email atau password salah`, `Tidak ada koneksi. Periksa internet lalu coba lagi.`, `Terlalu banyak percobaan. Coba lagi nanti.` |
 | `shop_chk_remember` | Ingat saya | default centang |
-| `shop_btn_forgot_password` | "Lupa password?" | |
 | `shop_btn_login` | "Masuk" | setelah 3× gagal: disabled, label `Coba lagi dalam N detik` |
-| `shop_progress_login` | Spinner login | tampil saat loading (`slow_user` 4 dtk) |
-| `shop_btn_biometric` | "Masuk dengan sidik jari" | disabled sebelum login pertama atau tanpa sidik jari terdaftar |
+| `shop_progress_login` | Spinner login | tampil saat loading (diatur Network latency) |
 | `shop_btn_register_link` | "Daftar" | |
 
 ## AUTH-03 Register
@@ -41,26 +39,10 @@ Id memakai prefix `com.automation.practice:id/`.
 | `shop_btn_register` | "Daftar" | disabled sampai semua valid |
 | `shop_btn_login_link` | "Masuk" | |
 
-## AUTH-04 Lupa Password · OTP
-| Id | Elemen | Catatan |
-|---|---|---|
-| `shop_input_forgot_email` | Field email (fase 1) | |
-| `shop_txt_forgot_email_error` | Error email | `Format email tidak valid`, `Email tidak terdaftar` |
-| `shop_btn_send_code` | "Kirim kode" | |
-| `shop_txt_otp_subtitle` | Email tersamar | mis. `Kode 6 digit sudah dikirim ke s***@contoh.id.` |
-| `shop_input_otp_1` … `shop_input_otp_6` | Kotak OTP | content-desc `Digit N`; kode valid `123456` |
-| `shop_txt_otp_error` | Error | `Kode OTP salah` |
-| `shop_btn_verify_otp` | "Verifikasi" | disabled sampai 6 digit terisi |
-| `shop_btn_resend_otp` | Kirim ulang | label `Kirim ulang dalam 00:SS`, disabled 30 dtk |
+## Dihapus (breaking)
+Dihapus v0.9: `shop_btn_forgot_password`, layar Lupa Password (`shop_input_forgot_email`, `shop_txt_forgot_email_error`, `shop_btn_send_code`, `shop_txt_forgot_result`, `shop_btn_goto_login`), dan deep link `practiceapp://forgot-password`.
 
-## AUTH-05 Password Baru
-| Id | Elemen | Catatan |
-|---|---|---|
-| `shop_input_new_password` / `shop_input_new_password_confirm` | Field | |
-| `shop_txt_rule_min` / `_letter` / `_digit` / `_match` | Checklist syarat | warna berubah saat terpenuhi |
-| `shop_btn_save_password` | "Simpan Password" | disabled sampai semua syarat terpenuhi |
-| `shop_txt_password_changed` | Judul sukses | `Password berhasil diubah` |
-| `shop_btn_goto_login` | "Ke halaman Masuk" | |
+Dihapus v0.3.0: `shop_btn_biometric` (login sidik jari), layar OTP (`shop_txt_otp_subtitle`, `shop_input_otp_1` … `shop_input_otp_6`, `shop_txt_otp_error`, `shop_btn_verify_otp`, `shop_btn_resend_otp`), dan layar Password Baru (`shop_input_new_password`, `shop_input_new_password_confirm`, `shop_txt_rule_min` / `_letter` / `_digit` / `_match`, `shop_btn_save_password`, `shop_txt_password_changed`). Teks `Email tidak terdaftar` tidak lagi tampil (contract §6).
 
 ## Setelah login
 `shop_txt_greeting` kini ada di Beranda dan `shop_btn_logout` di tab Akun. Lihat [shop.md](shop.md).

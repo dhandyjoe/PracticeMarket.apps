@@ -3,17 +3,17 @@ package com.automation.practice.data.repo
 import com.automation.practice.domain.Address
 import com.automation.practice.domain.CartLine
 import com.automation.practice.domain.Hashing
+import com.automation.practice.domain.MAX_ADDRESSES
 import com.automation.practice.domain.MAX_QTY
+import com.automation.practice.domain.MAX_TOPUP
+import com.automation.practice.domain.MIN_TOPUP
 import com.automation.practice.domain.Order
 import com.automation.practice.domain.OrderStatus
 import com.automation.practice.domain.PAY_PIN
-import com.automation.practice.domain.PayMethod
 import com.automation.practice.domain.Profile
 import com.automation.practice.domain.SEED_ADDRESSES
 import com.automation.practice.domain.Tx
-import com.automation.practice.domain.cashback
 import com.automation.practice.domain.jakartaTime
-import com.automation.practice.domain.orderId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,20 +29,21 @@ sealed interface PinCheck {
 }
 
 /**
- * Data belanja & PracticePay akun yang sedang login. StateFlow di sini adalah cache; setiap mutasi langsung
- * ditulis ke [store] sehingga data bertahan setelah kill dan update APK (PRD §6.3 no. 6, ARCHITECTURE.md D15).
- * [stockOf] memberi stok varian untuk batas jumlah per baris keranjang.
+ * Data belanja & PracticePay akun yang sedang login. StateFlow di sini adalah cache dari [store] (ARCHITECTURE.md D15):
+ * field per akun ditulis dengan `update()` per field, saldo/pesanan/stok lewat transaksi (contract §8.3).
+ * [stockOf] memberi stok varian untuk batas jumlah per baris keranjang; [onStock] menerima stok global terbaru.
  */
 class ShopSession(
     private val stockOf: (CartLine) -> Int,
-    /** Jam aplikasi; mode deterministik memberi tanggal tetap 2026-01-15 (PRD §10). */
+    /** Jam asli untuk semua waktu yang ditulis ke store, juga saat mode deterministik (contract §5). */
     private val now: () -> Long = System::currentTimeMillis,
     private val store: ShopStore = MemoryShopStore(),
+    private val onStock: (Stock) -> Unit = {},
 ) {
-    private val _wishlist = MutableStateFlow(SEED_WISHLIST)
+    private val _wishlist = MutableStateFlow(emptyList<String>())
     val wishlist: StateFlow<List<String>> = _wishlist.asStateFlow()
 
-    private val _history = MutableStateFlow(SEED_HISTORY)
+    private val _history = MutableStateFlow(emptyList<String>())
     val history: StateFlow<List<String>> = _history.asStateFlow()
 
     private val _cart = MutableStateFlow(emptyList<CartLine>())
@@ -50,41 +51,39 @@ class ShopSession(
 
     private val _badge = MutableStateFlow(0)
 
-    /** Angka di badge tab Keranjang; terpisah dari [cart] supaya bug `glitch_user` (tidak turun setelah hapus) bisa ditiru. */
+    /** Angka di badge tab Keranjang. */
     val badge: StateFlow<Int> = _badge.asStateFlow()
 
     private val _voucher = MutableStateFlow<String?>(null)
     val voucher: StateFlow<String?> = _voucher.asStateFlow()
 
-    private val _balance = MutableStateFlow(INITIAL_BALANCE)
+    private val _balance = MutableStateFlow(0L)
     val balance: StateFlow<Long> = _balance.asStateFlow()
 
     private val _orders = MutableStateFlow(emptyList<Order>())
     val orders: StateFlow<List<Order>> = _orders.asStateFlow()
 
-    private val _homeBalance = MutableStateFlow(INITIAL_BALANCE)
-
-    /** Saldo yang tampil di Beranda Belanja; sama dengan [balance] kecuali bug `glitch_user` #6 (PRD §8.8). */
-    val homeBalance: StateFlow<Long> = _homeBalance.asStateFlow()
-
-    private val _transactions = MutableStateFlow(seedTransactions())
+    private val _transactions = MutableStateFlow(emptyList<Tx>())
     val transactions: StateFlow<List<Tx>> = _transactions.asStateFlow()
-    private var txSequence = _transactions.value.size
 
     private val _profile = MutableStateFlow(Profile("", ""))
     val profile: StateFlow<Profile> = _profile.asStateFlow()
 
-    private val _addresses = MutableStateFlow(SEED_ADDRESSES)
+    private val _addresses = MutableStateFlow(emptyList<Address>())
     val addresses: StateFlow<List<Address>> = _addresses.asStateFlow()
 
-    private var userKey: String? = null
+    private val _stale = MutableStateFlow(false)
+
+    /** true bila [load] terakhir membaca cache lokal, jadi cart, wishlist, dan saldo bisa basi. */
+    val stale: StateFlow<Boolean> = _stale.asStateFlow()
+
+    /** `uid` akun yang datanya ada di cache; null sebelum [load] berhasil. */
+    var uid: String? = null
+        private set
 
     private var pinHash = ""
     private var pinFailures = 0
     private var pinLockedUntil = 0L
-
-    /** Bug `glitch_user`: tap pertama "Bayar" tidak bereaksi; nilai ini menandai sudah dipakai (tidak disimpan). */
-    var glitchPayTapUsed = false
 
     /** Flash sale berakhir 2 jam 14 menit 37 detik sejak sesi dimulai. */
     val flashEndsAt = System.currentTimeMillis() + FLASH_DURATION_MS
@@ -96,22 +95,24 @@ class ShopSession(
     /** @return true bila produk sekarang ada di wishlist. */
     fun toggleWishlist(id: String): Boolean {
         val wished = isWished(id)
-        _wishlist.update { if (wished) it - id else it + id }
-        save()
+        editWishlist { if (wished) it - id else if (id in it) it else it + id }
         return !wished
     }
 
-    fun setWishlistOrder(order: List<String>) { _wishlist.value = order; save() }
+    /** Urutan baru; item yang ditambah client lain tetap ada (di belakang), yang dihapus client lain tidak hidup lagi. */
+    fun setWishlistOrder(order: List<String>) {
+        _wishlist.value = order
+        write { editWishlist(it) { fresh -> order.filter { id -> id in fresh } + fresh.filter { id -> id !in order } } }
+    }
 
     fun addHistory(q: String) {
         val t = q.trim()
         if (t.isEmpty()) return
-        _history.update { (listOf(t) + it.filterNot { h -> h.equals(t, ignoreCase = true) }).take(MAX_HISTORY) }
-        save()
+        editHistory { (listOf(t) + it.filterNot { h -> h.equals(t, ignoreCase = true) }).take(MAX_HISTORY) }
     }
 
-    fun removeHistory(q: String) { _history.update { it - q }; save() }
-    fun clearHistory() { _history.value = emptyList(); save() }
+    fun removeHistory(q: String) = editHistory { it - q }
+    fun clearHistory() = editHistory { emptyList() }
 
     // --- keranjang ---
 
@@ -119,108 +120,90 @@ class ShopSession(
     fun maxQty(line: CartLine) = minOf(stockOf(line), MAX_QTY).coerceAtLeast(1)
 
     /** Gabungkan baris dengan varian sama (FR-SHOP-16); jumlah dibatasi [maxQty]. */
-    fun addToCart(line: CartLine) {
-        _cart.update { lines ->
-            val same = lines.firstOrNull { it.sameItem(line) }
-            if (same == null) lines + line
-            else lines.map { if (it === same) it.copy(qty = (it.qty + line.qty).coerceAtMost(maxQty(it)), saved = false) else it }
-        }
-        syncBadge()
+    fun addToCart(line: CartLine) = editCart { lines ->
+        // shortcut: baris melewati MAX_CART_LINES diabaikan diam-diam; tidak terjangkau lewat UI (katalog 182 varian x qty 10), upgrade bila ada pesan.
+        if (lines.none { it.sameItem(line) }) (if (lines.size >= MAX_CART_LINES) lines else lines + line)
+        else lines.map { if (it.sameItem(line)) it.copy(qty = (it.qty + line.qty).coerceAtMost(maxQty(it)), saved = false) else it }
     }
 
-    fun setQty(line: CartLine, qty: Int) {
-        update(line) { it.copy(qty = qty.coerceIn(1, maxQty(it))) }
-        syncBadge()
-    }
+    fun setQty(line: CartLine, qty: Int) = updateLine(line) { it.copy(qty = qty.coerceIn(1, maxQty(it))) }
 
-    fun setSelected(line: CartLine, selected: Boolean) { update(line) { it.copy(selected = selected) }; save() }
+    fun setSelected(line: CartLine, selected: Boolean) = updateLine(line) { it.copy(selected = selected) }
 
-    fun setAllSelected(selected: Boolean) {
-        _cart.update { lines -> lines.map { if (it.saved) it else it.copy(selected = selected) } }
-        save()
-    }
+    fun setAllSelected(selected: Boolean) = editCart { lines -> lines.map { if (it.saved) it else it.copy(selected = selected) } }
 
     /** "Simpan untuk nanti": baris tetap di daftar, tapi tidak dipilih dan tidak dihitung. */
     fun toggleSaved(line: CartLine) {
-        update(line) { it.copy(saved = !it.saved, selected = false) }
-        syncBadge()
+        val saved = !line.saved
+        updateLine(line) { it.copy(saved = saved, selected = false) }
     }
 
-    /** @param keepBadge true meniru bug `glitch_user`: badge tidak ikut turun. */
-    fun remove(line: CartLine, keepBadge: Boolean = false) {
-        _cart.update { lines -> lines.filterNot { it.sameItem(line) } }
-        if (!keepBadge) syncBadge() else save()
-    }
+    fun remove(line: CartLine) = editCart { lines -> lines.filterNot { it.sameItem(line) } }
 
     /** Batalkan hapus: kembalikan baris di posisi semula. */
-    fun restore(line: CartLine, index: Int) {
-        _cart.update { lines -> lines.toMutableList().also { it.add(index.coerceIn(0, it.size), line) } }
-        syncBadge()
+    fun restore(line: CartLine, index: Int) = editCart { lines ->
+        if (lines.any { it.sameItem(line) }) lines else lines.toMutableList().also { it.add(index.coerceIn(0, it.size), line) }
     }
 
-    private fun update(line: CartLine, f: (CartLine) -> CartLine) =
-        _cart.update { lines -> lines.map { if (it.sameItem(line)) f(it) else it } }
+    private fun updateLine(line: CartLine, f: (CartLine) -> CartLine) =
+        editCart { lines -> lines.map { if (it.sameItem(line)) f(it) else it } }
 
-    /** Hitung ulang badge lalu simpan keranjang; semua mutasi keranjang lewat sini. */
-    private fun syncBadge() {
+    /**
+     * Semua mutasi keranjang lewat sini: [f] dijalankan di cache lalu, di store, pada keranjang terbaru dokumen
+     * (bukan salinan memori yang bisa basi), jadi item yang ditambah device lain tidak ikut tertimpa.
+     */
+    private fun editCart(f: (List<CartLine>) -> List<CartLine>) {
+        _cart.update(f)
         _badge.value = _cart.value.filterNot { it.saved }.sumOf { it.qty }
-        save()
+        write { editCart(it, f) }
     }
 
     // --- voucher ---
 
-    fun setVoucher(code: String?) { _voucher.value = code; save() }
+    fun setVoucher(code: String?) { _voucher.value = code; write { setVoucher(it, code) } }
 
-    // --- pesanan & saldo ---
-
-    /** Buat pesanan baru dengan ID berikutnya. Pemanggil bertanggung jawab atas stok, saldo, dan keranjang. */
-    fun newOrder(build: (id: String) -> Order): Order = build(orderId(store.nextOrderSequence())).let { o -> o.copy(statusAt = now(), stamps = mapOf(o.status to now())) }
-        .also { o -> _orders.update { listOf(o) + it }; save() }
-
-    fun updateOrder(id: String, status: OrderStatus, reason: String = "") {
-        _orders.update { list -> list.map { if (it.id == id) it.copy(status = status, statusAt = now(), stamps = it.stamps + (status to now()), cancelReason = reason) else it } }
-        save()
-    }
-
-    fun setVaDeadline(id: String, deadline: Long) {
-        _orders.update { list -> list.map { if (it.id == id) it.copy(vaDeadline = deadline) else it } }
-        save()
-    }
+    // --- pesanan & saldo (transaksi, butuh online) ---
 
     fun order(id: String) = _orders.value.firstOrNull { it.id == id }
 
+    /** Buat pesanan dari [draft] (ID diisi store); stok & saldo dicek di transaksi (contract §8.3). */
+    suspend fun placeOrder(draft: Order): Outcome<Order> = transact { placeOrder(it, draft, now()) }.map { it.order!! }
+
     /**
-     * Majukan status satu langkah (simulator atau tombol manual). Pesanan PracticePay yang Selesai
+     * Majukan status satu langkah (simulator, tombol manual, VA dibayar). Pesanan PracticePay yang Selesai
      * memberi cashback ke saldo tanpa mengubah total pesanan (PRD §8.7).
-     * @return status baru, atau null bila tidak bisa maju.
+     * @return status baru, atau null bila tidak bisa maju (sudah dimajukan client lain, offline).
      */
-    fun advance(id: String): OrderStatus? {
-        val order = order(id) ?: return null
-        val next = order.status.next() ?: return null
-        updateOrder(id, next)
-        if (next == OrderStatus.DONE && order.method == PayMethod.WALLET) credit(cashback(order.total), "Cashback belanja")
-        return next
+    suspend fun advance(id: String): OrderStatus? {
+        val o = order(id) ?: return null
+        if (o.status.next() == null) return null
+        val r = transact { advanceStatus(it, id, o.status, now()) }
+        return (r as? Outcome.Done)?.value?.takeIf { it.changed }?.order?.status
     }
 
-    /** Kurangi saldo PracticePay dan catat transaksi keluar; false bila saldo kurang. */
-    fun debit(amount: Long, title: String = "Belanja PracticeMart", syncHome: Boolean = true): Boolean {
-        if (amount > _balance.value) return false
-        _balance.update { it - amount }
-        if (syncHome) _homeBalance.value = _balance.value
-        record(title, -amount)
-        return true
-    }
+    /** Batalkan pesanan; stok kembali di transaksi yang sama. Aman dipanggil dua kali (FR-ORD-05). */
+    suspend fun cancelOrder(id: String, reason: String = ""): Outcome<Order> =
+        transact { cancelOrder(it, id, reason, now()) }.map { it.order!! }
 
-    fun credit(amount: Long, title: String) {
-        if (amount <= 0) return
-        _balance.update { it + amount }
-        _homeBalance.value = _balance.value
-        record(title, amount)
-    }
+    /** Transfer & Bayar QR: kurangi saldo dan catat transaksi keluar. */
+    suspend fun spend(amount: Long, title: String): Outcome<Tx> = transact { spend(it, amount, title, now()) }.map { it.tx!! }
 
-    private fun record(title: String, amount: Long) {
-        _transactions.update { listOf(Tx(++txSequence, title, amount, now())) + it }
-        save()
+    /** Top Up: tambah saldo dan catat transaksi masuk; nominal di luar batas ditolak. */
+    suspend fun topUp(amount: Long, title: String): Outcome<Tx> =
+        if (amount !in MIN_TOPUP..MAX_TOPUP) Outcome.Failed
+        else transact { topUp(it, amount, title, now()) }.map { it.tx!! }
+
+    /** Jalankan transaksi store lalu terapkan hasilnya ke cache. */
+    private suspend fun transact(op: suspend ShopStore.(String) -> Outcome<Change>): Outcome<Change> {
+        val key = uid ?: return Outcome.Failed
+        val r = store.op(key)
+        if (r !is Outcome.Done || uid != key) return r
+        val c = r.value
+        c.order?.let { o -> _orders.update { list -> if (list.any { it.id == o.id }) list.map { if (it.id == o.id) o else it } else listOf(o) + list } }
+        c.balance?.let { _balance.value = it }
+        c.tx?.let { tx -> _transactions.update { listOf(tx) + it } }
+        c.stock?.let(onStock)
+        return r
     }
 
     // --- PIN PracticePay ---
@@ -241,41 +224,45 @@ class ShopSession(
         } else {
             PinCheck.Wrong(MAX_PIN_FAILURES - pinFailures)
         }
-        save()
+        write { setPin(it, pinHash, pinFailures, pinLockedUntil) }
         return result
     }
 
     // --- akun ---
 
-    fun updateProfile(p: Profile) { _profile.value = p; save() }
+    fun updateProfile(p: Profile) { _profile.value = p; write { setProfile(it, p) } }
 
     /** Simpan alamat baru atau perbarui yang ada; hanya satu alamat utama. */
-    fun saveAddress(a: Address) {
-        _addresses.update { list ->
-            val withId = if (a.id == 0) a.copy(id = (list.maxOfOrNull { it.id } ?: 0) + 1) else a
-            val others = list.filterNot { it.id == withId.id }.map { if (withId.primary) it.copy(primary = false) else it }
-            (others + withId).let { all -> if (all.none { it.primary }) all.mapIndexed { i, x -> if (i == 0) x.copy(primary = true) else x } else all }
-                .sortedBy { it.id }
-        }
-        save()
+    fun saveAddress(a: Address) = editAddresses { list ->
+        if (a.id.isEmpty() && list.size >= MAX_ADDRESSES) return@editAddresses list
+        val withId = if (a.id.isEmpty()) a.copy(id = newAddressId(list)) else a
+        val replaced = list.any { it.id == withId.id }
+        val cleared = list.map { if (withId.primary && it.id != withId.id) it.copy(primary = false) else it }
+        // Urutan daftar dipertahankan seperti web: alamat yang diubah tetap di tempatnya, yang baru di belakang.
+        (if (replaced) cleared.map { if (it.id == withId.id) withId else it } else cleared + withId)
+            .let { all -> if (all.none { it.primary }) all.mapIndexed { i, x -> if (i == 0) x.copy(primary = true) else x } else all }
     }
 
-    fun deleteAddress(id: Int) { _addresses.update { list -> list.filterNot { it.id == id } }; save() }
+    /** Id baru "addr-<ms>" seperti web; naik satu bila bentrok (dua simpan di milidetik yang sama). */
+    private fun newAddressId(list: List<Address>): String {
+        var n = now()
+        while (list.any { it.id == "addr-$n" }) n++
+        return "addr-$n"
+    }
+
+    fun deleteAddress(id: String) = editAddresses { list -> list.filterNot { it.id == id } }
 
     /**
-     * Muat data akun dari [store] saat akun berganti; akun yang belum pernah login dibuat dari seed.
-     * `new_user`: saldo Rp0, tanpa alamat dan riwayat (PRD §11.1, §11.4).
+     * Muat data akun dari [store] (`get()`, tanpa listener). Akun yang belum pernah login dibuat dari data awal
+     * contract §4.5. Dipanggil saat app dibuka dan saat tarik-segarkan. Melempar exception bila gagal dibaca.
      */
-    fun applyUser(username: String, displayName: String, email: String, isNew: Boolean) {
-        if (userKey == username) return
-        val state = store.load(username) ?: seedState(displayName, email, isNew).also { store.save(username, it) }
-        userKey = username
+    suspend fun load(uid: String, displayName: String, email: String) {
+        val state = store.loadState(uid) { seedState(displayName, email) }
+        this.uid = uid
         _profile.value = state.profile
         _addresses.value = state.addresses
         _balance.value = state.balance
-        _homeBalance.value = state.homeBalance
         _transactions.value = state.transactions
-        txSequence = state.transactions.maxOfOrNull { it.id } ?: 0
         _cart.value = state.cart
         _badge.value = state.cart.filterNot { it.saved }.sumOf { it.qty }
         _wishlist.value = state.wishlist
@@ -285,74 +272,56 @@ class ShopSession(
         pinHash = state.pinHash
         pinFailures = state.pinFailures
         pinLockedUntil = state.pinLockedUntil
+        _stale.value = state.fromCache
     }
 
-    /**
-     * "Reset semua data" (PRD §10): kosongkan [store]. Akun aktif dilupakan, jadi [applyUser] berikutnya
-     * membuat ulang data dari seed dan Order ID mulai lagi dari 0001.
-     */
-    fun reset() {
-        store.clear()
-        userKey = null
-        glitchPayTapUsed = false
-    }
+    /** Tulis satu field akun aktif; tidak menunggu server. */
+    private fun write(f: ShopStore.(String) -> Unit) { uid?.let { store.f(it) } }
 
-    private fun save() {
-        val key = userKey ?: return
-        store.save(
-            key,
-            UserState(
-                _profile.value, _addresses.value, _balance.value, _homeBalance.value, _transactions.value,
-                _cart.value, _wishlist.value, _history.value, _voucher.value, _orders.value,
-                pinHash, pinFailures, pinLockedUntil,
-            ),
-        )
-    }
+    // Baca-ubah-tulis: f dijalankan di cache, lalu di store pada nilai terbaru dokumen (contract §8.3, pola web K9).
+    private fun editWishlist(f: (List<String>) -> List<String>) { _wishlist.update(f); write { editWishlist(it, f) } }
+    private fun editHistory(f: (List<String>) -> List<String>) { _history.update(f); write { editHistory(it, f) } }
+    private fun editAddresses(f: (List<Address>) -> List<Address>) { _addresses.update(f); write { editAddresses(it, f) } }
 
     /** Buang baris keranjang yang sudah dibeli. */
-    fun removePurchased(purchased: List<CartLine>) {
-        _cart.update { lines -> lines.filterNot { l -> purchased.any { it.sameItem(l) } } }
-        syncBadge()
-    }
+    fun removePurchased(purchased: List<CartLine>) = editCart { lines -> lines.filterNot { l -> purchased.any { it.sameItem(l) } } }
 
     private companion object {
         const val MAX_HISTORY = 5
+        const val MAX_CART_LINES = 100
         const val MAX_PIN_FAILURES = 3
         const val PIN_LOCK_MS = 30_000L
         val SEED_WISHLIST = listOf("P001", "P010", "P002", "P020")
         val SEED_HISTORY = listOf("sepatu lari", "headphone", "buku catatan", "smartwatch")
 
-        fun seedState(displayName: String, email: String, isNew: Boolean): UserState {
-            val balance = if (isNew) 0 else INITIAL_BALANCE
-            return UserState(
-                profile = Profile(displayName, email),
-                addresses = if (isNew) emptyList() else SEED_ADDRESSES.map { it.copy(recipient = displayName) },
-                balance = balance,
-                homeBalance = balance,
-                transactions = if (isNew) emptyList() else seedTransactions(),
-                cart = emptyList(),
-                wishlist = SEED_WISHLIST,
-                history = SEED_HISTORY,
-                voucher = null,
-                orders = emptyList(),
-                pinHash = Hashing.hash(PAY_PIN),
-                pinFailures = 0,
-                pinLockedUntil = 0,
-            )
-        }
+        /** Data awal akun (contract §4.5). */
+        fun seedState(displayName: String, email: String) = UserState(
+            profile = Profile(displayName, email),
+            addresses = SEED_ADDRESSES.map { it.copy(recipient = displayName) },
+            balance = INITIAL_BALANCE,
+            transactions = seedTransactions(),
+            cart = emptyList(),
+            wishlist = SEED_WISHLIST,
+            history = SEED_HISTORY,
+            voucher = null,
+            orders = emptyList(),
+            pinHash = Hashing.hash(PAY_PIN),
+            pinFailures = 0,
+            pinLockedUntil = 0,
+        )
 
-        /** 8 transaksi awal deterministik, 12–15 Januari 2026 (PRD §11.4). Terbaru di atas. */
+        /** 8 transaksi awal deterministik, 12–15 Januari 2026 (contract §4.5); ID dokumen `1`–`8`. Terbaru di atas. */
         fun seedTransactions(): List<Tx> {
             fun t(d: Int, h: Int, m: Int) = jakartaTime(2026, 1, d, h, m)
             return listOf(
-                Tx(8, "Top Up dari BCA", 300_000, t(15, 9, 12)),
-                Tx(7, "Belanja PracticeMart", -86_000, t(15, 8, 47)),
-                Tx(6, "Transfer ke Budi Santoso", -150_000, t(14, 19, 30)),
-                Tx(5, "Cashback belanja", 4_300, t(14, 12, 5)),
-                Tx(4, "Bayar QR · Kopi Pagi", -28_000, t(14, 7, 58)),
-                Tx(3, "Terima dari Citra Dewi", 75_000, t(13, 20, 14)),
-                Tx(2, "Belanja PracticeMart", -158_000, t(13, 10, 2)),
-                Tx(1, "Top Up dari Mandiri", 500_000, t(12, 18, 40)),
+                Tx("8", "Top Up dari BCA", 300_000, t(15, 9, 12)),
+                Tx("7", "Belanja PracticeMart", -86_000, t(15, 8, 47)),
+                Tx("6", "Transfer ke Budi Santoso", -150_000, t(14, 19, 30)),
+                Tx("5", "Cashback belanja", 4_300, t(14, 12, 5)),
+                Tx("4", "Bayar QR · Kopi Pagi", -28_000, t(14, 7, 58)),
+                Tx("3", "Terima dari Citra Dewi", 75_000, t(13, 20, 14)),
+                Tx("2", "Belanja PracticeMart", -158_000, t(13, 10, 2)),
+                Tx("1", "Top Up dari Mandiri", 500_000, t(12, 18, 40)),
             )
         }
         const val FLASH_DURATION_MS = ((2 * 60 + 14) * 60 + 37) * 1000L

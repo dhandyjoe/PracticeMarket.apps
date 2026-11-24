@@ -11,14 +11,15 @@ import kotlinx.coroutines.launch
 /**
  * Memajukan status pesanan aktif tiap interval Developer Options (PRD FR-ORD-02) dan membatalkan VA yang lewat batas.
  * Mode Manual (interval 0) mematikan kemajuan otomatis; tombol "Status berikutnya" memanggil [ShopSession.advance].
- * [onAdvanced] dipakai untuk notifikasi; [onExpired] mengembalikan stok.
+ * Waktu dibandingkan dengan jam asli karena `statusAt`/`vaDeadline` di Firestore memakai jam asli (contract §5, §7).
+ * [onAdvanced] dipakai untuk notifikasi; [onExpired] membatalkan pesanan & mengembalikan stok.
  */
 class OrderSimulator(
     private val session: ShopSession,
     private val settings: SettingsStore,
     private val now: () -> Long,
     private val onAdvanced: (orderId: String, status: OrderStatus) -> Unit,
-    private val onExpired: (orderId: String) -> Unit,
+    private val onExpired: suspend (orderId: String) -> Unit,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
@@ -31,7 +32,7 @@ class OrderSimulator(
         }
     }
 
-    internal fun tick() {
+    internal suspend fun tick() {
         val interval = settings.prefs.value.statusIntervalMs
         val t = now()
         session.orders.value.forEach { o ->

@@ -37,7 +37,7 @@ class HomeFragment : ShopFragment(R.layout.fragment_home, lightStatusBar = false
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.session.homeBalance.collect { b.shopTxtWalletBalance.text = it.toRupiah() }
+                vm.session.balance.collect { b.shopTxtWalletBalance.text = it.toRupiah() }
             }
         }
         setupBanners(b)
@@ -125,7 +125,6 @@ class HomeFragment : ShopFragment(R.layout.fragment_home, lightStatusBar = false
             onOpen = { nav.openProduct(it.id) },
             onAdd = ::quickAdd,
             onSeeAll = { vm.applyFilter(com.automation.practice.domain.ProductFilter()); nav.openResults() },
-            nbspPrice = { false },
         )
         adapter.items = recommendations
         adapter.tail = Tail.SEE_ALL

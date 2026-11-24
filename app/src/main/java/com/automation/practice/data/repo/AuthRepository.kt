@@ -1,110 +1,106 @@
 package com.automation.practice.data.repo
 
-import android.content.res.AssetManager
-import com.automation.practice.data.db.MetaRow
-import com.automation.practice.data.db.PracticeDao
-import com.automation.practice.data.db.UserRow
-import com.automation.practice.domain.Hashing
-import kotlinx.coroutines.delay
-import org.json.JSONArray
+import android.util.Log
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.tasks.await
 
-enum class Behavior { NORMAL, LOCKED, SLOW, GLITCH, NEW }
+data class User(val uid: String, val displayName: String, val email: String)
 
-data class User(
-    val username: String,
-    val passwordHash: String,
-    val displayName: String,
-    val email: String,
-    val behavior: Behavior,
-)
+/** Error Auth yang dibedakan UI (teks di contract §6). */
+enum class AuthError { INVALID_CREDENTIALS, EMAIL_TAKEN, TOO_MANY_REQUESTS, NETWORK, FAILED }
 
 sealed interface LoginResult {
     data class Success(val user: User) : LoginResult
-    data object Invalid : LoginResult
-    data object Locked : LoginResult
+    data class Failed(val error: AuthError) : LoginResult
 }
 
 /**
- * Akun uji (seed assets/seed/users.json) dan akun hasil Register di tabel `users`; sesi login di `meta`.
- * Bertahan setelah kill & update APK (PRD FR-AUTH-17). Password hanya disimpan sebagai hash.
+ * Akun & sesi login di Firebase Authentication, profil di `users/{uid}` (contract §8.1–§8.2).
+ * Sesi bertahan setelah kill & update APK karena dikelola SDK (PRD FR-AUTH-17). Password tidak pernah disimpan app.
  */
-class AuthRepository(private val assets: AssetManager, private val dao: PracticeDao) {
-    private val users = mutableListOf<User>()
-
-    var currentUser: User? = null
+class AuthRepository(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val realNow: () -> Long = System::currentTimeMillis,
+) {
+    var currentUser: User? = auth.currentUser?.toUser()
         private set
 
-    init { load() }
-
-    /** Baca ulang dari database; seed bila tabel kosong (first run, Clear data, Reset) dan pulihkan sesi login. */
-    fun load() {
-        if (dao.users().isEmpty()) dao.upsertUsers(loadSeed(assets).map { it.toRow() })
-        users.clear()
-        users += dao.users().map { User(it.username, it.passwordHash, it.displayName, it.email, Behavior.valueOf(it.behavior)) }
-        currentUser = dao.meta(SESSION_USER)?.let { u -> users.firstOrNull { it.username == u } }
+    /** Login email + password; buat `users/{uid}` bila Register sebelumnya terputus (contract §8.1). */
+    suspend fun login(email: String, password: String): LoginResult = try {
+        val fu = auth.signInWithEmailAndPassword(email, password).await().user!!
+        val ref = db.collection(USERS).document(fu.uid)
+        val name = ref.get().await().getString(DISPLAY_NAME)
+            ?: (fu.displayName ?: email.substringBefore('@')).also { ref.set(userDoc(fu, it)).await() }
+        // Nama disalin ke profil Auth supaya sapaan Beranda tersedia saat sesi dipulihkan tanpa jaringan.
+        if (fu.displayName != name) fu.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build()).await()
+        LoginResult.Success(User(fu.uid, name, fu.email ?: email).also { currentUser = it })
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        auth.signOut()
+        LoginResult.Failed(authError(e))
     }
 
-    suspend fun login(identity: String, password: String): LoginResult {
-        val user = users.firstOrNull { it.username == identity || it.email.equals(identity, ignoreCase = true) }
-        if (user?.behavior == Behavior.SLOW) delay(SLOW_USER_DELAY_MS)
-        return when {
-            user == null || !Hashing.verify(password, user.passwordHash) -> LoginResult.Invalid
-            user.behavior == Behavior.LOCKED -> LoginResult.Locked
-            else -> LoginResult.Success(user.also(::startSession))
+    /**
+     * Register (PRD FR-AUTH-12): buat akun → tulis `users/{uid}` → `signOut`. Null bila sukses.
+     * Gagal menulis `users/{uid}` tidak menggagalkan Register; login berikutnya membuatnya.
+     */
+    suspend fun register(name: String, email: String, password: String): AuthError? = try {
+        val fu = auth.createUserWithEmailAndPassword(email, password).await().user!!
+        try {
+            db.collection(USERS).document(fu.uid).set(userDoc(fu, name)).await()
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Log.w(TAG, "users/${fu.uid} belum tertulis; dibuat saat login pertama", e)
         }
-    }
-
-    /** Dipakai login sidik jari: kredensial sudah terbukti saat login pertama. */
-    fun loginAs(username: String): User? =
-        users.firstOrNull { it.username == username && it.behavior != Behavior.LOCKED }?.also(::startSession)
-
-    /** Null bila email sudah terdaftar. Username akun baru = email. */
-    fun register(name: String, email: String, password: String): User? {
-        if (findByEmail(email) != null) return null
-        return User(email, Hashing.hash(password), name, email, Behavior.NORMAL).also {
-            dao.upsertUsers(listOf(it.toRow()))
-            users += it
-        }
-    }
-
-    fun findByEmail(email: String): User? = users.firstOrNull { it.email.equals(email, ignoreCase = true) }
-
-    fun changePassword(email: String, newPassword: String): Boolean {
-        val i = users.indexOfFirst { it.email.equals(email, ignoreCase = true) }
-        if (i < 0) return false
-        users[i] = users[i].copy(passwordHash = Hashing.hash(newPassword)).also { dao.upsertUsers(listOf(it.toRow())) }
-        return true
+        null
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        authError(e)
+    } finally {
+        auth.signOut()
     }
 
     fun logout() {
+        auth.signOut()
         currentUser = null
-        dao.deleteMeta(SESSION_USER)
     }
 
-    private fun startSession(user: User) {
-        currentUser = user
-        dao.setMeta(MetaRow(SESSION_USER, user.username))
-    }
+    // email dari Firebase (huruf kecil), bukan input user: Security Rules membandingkannya dengan token (contract §8.4).
+    private fun userDoc(fu: FirebaseUser, name: String) = mapOf(
+        "email" to fu.email,
+        DISPLAY_NAME to name,
+        "createdAt" to realNow(),
+        "schemaVersion" to SCHEMA_VERSION,
+    )
 
-    private fun User.toRow() = UserRow(username, email, displayName, behavior.name, passwordHash)
+    private fun FirebaseUser.toUser() = User(uid, displayName ?: email.orEmpty().substringBefore('@'), email.orEmpty())
 
-    private companion object {
-        const val SLOW_USER_DELAY_MS = 4_000L // PRD §11.1: loading 3–5 dtk
-        const val SESSION_USER = "session_user"
+    companion object {
+        private const val TAG = "AuthRepository"
+        private const val USERS = "users"
+        private const val DISPLAY_NAME = "displayName"
+        private const val SCHEMA_VERSION = 1
 
-        fun loadSeed(assets: AssetManager): List<User> {
-            val arr = JSONArray(assets.open("seed/users.json").bufferedReader().use { it.readText() })
-            return List(arr.length()) { i ->
-                arr.getJSONObject(i).let {
-                    User(
-                        it.getString("username"),
-                        Hashing.hash(it.getString("password")),
-                        it.getString("displayName"),
-                        it.getString("email"),
-                        Behavior.valueOf(it.getString("behavior").uppercase()),
-                    )
-                }
-            }
+        fun authError(e: Exception): AuthError = when (e) {
+            is FirebaseAuthUserCollisionException -> AuthError.EMAIL_TAKEN
+            // INVALID_LOGIN_CREDENTIALS: email tidak terdaftar & password salah sengaja tidak dibedakan.
+            is FirebaseAuthInvalidCredentialsException, is FirebaseAuthInvalidUserException -> AuthError.INVALID_CREDENTIALS
+            is FirebaseTooManyRequestsException -> AuthError.TOO_MANY_REQUESTS
+            is FirebaseNetworkException -> AuthError.NETWORK
+            is FirebaseFirestoreException ->
+                if (e.code == FirebaseFirestoreException.Code.UNAVAILABLE) AuthError.NETWORK else AuthError.FAILED
+            else -> AuthError.FAILED
         }
     }
 }

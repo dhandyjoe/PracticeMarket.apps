@@ -113,8 +113,7 @@ class CartFragment : ShopFragment(R.layout.fragment_cart) {
 
     private fun onSwipe(position: Int) {
         val line = lines[position]
-        // Bug glitch_user: badge tidak ikut turun setelah hapus (PRD §8.8 no. 5).
-        vm.session.remove(line, keepBadge = vm.glitch)
+        vm.session.remove(line)
         val name = vm.catalog.product(line.productId)?.name.orEmpty()
         Snackbar.make(requireView(), getString(R.string.cart_deleted_fmt, name), UNDO_MS)
             .setAction(R.string.cart_undo) { vm.session.restore(line, position) }

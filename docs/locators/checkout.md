@@ -56,10 +56,12 @@ Badge tab (`shop_tab_cart`) = jumlah pcs semua baris yang tidak disimpan.
 | Id | Elemen | Catatan |
 |---|---|---|
 | `shop_btn_back` | Kembali | |
-| `shop_btn_change_address` | `Ubah` | belum ada ACC-03: hanya menampilkan `Ubah alamat segera hadir` |
-| `shop_txt_address_label` / `shop_txt_address` | `Rumah` / alamat | `Jl. Merdeka No. 10, Bandung, Jawa Barat 40111` |
+| `shop_btn_change_address` | `Ubah` | tampil bila akun punya lebih dari satu alamat; membuka dialog `Pilih alamat` (pilihan tunggal) |
+| `shop_txt_address_label` / `shop_txt_address` | Label / alamat | alamat utama akun (default `Rumah`, `Jl. Merdeka No. 10, Bandung, Jawa Barat 40111`); `Belum ada alamat pengiriman.` bila akun tanpa alamat |
+| `shop_tag_address_main` | `Utama` | tampil bila alamat terpilih adalah alamat utama |
 | `shop_list_checkout_items` | Barang | berisi `shop_item_checkout_row`, `shop_txt_checkout_name` / `_detail` / `_line_total` |
-| `shop_rdo_courier_reguler` / `_express` / `_sameday` | Kurir | default Express. `Same Day` selalu disabled (`Tidak tersedia untuk kota ini`) |
+| `shop_rdo_courier_reguler` / `_express` / `_sameday` | Kurir | default Express. `Same Day` aktif hanya bila provinsi alamat terpilih `DKI Jakarta` (catatan `Tiba hari ini`); selain itu disabled dengan `shop_txt_courier_sameday_note` = `Tidak tersedia untuk kota ini` |
+| `shop_group_delivery_time` | Jam kirim Same Day | tampil bila Same Day terpilih; `shop_btn_delivery_time` membuka TimePicker, `shop_txt_delivery_time_error` = `Pilih jam kirim antara 09:00 dan 17:00`; `Pilih Pembayaran` disabled sampai jam 09:00–17:00 dipilih |
 | `shop_row_courier_*` | Baris kurir | dapat diketuk; `shop_txt_courier_*_price` = ongkir |
 | `shop_sw_insurance` | Asuransi | default ON, `Rp2.000 flat` |
 | `shop_input_note` | Catatan | opsional |
@@ -80,7 +82,8 @@ Badge tab (`shop_tab_cart`) = jumlah pcs semua baris yang tidak disimpan.
 | `shop_group_bank` | Bank VA | `shop_chip_bank_bca` / `_bni` / `_mandiri` |
 | `shop_txt_pay_wallet_note` / `shop_txt_pay_cod_note` | Keterangan | `Saldo Rp500.000` / `Untuk total maksimal Rp1.000.000` |
 | `shop_txt_pay_total` | Total tagihan | |
-| `shop_btn_pay` | `Bayar Rp158.000` | disabled sampai valid dan saat memproses |
+| `shop_banner_offline` | Banner `Tidak ada koneksi` | tampil saat tidak ada jaringan; saat tampil `shop_btn_pay` disabled (FR-PAYM-15) |
+| `shop_btn_pay` | `Bayar Rp158.000` | disabled sampai valid, saat memproses, dan saat offline |
 | `shop_overlay_processing` | Overlay | `Memproses pembayaran…` ±2 dtk, tidak bisa dibatalkan |
 
 PIN PracticePay (bottom sheet `shop_sheet_pin`): tombol angka dicari lewat teks `0`–`9`, hapus lewat content-desc `Hapus`, `shop_indicator_pin` (content-desc `N dari 6 digit terisi`), `shop_txt_pin_error` (`PIN salah. Sisa N percobaan.` / `PracticePay terkunci. Coba lagi dalam N detik.`).
@@ -99,7 +102,7 @@ Konteks `WEBVIEW_com.automation.practice`. Native: `shop_btn_close_threeds` (con
 | Id | Elemen | Catatan |
 |---|---|---|
 | `shop_txt_va_timer` | Hitung mundur | `MM:SS`, mulai 15:00 |
-| `shop_txt_va_bank` / `shop_txt_va_number` | Bank / nomor | BCA `8077 0000 1234 5678`, BNI `8848 …`, Mandiri `8908 …` |
+| `shop_txt_va_bank` / `shop_txt_va_number` | Bank / nomor | BCA `8077 0000 1234 5678` (Order ID deterministik), BNI `8808 2026 0115 0003`, Mandiri `8900 …` = awalan bank + digit Order ID (contract §4.3) |
 | `shop_btn_copy_va` | `Salin` | Snackbar `Nomor VA disalin` |
 | `shop_txt_va_total` | Total tagihan | |
 | `shop_btn_va_guide` | Judul accordion | selected = terbuka; berisi `shop_txt_va_guide_title`, `shop_txt_va_guide_steps` |
@@ -122,4 +125,4 @@ Waktu habis: pesanan `Dibatalkan`, stok kembali, hasil Gagal dengan `Waktu pemba
 Sukses: stok varian berkurang, saldo berkurang (PracticePay), barang terbeli keluar dari keranjang, voucher dilepas, dan notifikasi sistem `Pesanan PM-… berhasil dibuat` (butuh izin notifikasi di Android 13+; ketuk membuka app di Beranda).
 
 ## Belum diimplementasi
-Developer Options (latensi, peluang error server untuk `Cek Status`, VA 30 dtk / 2 mnt), banner `Tidak ada koneksi`, TimePicker Same Day, ubah alamat, Detail Pesanan dari notifikasi. Bug `glitch_user`: subtotal salah bila qty ≥ 3, tap pertama `Bayar` diabaikan, badge keranjang tidak turun setelah hapus.
+Developer Options (latensi, peluang error server untuk `Cek Status`, VA 30 dtk / 2 mnt), Detail Pesanan dari notifikasi.

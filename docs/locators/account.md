@@ -2,13 +2,13 @@
 
 Kontrak publik (PRD §12.3). Mengubah atau menghapus id di sini = breaking change.
 Id memakai prefix `com.automation.practice:id/`.
-Deep link: `practiceapp://account`, `account/address`, `settings`, `help`. Test hook tanpa UI: `practiceapp://settings/reset`, `practiceapp://settings?deterministic=true&latency=0&animations=false&flaky=0`.
+Deep link: `practiceapp://account`, `account/address`, `settings`, `help`. Test hook tanpa UI: `practiceapp://settings?deterministic=true&latency=0&animations=false&flaky=0`.
 
 ## ACC-01 Akun
 | Id | Elemen | Catatan |
 |---|---|---|
-| `acc_txt_initials`, `acc_img_avatar` | Avatar | inisial, atau foto bila sudah diubah |
-| `acc_txt_name`, `acc_txt_username` | Nama, username | |
+| `acc_txt_initials` | Avatar | inisial nama |
+| `acc_txt_name`, `acc_txt_username` | Nama, email | id `acc_txt_username` dipertahankan; berisi email akun |
 | `acc_btn_edit_profile` | `Edit` | |
 | `shop_item_orders` | `Pesanan Saya` | tag `N aktif` (`acc_txt_menu_tag`) |
 | `shop_item_wishlist` | `Wishlist` | |
@@ -20,8 +20,6 @@ Deep link: `practiceapp://account`, `account/address`, `settings`, `help`. Test 
 ## ACC-02 Edit Profil
 | Id | Elemen | Catatan |
 |---|---|---|
-| `acc_btn_change_photo` | `Ubah foto` | pilihan Kamera / Galeri (Photo Picker) |
-| `acc_img_photo`, `acc_txt_photo_initials` | Foto | content-desc `Foto profil` |
 | `acc_input_name` / `acc_error_name` | Nama | `Nama wajib diisi` |
 | `acc_input_email` / `acc_error_email` | Email | `Format email tidak valid` |
 | `acc_btn_birthdate` | Tanggal lahir | Material DatePicker, tampil `YYYY-MM-DD`; awal 2026-01-15 di mode deterministik |
@@ -55,10 +53,11 @@ Deep link: `practiceapp://account`, `account/address`, `settings`, `help`. Test 
 | `dev_sw_animations` | Animasi | disimpan, belum memengaruhi animasi |
 | `dev_seg_flaky` | Peluang error server | 0% / 30% / 50% |
 | `dev_sw_hints` | Locator Hint Overlay | menampilkan id View di atas elemen; Compose tidak ikut |
-| `dev_sw_reset_on_launch` | Reset data setiap app dibuka | ON: database dikosongkan setiap cold start (harus login ulang) |
 | `dev_seg_va` | Batas waktu VA | 30 dtk / 2 mnt / 15 mnt |
 | `dev_seg_interval` | Update status pesanan | 3 / 10 / 30 dtk / Manual |
-| `dev_btn_reset_data` / `dev_btn_reset_prefs` | Reset data… / Reset pengaturan… | dialog konfirmasi; reset data kembali ke Onboarding |
+| `dev_btn_reset_prefs` | Reset pengaturan… | dialog konfirmasi; hanya pengaturan, tidak menyentuh data cloud |
+
+Dihapus di v0.3.0 (breaking): `dev_sw_reset_on_launch`, `dev_btn_reset_data`, deep link `practiceapp://settings/reset` (tidak ada reset data).
 | `dev_txt_version`, `dev_txt_commit`, `dev_txt_build_date`, `dev_txt_contract` | About | |
 
 ## HELP-01 Pusat Bantuan

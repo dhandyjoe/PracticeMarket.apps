@@ -1,4 +1,4 @@
-# Subflow: reset data, lalu masuk sebagai standard_user.
+# Subflow: reset data, lalu masuk dengan akun hasil Register (-e EMAIL=… -e PASSWORD=…; tidak ada akun uji bersama).
 appId: com.automation.practice
 ---
 - launchApp:
@@ -12,10 +12,10 @@ appId: com.automation.practice
     id: shop_btn_skip
 - tapOn:
     id: shop_input_username
-- inputText: standard_user
+- inputText: ${EMAIL}
 - tapOn:
     id: shop_input_password
-- inputText: Practice123!
+- inputText: ${PASSWORD}
 - hideKeyboard
 - tapOn:
     id: shop_btn_login

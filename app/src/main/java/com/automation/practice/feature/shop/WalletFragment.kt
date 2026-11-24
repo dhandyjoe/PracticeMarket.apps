@@ -14,7 +14,6 @@ import com.automation.practice.domain.Tx
 import com.automation.practice.domain.formatDateShort
 import com.automation.practice.domain.formatHm
 import com.automation.practice.domain.toRupiah
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -28,7 +27,7 @@ class WalletFragment : ShopFragment(R.layout.fragment_wallet, lightStatusBar = f
         hidden = savedInstanceState?.getBoolean(STATE_HIDDEN) ?: false
 
         b.payBtnToggleBalance.setOnClickListener { hidden = !hidden; renderBalance(b, vm.session.balance.value) }
-        b.payBtnTopup.setOnClickListener { Snackbar.make(view, R.string.pay_soon, Snackbar.LENGTH_SHORT).show() }
+        b.payBtnTopup.setOnClickListener { nav.openTopUp() }
         b.payBtnTransfer.setOnClickListener { nav.openContacts() }
         b.payBtnScan.setOnClickListener { nav.openScanQr() }
         b.payBtnHistory.setOnClickListener { nav.openHistory() }

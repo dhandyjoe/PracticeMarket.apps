@@ -29,6 +29,12 @@ data class Order(
     val vaDeadline: Long = 0,
 )
 
+/** Alasan batal yang ditulis ke Firestore: selalu Indonesia dan urutannya sama dengan pilihan di sheet batal; sama dengan web (`CANCEL_REASONS`). */
+val CANCEL_REASONS = listOf("Ingin ubah alamat pengiriman", "Ingin ubah metode pembayaran", "Menemukan harga lebih murah", "Lainnya")
+
+/** Alasan batal otomatis saat batas bayar VA lewat. */
+const val VA_EXPIRED_REASON = "Waktu pembayaran habis"
+
 /** Order ID deterministik `PM-20260115-0001`, `-0002`, … (PRD FR-PAYM-13). */
 fun orderId(sequence: Int) = "PM-20260115-%04d".format(sequence)
 

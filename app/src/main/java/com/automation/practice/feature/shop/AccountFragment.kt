@@ -1,6 +1,5 @@
 package com.automation.practice.feature.shop
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -55,12 +54,8 @@ class AccountFragment : ShopFragment(R.layout.fragment_account) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(vm.session.profile, vm.session.orders) { p, o -> p to o }.collect { (p, orders) ->
                     b.accTxtName.text = p.name
-                    b.accTxtUsername.text = container.auth.currentUser?.username.orEmpty()
+                    b.accTxtUsername.text = container.auth.currentUser?.email.orEmpty()
                     b.accTxtInitials.text = initials(p.name)
-                    val photo = p.photoUri
-                    b.accImgAvatar.isVisible = photo != null
-                    b.accTxtInitials.isVisible = photo == null
-                    if (photo != null) { b.accImgAvatar.clipToOutline = true; b.accImgAvatar.setImageURI(Uri.parse(photo)) }
                     val active = orders.count { it.status != OrderStatus.DONE && it.status != OrderStatus.CANCELLED }
                     ordersTag?.accTxtMenuTag?.apply { isVisible = active > 0; text = getString(R.string.acc_orders_active_fmt, active) }
                 }

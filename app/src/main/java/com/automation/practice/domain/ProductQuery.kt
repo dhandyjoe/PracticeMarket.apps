@@ -23,11 +23,8 @@ data class ProductFilter(
         ).count { it }
 }
 
-/**
- * Saring + urutkan katalog. [glitch] meniru bug `glitch_user` (PRD §8.8):
- * urutan "Harga Terendah" salah untuk dua item terakhir.
- */
-fun List<Product>.applyFilter(f: ProductFilter, glitch: Boolean = false): List<Product> {
+/** Saring + urutkan katalog. */
+fun List<Product>.applyFilter(f: ProductFilter): List<Product> {
     val q = f.query.trim().lowercase()
     val matched = filter {
         (q.isEmpty() || q in it.name.lowercase()) &&
@@ -36,7 +33,7 @@ fun List<Product>.applyFilter(f: ProductFilter, glitch: Boolean = false): List<P
             it.rating >= f.minRating &&
             (!f.inStockOnly || it.inStock)
     }
-    val sorted = when (f.sort) {
+    return when (f.sort) {
         // sortedBy stabil: awalan nama yang cocok naik, sisanya tetap urutan katalog.
         Sort.RELEVANT -> matched.sortedBy { if (q.isNotEmpty() && it.name.lowercase().startsWith(q)) 0 else 1 }
         Sort.PRICE_ASC -> matched.sortedBy { it.price }
@@ -44,7 +41,4 @@ fun List<Product>.applyFilter(f: ProductFilter, glitch: Boolean = false): List<P
         Sort.RATING -> matched.sortedByDescending { it.rating }
         Sort.NEWEST -> matched.sortedByDescending { it.id } // id lebih besar = lebih baru
     }
-    return if (glitch && f.sort == Sort.PRICE_ASC && sorted.size >= 2) {
-        sorted.dropLast(2) + sorted.takeLast(2).reversed()
-    } else sorted
 }

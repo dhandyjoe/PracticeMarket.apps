@@ -72,24 +72,6 @@
         <item name="android:textColor">@color/pm_ink</item>
         <item name="android:textColorHint">@color/pm_ink_muted</item>
     </style>
-    <style name="Pm.OtpBox">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">@dimen/pm_otp_box</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/bg_otp_box</item>
-        <item name="android:gravity">center</item>
-        <item name="android:inputType">number</item>
-        <item name="android:digits">0123456789</item>
-        <item name="android:maxLength">1</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:fontFamily">@font/jetbrains_mono</item>
-        <item name="fontFamily">@font/jetbrains_mono</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/pm_ink</item>
-        <item name="android:imeOptions">flagNoExtractUi</item>
-    </style>
 
     <style name="Widget.PracticeMart.Button.Primary" parent="Widget.Material3.Button">
         <item name="android:layout_width">match_parent</item>

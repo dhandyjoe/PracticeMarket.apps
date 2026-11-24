@@ -4,6 +4,7 @@
 
     <string name="load_failed">Failed to load, try again</string>
     <string name="retry">Try again</string>
+    <string name="stock_short_fmt">Not enough stock for %s</string>
     <string name="ord_title">My Orders</string>
     <string name="ord_updated_fmt">Pull to refresh · %s</string>
     <string name="ord_tab_all">All</string>
@@ -28,7 +29,7 @@
     <string name="ord_status_heading">ORDER STATUS</string>
     <string name="ord_interval_fmt">interval %d s</string>
     <string name="ord_interval_manual">manual mode</string>
-    <string name="ord_next_status">Next status (manual mode)</string>
+    <string name="ord_next_status">Next status</string>
     <string name="ord_step_passed">Done</string>
     <string name="ord_step_not_yet">Not yet</string>
     <string name="ord_cancelled_body">This order has been cancelled.</string>
@@ -37,7 +38,7 @@
     <string name="ord_review_soon">Reviews coming soon</string>
     <string name="ord_cannot_cancel">Orders that have shipped cannot be cancelled</string>
     <string name="cancel_title">Cancel order?</string>
-    <string name="cancel_sub_fmt">%s · refunded to the original payment method.</string>
+    <string name="cancel_sub_fmt">%s</string>
     <string name="cancel_pick_reason">Choose a reason</string>
     <string name="cancel_reason_address">Want to change the delivery address</string>
     <string name="cancel_reason_payment">Want to change the payment method</string>
@@ -61,13 +62,6 @@
     <string name="acc_help">Help Center</string>
     <string name="acc_dev_tag">for testing</string>
     <string name="acc_edit_title">Edit Profile</string>
-    <string name="acc_photo_cd">Profile photo</string>
-    <string name="acc_change_photo">Change photo</string>
-    <string name="acc_photo_hint">Camera or gallery · max 2 MB</string>
-    <string name="acc_photo_camera">Camera</string>
-    <string name="acc_photo_gallery">Gallery</string>
-    <string name="acc_photo_too_big">Photo too large, 2 MB maximum</string>
-    <string name="acc_camera_denied">Camera permission denied</string>
     <string name="acc_name_label">Full name</string>
     <string name="acc_name_required">Name is required</string>
     <string name="acc_email_invalid">Invalid email format</string>
@@ -121,16 +115,10 @@
     <string name="dev_flaky">Server error chance</string>
     <string name="dev_flaky_sub">For retry practice</string>
     <string name="dev_hints_sub">Show resource-id above elements</string>
-    <string name="dev_reset_on_launch">Reset data on every launch</string>
-    <string name="dev_reset_on_launch_sub">Data &amp; login session reset on each cold start</string>
     <string name="dev_va_window">VA time limit</string>
     <string name="dev_interval">Order status update</string>
     <string name="dev_interval_manual">Manual</string>
-    <string name="dev_reset_hint">Restore cart, orders, stock, balance, login session, and onboarding to their initial state without closing the app.</string>
-    <string name="dev_reset_data">Reset data…</string>
     <string name="dev_reset_prefs">Reset settings…</string>
-    <string name="dev_reset_data_title">Reset all data?</string>
-    <string name="dev_reset_data_body">Cart, orders, stock, balance, and login session return to the start. You will begin at Onboarding.</string>
     <string name="dev_reset_prefs_title">Reset settings?</string>
     <string name="dev_reset_prefs_body">All Developer Options, Language, and Theme settings return to default.</string>
     <string name="about_version">Version</string>
@@ -143,9 +131,8 @@
     <string name="pay_show_balance">Show balance</string>
     <string name="pay_hide_balance">Hide balance</string>
     <string name="pay_history">History</string>
-    <string name="pay_soon">This feature is coming soon</string>
     <string name="pay_cashback_title">PracticePay cashback of 5%</string>
-    <string name="pay_cashback_body">Max Rp10,000 per shopping transaction</string>
+    <string name="pay_cashback_body">Max Rp10.000 per shopping transaction</string>
     <string name="pay_recent_tx">Recent transactions</string>
     <string name="pay_see_all">See all</string>
     <string name="pay_history_title">Transaction History</string>
@@ -164,14 +151,19 @@
     <string name="pay_contacts_empty">No contacts found</string>
     <string name="pay_recent">Recent</string>
     <string name="pay_amount_label">Amount</string>
-    <string name="pay_min_hint">Minimum Rp10,000</string>
+    <string name="pay_min_hint">Minimum Rp10.000</string>
     <string name="pay_balance_fmt">Balance %s</string>
     <string name="pay_note_label">Note (optional)</string>
     <string name="pay_note_hint">e.g. lunch payment</string>
     <string name="pay_next">Continue</string>
+    <string name="offline_banner">No connection</string>
+    <string name="stale_banner">Data may be out of date. Tap to reload.</string>
+    <string name="pay_topup_sub">Add balance</string>
+    <string name="pay_topup_button_fmt">Top Up %s</string>
+    <string name="pay_topup_ok">Top Up successful</string>
+    <string name="pay_topup_ok_body_fmt">%2$s balance increased by %1$s</string>
     <string name="pay_transfer_ok">Transfer successful</string>
     <string name="pay_transfer_ok_body_fmt">%1$s to %2$s</string>
-    <string name="pay_tx_transfer_fmt">Transfer to %s</string>
     <string name="pay_notif_received_fmt">%1$s received %2$s from you</string>
     <string name="pay_view_history">View History</string>
     <string name="pay_done">Done</string>
@@ -179,7 +171,6 @@
     <string name="pay_pay_fmt">Pay %s</string>
     <string name="pay_qr_ok">Payment successful</string>
     <string name="pay_qr_ok_body_fmt">%1$s to %2$s</string>
-    <string name="pay_tx_qr_fmt">QR payment · %s</string>
     <string name="pay_close">Close</string>
     <string name="pay_scan_hint">Point the camera at a merchant or friend\'s QR code</string>
     <string name="pay_camera_denied">Camera permission denied</string>
@@ -187,4 +178,10 @@
     <string name="pay_open_settings">Open Settings</string>
     <string name="pay_gallery">Upload from gallery</string>
     <string name="pay_qr_invalid">QR code not recognized</string>
+    <string name="courier_sameday_available">Arrives today</string>
+    <string name="checkout_address_none">No delivery address yet.</string>
+    <string name="checkout_address_pick_title">Pick an address</string>
+    <string name="checkout_delivery_time">Delivery time (09:00–17:00)</string>
+    <string name="checkout_delivery_time_pick">Pick delivery time</string>
+    <string name="checkout_delivery_time_error">Pick a delivery time between 09:00 and 17:00</string>
 </resources>

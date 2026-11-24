@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 /** Commit pendek untuk About (DEV-04); "dev" bila bukan repo git. */
@@ -21,11 +21,13 @@ android {
         applicationId = "com.automation.practice"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.2.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "COMMIT_SHA", "\"$gitSha\"")
         buildConfigField("String", "BUILD_DATE", "\"${LocalDate.now()}\"")
+        // Opsional: -Pfirebase.emulator=10.0.2.2 mengarahkan app ke Firebase Emulator Suite (test E2E tanpa data produksi).
+        buildConfigField("String", "FIREBASE_EMULATOR", "\"${findProperty("firebase.emulator") ?: ""}\"")
     }
 
     // English baru mencakup layar Pesanan, PracticePay, Akun & Pengaturan; sisanya jatuh ke teks Indonesia.
@@ -41,10 +43,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-}
 
-// Skema Room per versi di-commit; wajib untuk menulis migrasi (ARCHITECTURE.md §6.6).
-ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+    // Konstruktor exception Firebase memanggil TextUtils; stub android.jar dibuat mengembalikan default di unit test JVM.
+    testOptions { unitTests.isReturnDefaultValues = true }
+}
 
 dependencies {
     implementation(libs.androidx.core.ktx)
@@ -65,8 +67,10 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

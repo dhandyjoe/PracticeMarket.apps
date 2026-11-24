@@ -3,10 +3,10 @@
 # PracticeMart
 
 **Aplikasi marketplace Android untuk latihan automation testing mobile.**<br>
-Locator stabil, data uji siap pakai, full offline. Cocok untuk Appium dan Maestro.
+Locator stabil, data akun sama di Android & web lewat Firebase. Cocok untuk Appium dan Maestro.
 
 ![Android 7.0+](https://img.shields.io/badge/Android-7.0%2B-0E7C66?style=flat-square)
-![Offline](https://img.shields.io/badge/Offline-tanpa%20INTERNET-0E7C66?style=flat-square)
+![Firebase](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-0E7C66?style=flat-square)
 ![Rilis](https://img.shields.io/badge/rilis-v0.1.0-0E7C66?style=flat-square)
 
 [**Unduh APK**](https://github.com/dhandyjoe/PracticeMarket.apps/releases/download/v0.1.0/automation-practice-v0.1.0.apk) · [Semua rilis](https://github.com/dhandyjoe/PracticeMarket.apps/releases) · [Dokumentasi](#dokumentasi)
@@ -33,21 +33,22 @@ Locator stabil, data uji siap pakai, full offline. Cocok untuk Appium dan Maestr
 ## Coba sekarang
 
 1. Pasang APK: buka berkas di HP (izinkan sumber tidak dikenal) atau `adb install -r automation-practice-v0.1.0.apk`. Butuh Android 7.0+.
-2. Masuk dengan akun uji `standard_user` / `Practice123!`. Kode OTP: `123456`.
+2. Butuh koneksi internet. Buat akun lewat **Daftar** (email + password), lalu masuk dengan email itu. Akun baru mendapat data awal: 2 alamat, saldo PracticePay Rp500.000, PIN `123456`.
 
 ## Kenapa PracticeMart
 
-- **Full offline.** Tanpa backend, tanpa permission `INTERNET`. Hasil test tidak bergantung jaringan.
+- **Cloud tanpa server sendiri.** Akun di Firebase Authentication, data di Cloud Firestore (plan Spark). Akun & data yang sama dipakai web app PracticeMart.
 - **Locator adalah public API.** resource-id, `testTag`, dan content-desc terdokumentasi di [`docs/locators`](docs/locators). Id yang berubah dicatat sebagai breaking change.
-- **Data permanen, mudah direset.** Akun, keranjang, pesanan, dan saldo tersimpan di database lokal dan bertahan setelah app di-kill atau di-update. Untuk test yang terisolasi: Developer Options › "Reset data setiap app dibuka", `practiceapp://settings/reset`, atau Maestro `clearState`.
-- **Skenario nyata.** Login, OTP, pencarian, filter, voucher, kartu dengan 3D Secure, Virtual Account, dan dompet digital PracticePay.
+- **Data permanen di cloud.** Keranjang, pesanan, dan saldo bertahan setelah app di-kill, di-update, *Clear data*, atau dibuka di device lain. Tidak ada reset data: untuk test yang terisolasi, Register akun baru. Maestro `clearState` hanya menghapus sesi & pengaturan lokal. Stok produk dipakai bersama semua akun.
+- **Skenario nyata.** Login, pencarian, filter, voucher, kartu dengan 3D Secure, Virtual Account, dan dompet digital PracticePay.
 
 ## Dokumentasi
 
 | Dokumen | Isi |
 |---|---|
 | [PRD.md](PRD.md) | Fitur, skenario E2E, test data, kontrak locator |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Arsitektur, tech stack, skema database |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Arsitektur, tech stack, Firebase |
+| [docs/contract.md](docs/contract.md) | Kontrak bersama Android & web: business rules, test data, skema Firestore |
 | [DESIGN.md](DESIGN.md) | Design system dan spesifikasi layar |
 | [CLAUDE.md](CLAUDE.md) | Panduan kontributor dan agent |
 | Locator | [auth](docs/locators/auth.md) · [shop](docs/locators/shop.md) · [checkout](docs/locators/checkout.md) · [orders](docs/locators/orders.md) · [pay](docs/locators/pay.md) · [account](docs/locators/account.md) |
@@ -57,7 +58,7 @@ Bila dokumen berbeda isi, urutan sumber kebenarannya: **PRD → DESIGN → canva
 ## Status
 
 **Sudah ada:** Masuk dan Onboarding, Belanja, Checkout, Pesanan, PracticePay, Akun dan Pengaturan.
-**Belum:** Kategori (SHOP-02), Ulasan (SHOP-07, ORD-04), Top Up (PAY-02), halaman tidak ditemukan (SYS-01).
+**Belum:** Ulasan (SHOP-07, ORD-04), halaman tidak ditemukan (SYS-01). Lupa Password sengaja tidak ada (v0.9).
 
 <details>
 <summary><b>Deep link dan test hook</b></summary>
@@ -66,9 +67,8 @@ Bila dokumen berbeda isi, urutan sumber kebenarannya: **PRD → DESIGN → canva
 
 | Deep link | Tujuan |
 |---|---|
-| `practiceapp://login?username=<x>` | Masuk |
+| `practiceapp://login?username=<email>` | Masuk (field email terisi) |
 | `practiceapp://register` | Daftar |
-| `practiceapp://forgot-password` | Lupa password |
 | `practiceapp://shop/orders` | Daftar pesanan |
 | `practiceapp://shop/order/{id}` | Detail pesanan |
 | `practiceapp://pay` | PracticePay |
@@ -81,7 +81,6 @@ Bila dokumen berbeda isi, urutan sumber kebenarannya: **PRD → DESIGN → canva
 Test hook tanpa UI:
 
 ```
-practiceapp://settings/reset
 practiceapp://settings?deterministic=true&latency=0&animations=false&flaky=0
 ```
 
@@ -92,13 +91,13 @@ practiceapp://settings?deterministic=true&latency=0&animations=false&flaky=0
 
 <br>
 
-Prasyarat: JDK 17 dan Android SDK (platform 35, build-tools 35.0.0). Gradle wrapper (8.9) sudah ada di repo.
+Prasyarat: JDK 17, Android SDK (platform 35, build-tools 35.0.0), dan `app/google-services.json` dari project Firebase `practicemart-fdc73` (owner: dhandyjoe; lihat ARCHITECTURE.md §14.1). Rules: `cd firebase && firebase deploy --only firestore:rules`. Gradle wrapper (8.9) sudah ada di repo.
 
 ```
 export JAVA_HOME=<path JDK 17>
 export ANDROID_HOME=<path Android SDK>
 echo "sdk.dir=$ANDROID_HOME" > local.properties
-./gradlew :app:testDebugUnitTest      # unit test (domain, hash, persistensi)
+./gradlew :app:testDebugUnitTest      # unit test (domain, hash, store)
 ./gradlew :app:assembleDebug          # app/build/outputs/apk/debug/app-debug.apk
 ```
 

@@ -38,7 +38,9 @@ class OrderDetailFragment : ShopFragment(R.layout.fragment_order_detail) {
             }
         }
         b.shopBtnCancelOrder.setOnClickListener { nav.openCancel(orderId) }
-        b.shopBtnNextStatus.setOnClickListener { vm.session.advance(orderId)?.let { s -> notifyStatus(s) } }
+        b.shopBtnNextStatus.setOnClickListener { viewLifecycleOwner.lifecycleScope.launch { vm.session.advance(orderId)?.let { s -> notifyStatus(s) } } }
+        // Pesanan menunggu bayar (kartu pending, atau VA yang tidak lewat layar VA): sama dengan web, "Saya sudah bayar" memajukan ke Dibayar.
+        b.shopBtnConfirmPaid.setOnClickListener { viewLifecycleOwner.lifecycleScope.launch { vm.session.advance(orderId)?.let { s -> notifyStatus(s) } } }
         b.shopBtnReview.setOnClickListener { Snackbar.make(view, R.string.ord_review_soon, Snackbar.LENGTH_SHORT).show() }
         b.shopBtnCopyOrderId.setOnClickListener {
             requireContext().getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("order", orderId))
@@ -60,7 +62,8 @@ class OrderDetailFragment : ShopFragment(R.layout.fragment_order_detail) {
     private fun renderMode(b: FragmentOrderDetailBinding) {
         val ms = requireContext().app.container.settings.prefs.value.statusIntervalMs
         b.shopTxtDetailInterval.text = if (ms == 0L) getString(R.string.ord_interval_manual) else getString(R.string.ord_interval_fmt, ms / 1000)
-        b.shopBtnNextStatus.isVisible = ms == 0L && vm.session.order(orderId)?.status?.next() != null
+        val status = vm.session.order(orderId)?.status
+        b.shopBtnNextStatus.isVisible = ms == 0L && status != OrderStatus.WAITING && status?.next() != null
     }
 
     private fun render(b: FragmentOrderDetailBinding, o: Order) {
@@ -86,6 +89,7 @@ class OrderDetailFragment : ShopFragment(R.layout.fragment_order_detail) {
             row.shopTxtStepSub.text = o.stamps[OrderStatus.entries[i]]?.let(::formatHms) ?: getString(if (i <= at) R.string.ord_step_passed else R.string.ord_step_not_yet)
         }
 
+        b.shopBtnConfirmPaid.isVisible = o.status == OrderStatus.WAITING
         b.shopBtnCancelOrder.isVisible = o.status.cancellable
         b.shopTxtCannotCancel.isVisible = o.status == OrderStatus.SHIPPED
         b.shopBtnReview.isVisible = o.status == OrderStatus.DONE

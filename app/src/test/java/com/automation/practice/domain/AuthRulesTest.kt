@@ -20,16 +20,4 @@ class AuthRulesTest {
         assertEquals(Strength.MEDIUM, AuthRules.passwordStrength("rahasia1"))
         assertEquals(Strength.STRONG, AuthRules.passwordStrength("Rahasia123!xy"))
     }
-
-    @Test fun newPasswordChecks() {
-        assertTrue(AuthRules.passwordChecks("Baru2026", "Baru2026").all)
-        val c = AuthRules.passwordChecks("Baru2026", "Baru202")
-        assertTrue(c.minLength && c.hasLetter && c.hasDigit)
-        assertFalse(c.matches)
-        assertFalse(AuthRules.passwordChecks("", "").matches)
-    }
-
-    @Test fun maskEmail() {
-        assertEquals("r***@contoh.id", AuthRules.maskEmail("rina@contoh.id"))
-    }
 }

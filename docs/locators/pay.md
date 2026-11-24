@@ -4,19 +4,31 @@ Kontrak publik (PRD §12.3). Mengubah atau menghapus id di sini = breaking chang
 Id memakai prefix `com.automation.practice:id/`.
 **Transfer (PAY-03, 04, QR konfirmasi) dibangun dengan Jetpack Compose**: id berasal dari `testTag` + `testTagsAsResourceId`.
 **Riwayat (PAY-06) dibangun dengan Compose tanpa testTag** sebagai pembanding: tidak ada resource-id, cari lewat teks, content-desc, atau posisi.
-Deep link: `practiceapp://pay`, `pay/transfer`, `pay/history`, `pay/qr?merchant=KOPIPAGI&amount=28000`.
+Deep link: `practiceapp://pay`, `pay/topup`, `pay/transfer`, `pay/history`, `pay/qr?merchant=KOPIPAGI&amount=28000`.
 
 ## PAY-01 PracticePay (View)
 | Id | Elemen | Catatan |
 |---|---|---|
 | `pay_txt_balance` | Saldo | `Rp500.000`, tersembunyi `Rp••••••` |
 | `pay_btn_toggle_balance` | Mata | content-desc `Sembunyikan saldo` / `Tampilkan saldo` |
-| `pay_btn_topup` | Top Up | belum aktif: snackbar `Fitur ini segera hadir` |
+| `pay_btn_topup` | Top Up | membuka layar Top Up (PAY-02) |
 | `pay_btn_transfer` / `pay_btn_scan` / `pay_btn_history` | Aksi cepat | Transfer, Scan QR, Riwayat |
 | `pay_list_recent` | 4 transaksi terakhir | |
 | `pay_item_tx_row` | Baris transaksi | id sama di semua baris |
 | `pay_txt_tx_title` / `pay_txt_tx_time` / `pay_txt_tx_amount` | Isi baris | jumlah `+Rp300.000` / `−Rp86.000` |
 | `pay_link_see_all` | `Lihat semua` | membuka Riwayat |
+
+## PAY-02 Top Up (Compose, testTag)
+| Id | Elemen | Catatan |
+|---|---|---|
+| `pay_btn_back`, `pay_txt_title` | Top bar | judul `Top Up` |
+| `pay_txt_payee_name` | Kartu tujuan | `PracticePay` |
+| `pay_input_topup` | Nominal | digit saja, tampil `Rp100.000`; min Rp10.000, maks Rp10.000.000 |
+| `pay_txt_amount_error` | Galat nominal | `Minimal top up Rp10.000` / `Maksimal top up Rp10.000.000` |
+| `pay_txt_balance` | Saldo | `Saldo Rp311.900` |
+| `pay_btn_next` | Tombol | `Top Up Rp100.000`; disabled bila nominal tidak valid; tanpa PIN |
+| `pay_txt_success` / `pay_txt_success_body` | Layar sukses | `Top Up berhasil` / `Saldo PracticePay bertambah Rp100.000` |
+| `pay_btn_history` / `pay_btn_done` | Aksi | `Lihat Riwayat` / `Selesai` |
 
 ## PAY-03 Transfer · Kontak (Compose, testTag)
 | Id | Elemen | Catatan |
@@ -57,4 +69,4 @@ Deep link: `practiceapp://pay`, `pay/transfer`, `pay/history`, `pay/qr?merchant=
 | `pay_txt_success` | `Pembayaran berhasil` | |
 
 ## PAY-06 Riwayat (Compose, **tanpa testTag**)
-Tidak ada resource-id. Elemen yang bisa dicari: judul `Riwayat Transaksi`, chip `Semua` / `Masuk` / `Keluar`, ikon kalender (content-desc `Filter tanggal`), `Diperbarui HH:mm:ss`, header tanggal (`15 Januari 2026`), baris transaksi (judul, jam, jumlah), `Memuat transaksi lainnya…`. Halaman 20 transaksi, tarik untuk menyegarkan.
+Tidak ada resource-id. Elemen yang bisa dicari: judul `Riwayat Transaksi`, chip `Semua` / `Masuk` / `Keluar`, ikon kalender (content-desc `Filter tanggal`), `Diperbarui HH:mm:ss`, header tanggal (`15 Januari 2026`), baris transaksi (judul, jam, jumlah), `Memuat transaksi lainnya…`. Halaman 20 transaksi (footer dan halaman 2 hanya muncul bila akun punya lebih dari 20 transaksi; akun baru punya 8), tarik untuk menyegarkan.

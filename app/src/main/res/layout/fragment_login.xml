@@ -102,10 +102,10 @@
             <EditText
                 android:id="@+id/shop_input_username"
                 style="@style/Pm.Field"
-                android:autofillHints="username"
+                android:autofillHints="emailAddress"
                 android:hint="@string/login_username_hint"
                 android:imeOptions="actionNext"
-                android:inputType="text" />
+                android:inputType="textEmailAddress" />
 
             <TextView
                 android:id="@+id/shop_txt_username_error"
@@ -168,11 +168,6 @@
                     android:text="@string/login_remember"
                     android:textColor="@color/pm_ink"
                     android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/shop_btn_forgot_password"
-                    style="@style/Widget.PracticeMart.Button.Text"
-                    android:text="@string/login_forgot" />
             </LinearLayout>
 
             <FrameLayout
@@ -197,39 +192,6 @@
                     app:trackThickness="2dp" />
             </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/pm_space_4_5"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/pm_outline" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/pm_space_3"
-                    android:text="@string/login_or"
-                    android:textColor="@color/pm_ink_muted"
-                    android:textSize="13sp" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/pm_outline" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/shop_btn_biometric"
-                style="@style/Widget.PracticeMart.Button.Outline"
-                android:text="@string/login_biometric"
-                app:icon="@drawable/ic_fingerprint" />
         </LinearLayout>
     </ScrollView>
 

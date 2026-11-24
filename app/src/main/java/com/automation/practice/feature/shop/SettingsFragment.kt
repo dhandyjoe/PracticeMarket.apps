@@ -1,6 +1,5 @@
 package com.automation.practice.feature.shop
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -18,7 +17,6 @@ import com.automation.practice.data.prefs.Prefs
 import com.automation.practice.databinding.FragmentSettingsBinding
 import com.automation.practice.databinding.ItemSettingGroupBinding
 import com.automation.practice.databinding.ItemSettingRowBinding
-import com.automation.practice.feature.auth.AuthActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -49,7 +47,6 @@ class SettingsFragment : ShopFragment(R.layout.fragment_settings) {
             switch(it, R.id.dev_sw_animations, R.string.dev_animations, 0, p.animations) { on -> change { c -> c.copy(animations = on) } }
             seg(it, R.id.dev_seg_flaky, R.string.dev_flaky, R.string.dev_flaky_sub, listOf("0%", "30%", "50%"), FLAKY.indexOf(p.flaky)) { i -> change { c -> c.copy(flaky = FLAKY[i]) } }
             switch(it, R.id.dev_sw_hints, R.string.dev_hints, R.string.dev_hints_sub, p.locatorHints) { on -> change { c -> c.copy(locatorHints = on) } }
-            switch(it, R.id.dev_sw_reset_on_launch, R.string.dev_reset_on_launch, R.string.dev_reset_on_launch_sub, p.resetOnLaunch) { on -> change { c -> c.copy(resetOnLaunch = on) } }
         }
         group(R.string.set_group_sim, dev = true) {
             seg(it, R.id.dev_seg_va, R.string.dev_va_window, 0, listOf("30 dtk", "2 mnt", "15 mnt"), VA_WINDOWS.indexOf(p.vaWindowMs)) { i -> change { c -> c.copy(vaWindowMs = VA_WINDOWS[i]) } }
@@ -121,15 +118,9 @@ class SettingsFragment : ShopFragment(R.layout.fragment_settings) {
                 setText(text)
                 setOnClickListener { onClick() }
             }
-        TextView(requireContext()).apply {
-            setTextAppearance(R.style.TextAppearance_PracticeMart_Caption)
-            setText(R.string.dev_reset_hint)
-            col.addView(this)
-        }
-        col.addView(danger(R.id.dev_btn_reset_data, R.string.dev_reset_data) { confirmReset(R.string.dev_reset_data_title, R.string.dev_reset_data_body) { resetData() } },
-            LinearLayout.LayoutParams(-1, -2).apply { topMargin = resources.getDimensionPixelSize(R.dimen.pm_space_3) })
+        // Hanya reset pengaturan; tidak ada reset data cloud (contract §5).
         col.addView(danger(R.id.dev_btn_reset_prefs, R.string.dev_reset_prefs) { confirmReset(R.string.dev_reset_prefs_title, R.string.dev_reset_prefs_body) { resetPrefs() } },
-            LinearLayout.LayoutParams(-1, -2).apply { topMargin = resources.getDimensionPixelSize(R.dimen.pm_space_2_5) })
+            LinearLayout.LayoutParams(-1, -2).apply { topMargin = resources.getDimensionPixelSize(R.dimen.pm_space_3) })
         b.accListSettings.addView(col, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = resources.getDimensionPixelSize(R.dimen.pm_space_4) })
     }
 
@@ -147,12 +138,6 @@ class SettingsFragment : ShopFragment(R.layout.fragment_settings) {
         applyAppearance(store.prefs.value)
         parentFragmentManager.popBackStack()
         nav.openSettings(dev = true)
-    }
-
-    /** Database, sesi login, dan status onboarding kembali ke awal tanpa kill proses (PRD §10, ARCHITECTURE §11). */
-    private fun resetData() {
-        requireContext().app.container.resetAll()
-        startActivity(Intent(requireContext(), AuthActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
     }
 
     private fun about() {

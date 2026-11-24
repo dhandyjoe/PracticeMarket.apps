@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Tanpa INTERNET: app full offline (ARCHITECTURE.md §13.1). -->
+    <!-- INTERNET untuk Firebase Auth & Firestore (ARCHITECTURE.md §13.1). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -52,7 +54,6 @@
                 <data android:scheme="practiceapp" />
                 <data android:host="login" />
                 <data android:host="register" />
-                <data android:host="forgot-password" />
             </intent-filter>
         </activity>
 

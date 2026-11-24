@@ -152,7 +152,7 @@ Setiap komponen di bawah ini wajib dibuat sebagai komponen ulang-pakai: custom v
 | Outline primary | border 1,5 `primary`, teks `primary` | "+ Keranjang", Beli Sekarang, Salin |
 | Danger outline | border 1,5 `error`, teks `error` | Batalkan Pesanan, Keluar, Reset data |
 | Danger filled | `error` + putih | Konfirmasi "Batalkan" di sheet |
-| Text button | tanpa latar, teks `primary` 700 | Lupa password?, Lihat semua, Kirim ulang |
+| Text button | tanpa latar, teks `primary` 700 | Lihat semua |
 | Disabled | latar `surface.disabled`, teks `ink.muted`, tanpa border | semua tombol yang menunggu input valid |
 | Loading | label diganti spinner 20 dp + tetap disabled | Bayar, Simpan Alamat, Verifikasi |
 
@@ -170,7 +170,6 @@ Aturan:
   - **Textarea**: dengan counter `27/200`.
   - **Nominal**: Space Grotesk 30, tinggi 64, auto-format Rupiah.
   - **Kartu**: JetBrains Mono, grup 4 digit.
-  - **OTP**: 6 kotak 56 dp, JetBrains Mono 22, border `primary` saat terisi.
   - **Pencarian**: latar `surface.subtle` atau border, ikon kaca pembesar, IME Search.
 - Field read-only: border putus-putus. Field disabled: latar `#EEF0F3`, teks `ink.muted`.
 
@@ -238,7 +237,6 @@ Lingkaran 24 dp: selesai = isi `primary` + centang putih; saat ini = ring tebal 
 ### 4.16 Countdown & nilai dinamis
 - **Countdown VA**: JetBrains Mono 32 dalam banner warning (`role=timer`).
 - **Flash sale**: 3 kotak `warning` putih (jam, menit, detik).
-- **OTP/kirim ulang**: inline text button `"Kirim ulang dalam 00:24"`.
 - **Order ID**: JetBrains Mono, di kartu gelap memakai `dark.accent`, selalu dengan tombol salin.
 
 ### 4.17 Ikon
@@ -307,10 +305,10 @@ Status: **Didesain** = ada artboard. **Belum** = belum ada artboard; ikuti kompo
 | AUTH-01 | Onboarding | `Onboarding.dc.html` | Didesain | 3 slide, indikator titik, Lewati, Lanjut/Mulai | AUTH-02 |
 | AUTH-02 | Login | `Login.dc.html` | Didesain | field username/password, mata, banner error, terkunci 30 dtk, Ingat saya, sidik jari | SHOP-01, AUTH-03, AUTH-04 |
 | AUTH-03 | Register | `Register.dc.html` | Didesain | indikator kekuatan password, konfirmasi, S&K, Daftar disabled-until-valid | AUTH-02 |
-| AUTH-04 | Lupa Password · OTP | `OTP.dc.html` | Didesain | 6 kotak OTP, Kirim ulang dalam 00:SS | AUTH-05 |
-| AUTH-05 | Password Baru | `NewPassword.dc.html` | Didesain | checklist syarat live, layar sukses | AUTH-02 |
+| ~~AUTH-04~~ | ~~Lupa Password · OTP~~ | `OTP.dc.html` | Dihapus v0.9 | 6 kotak OTP, Kirim ulang dalam 00:SS | AUTH-05 |
+| ~~AUTH-05~~ | ~~Password Baru~~ | `NewPassword.dc.html` | Dihapus v0.9 | checklist syarat live, layar sukses | AUTH-02 |
 | SHOP-01 | Beranda | `ShopHome.dc.html` | Didesain | sapaan, pencarian, kartu saldo PracticePay, banner voucher, chip kategori, flash sale, grid + "+ Keranjang", bottom nav | SHOP-03, SHOP-05, PAY-01 |
-| SHOP-02 | Kategori | – | Belum | baris horizontal per kategori (pola kartu produk §4.6) | SHOP-04 |
+| SHOP-02 | Kategori | – | Dibangun | grid 2 kolom 6 kategori; tap membuka Hasil terfilter | SHOP-04 |
 | SHOP-03 | Pencarian | `Search.dc.html` | Didesain | suggestion ≥ 2 huruf, riwayat (hapus/hapus semua), kategori populer | SHOP-04, SHOP-05 |
 | SHOP-04 | Hasil Pencarian | `SearchResults.dc.html` | Didesain | tombol filter + badge, jumlah & urutan, toggle grid/list, infinite scroll | SHOP-05, Filter |
 | SHOP-04 | Filter & Urutkan | `Filter.dc.html` | Didesain | sheet: urutkan, kategori, RangeSlider, rating, switch stok, Terapkan (badge) | SHOP-04 |
@@ -330,7 +328,7 @@ Status: **Didesain** = ada artboard. **Belum** = belum ada artboard; ikuti kompo
 | ORD-03 | Batalkan Pesanan | `CancelSheet.dc.html` | Didesain | sheet: radio alasan, "Lainnya" + teks, tombol disabled-until-valid | ORD-01 |
 | ORD-04 | Beri Ulasan | – | Belum | RatingBar 0,5, textarea, tambah foto | – |
 | PAY-01 | PracticePay | `WalletHome.dc.html` | Didesain | header gelap, sembunyikan saldo, 4 aksi, promo cashback, transaksi terakhir | PAY-03/05/06 |
-| PAY-02 | Top Up | – | Belum | pilih bank → instruksi (pola VA) | – |
+| PAY-02 | Top Up | – | Dibangun | input nominal, tombol "Top Up Rp…", layar sukses (pola Transfer) | PAY-06 |
 | PAY-03 | Transfer · Kontak | `Contacts.dc.html` | Didesain | cari, banner izin kontak, "Terakhir", sticky A–Z | PAY-04 |
 | PAY-04 | Transfer · Nominal & PIN | `Amount.dc.html` | Didesain | nominal auto-format, chip nominal, catatan, PIN pad sheet, sukses | PAY-06 |
 | PAY-05 | Scan QR | `ScanQR.dc.html` | Didesain | viewfinder, senter, dialog izin sistem, ditolak → banner, Upload dari galeri | PAY-05 konfirmasi |
@@ -347,7 +345,7 @@ Status: **Didesain** = ada artboard. **Belum** = belum ada artboard; ikuti kompo
 
 ## 10. Alur yang bisa dicoba di canvas (mode Play)
 1. **Belanja → bayar kartu → lacak:** Onboarding → Login (`standard_user` / `Practice123!`) → Beranda → kartu Kaos Polos Basic → + Keranjang → Lihat → Keranjang → Checkout → Pilih Pembayaran → Kartu (`4111 1111 1111 1111`) → Bayar → 3DS OTP `123456` → Submit → Hasil → Lihat Pesanan → Tracking (Status berikutnya) → Batalkan.
-2. **Lupa password:** Login → Lupa password? → OTP `123456` → Password Baru → Masuk.
+2. **Top Up:** PracticePay → Top Up → nominal → saldo bertambah → Riwayat.
 3. **Cari & filter:** Beranda → Pencarian → ketik "ka" → Hasil → Filter → Terapkan.
 4. **PracticePay:** Beranda (kartu saldo) → PracticePay → Transfer → Budi → nominal → Lanjut → PIN `123456` → Riwayat. Atau Scan QR → izinkan → Upload dari galeri → Bayar → PIN.
 5. **Akun:** Akun → Edit Profil (date picker) / Alamat / Pengaturan & Developer Options / Pusat Bantuan.

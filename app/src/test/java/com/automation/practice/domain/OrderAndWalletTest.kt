@@ -34,6 +34,14 @@ class OrderAndWalletTest {
         assertNull(amountError(0, 500_000))
     }
 
+    @Test fun `galat nominal top up`() {
+        assertNull(topUpError(0))
+        assertEquals("Minimal top up Rp10.000", topUpError(9_999))
+        assertNull(topUpError(10_000))
+        assertNull(topUpError(10_000_000))
+        assertEquals("Maksimal top up Rp10.000.000", topUpError(10_000_001))
+    }
+
     @Test fun `parseAmount hanya mengambil digit dan membatasi panjang`() {
         assertEquals(150_000, parseAmount("Rp150.000"))
         assertEquals(0, parseAmount(""))
@@ -54,22 +62,14 @@ class OrderAndWalletTest {
         assertNull(merchantOf(null))
     }
 
-    @Test fun `riwayat lama berjumlah 52 dan menjadi 3 halaman bersama seed`() {
-        val all = historyBacklog()
-        assertEquals(52, all.size)
-        assertEquals(all.size, all.map { it.id }.toSet().size)
-        assertTrue(all.all { it.at < jakartaTime(2026, 1, 12, 9, 0) })
-        assertEquals(HISTORY_PAGE, filterHistory(all, 0).take(HISTORY_PAGE).size)
-    }
-
     @Test fun `filter riwayat masuk keluar dan rentang tanggal`() {
-        val a = Tx(1, "in", 100, 1_000)
-        val b = Tx(2, "out", -50, 2_000)
-        val c = Tx(3, "in2", 10, 3_000)
-        assertEquals(listOf(3, 2, 1), filterHistory(listOf(a, b, c), 0).map { it.id })
-        assertEquals(listOf(3, 1), filterHistory(listOf(a, b, c), 1).map { it.id })
-        assertEquals(listOf(2), filterHistory(listOf(a, b, c), 2).map { it.id })
-        assertEquals(listOf(2), filterHistory(listOf(a, b, c), 0, 1_500..2_500L).map { it.id })
+        val a = Tx("1", "in", 100, 1_000)
+        val b = Tx("2", "out", -50, 2_000)
+        val c = Tx("3", "in2", 10, 3_000)
+        assertEquals(listOf("3", "2", "1"), filterHistory(listOf(a, b, c), 0).map { it.id })
+        assertEquals(listOf("3", "1"), filterHistory(listOf(a, b, c), 1).map { it.id })
+        assertEquals(listOf("2"), filterHistory(listOf(a, b, c), 2).map { it.id })
+        assertEquals(listOf("2"), filterHistory(listOf(a, b, c), 0, 1_500..2_500L).map { it.id })
     }
 
     @Test fun `kode pos harus tepat 5 digit`() {

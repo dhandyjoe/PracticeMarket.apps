@@ -1,11 +1,13 @@
 package com.automation.practice.domain
 
 const val MIN_TRANSFER = 10_000L
+const val MIN_TOPUP = 10_000L
+const val MAX_TOPUP = 10_000_000L
 const val PAY_PIN = "123456"
 const val NOTE_MAX = 50
 
 /** Transaksi PracticePay. [amount] bertanda: positif = masuk. */
-data class Tx(val id: Int, val title: String, val amount: Long, val at: Long) {
+data class Tx(val id: String, val title: String, val amount: Long, val at: Long) {
     val incoming get() = amount > 0
 }
 
@@ -47,21 +49,22 @@ fun amountError(amount: Long, balance: Long): String? = when {
     else -> null
 }
 
+/** Galat nominal Top Up, atau null bila valid (nominal 0 = belum diisi). */
+fun topUpError(amount: Long): String? = when {
+    amount in 1 until MIN_TOPUP -> "Minimal top up Rp10.000"
+    amount > MAX_TOPUP -> "Maksimal top up Rp10.000.000"
+    else -> null
+}
+
 /** Digit saja dari input nominal; kosong = 0. Dibatasi 9 digit supaya tidak overflow. */
 fun parseAmount(input: String): Long = input.filter(Char::isDigit).take(9).toLongOrNull() ?: 0L
 
 const val HISTORY_PAGE = 20
 
-private val BACKLOG_TITLES = listOf("Belanja PracticeMart", "Top Up dari BCA", "Terima dari Dewi Anggraini", "Bayar QR · Kopi Pagi", "Transfer ke Andi Pratama", "Cashback belanja")
-private val BACKLOG_AMOUNTS = listOf(-64_000L, 250_000L, 40_000L, -28_000L, -90_000L, 3_200L)
-
-/**
- * Riwayat lama deterministik (52 transaksi sebelum 12 Januari 2026) supaya infinite scroll 20 per halaman terasa nyata (FR-PAY-11).
- * ID negatif agar tidak bentrok dengan transaksi sesi.
- */
-fun historyBacklog(): List<Tx> = List(52) { i ->
-    Tx(-(i + 1), BACKLOG_TITLES[i % BACKLOG_TITLES.size], BACKLOG_AMOUNTS[i % BACKLOG_AMOUNTS.size], jakartaTime(2026, 1, 12, 9, 0) - (i + 1) * 17L * 3_600_000L)
-}
+// Judul transaksi ditulis ke Firestore dan dibaca web: selalu Bahasa Indonesia, tidak ikut locale (contract §8.3).
+const val TX_TOPUP_TITLE = "Top Up Saldo"
+fun transferTitle(name: String) = "Transfer ke $name"
+fun qrTitle(merchant: String) = "Bayar QR · $merchant"
 
 /** Saring riwayat: [kind] 0 = semua, 1 = masuk, 2 = keluar; [range] opsional (epoch ms, inklusif). Terbaru di atas. */
 fun filterHistory(all: List<Tx>, kind: Int, range: LongRange? = null): List<Tx> =

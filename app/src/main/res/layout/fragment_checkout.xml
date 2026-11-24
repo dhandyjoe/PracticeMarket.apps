@@ -112,11 +112,11 @@
                                 style="@style/Pm.Label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/checkout_address_label"
                                 android:textColor="@color/pm_ink"
                                 android:textSize="15sp" />
 
                             <TextView
+                                android:id="@+id/shop_tag_address_main"
                                 style="@style/Pm.Label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -136,7 +136,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/pm_space_1"
                             android:lineSpacingMultiplier="1.15"
-                            android:text="@string/checkout_address_text"
                             android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -301,11 +300,45 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/shop_txt_courier_sameday_note"
                         style="@style/Pm.Caption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/courier_sameday_note" />
                 </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shop_group_delivery_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pm_space_2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/Pm.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/checkout_delivery_time" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shop_btn_delivery_time"
+                    style="@style/Widget.PracticeMart.Button.Outline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/pm_touch_min"
+                    android:layout_marginTop="@dimen/pm_space_1"
+                    android:text="@string/checkout_delivery_time_pick" />
+
+                <TextView
+                    android:id="@+id/shop_txt_delivery_time_error"
+                    style="@style/Pm.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pm_space_1"
+                    android:text="@string/checkout_delivery_time_error"
+                    android:textColor="@color/pm_error"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
